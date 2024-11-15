@@ -7,13 +7,6 @@
   --foreground: #000000;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -26,18 +19,16 @@ body {
   box-sizing: border-box;
 }
 
+
+
 .login-input .MuiOutlinedInput-root {
   border-radius: 0.75rem;
   transition: all 0.2s ease-in-out;
 }
 
-.login-input .MuiOutlinedInput-root:hover {
-  transform: translateY(-1px);
-}
-
 @keyframes buttonGlow {
   from {
-    opacity: 0.8;
+    opacity: 1;
   }
   to {
     opacity: 0.4;

@@ -14,6 +14,15 @@ import {
 import { Visibility, VisibilityOff, Person, Lock } from "@mui/icons-material";
 import Layout from "../common/Layout";
 
+/**
+ * LoginPage Component
+ * Provides a user interface for authentication
+ * Features:
+ * - Email and password input fields
+ * - Show/hide password toggle
+ * - Interactive button with hover effects
+ * - Responsive design
+ */
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
@@ -27,9 +36,12 @@ const LoginPage = () => {
     if (isHovering) {
       const button = e.currentTarget;
       const rect = button.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      setMousePosition({ x, y });
+      requestAnimationFrame(() => {
+        setMousePosition({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      });
     }
   };
 
@@ -93,12 +105,14 @@ const LoginPage = () => {
                     },
                   },
                 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Person className="text-gray-400" />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Person className="text-gray-400" />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
@@ -121,22 +135,24 @@ const LoginPage = () => {
                     },
                   },
                 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock className="text-gray-400" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock className="text-gray-400" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
                 }}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })

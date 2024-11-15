@@ -10,6 +10,11 @@ import {
   Box,
   InputAdornment,
   IconButton,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import {
   Visibility,
@@ -21,6 +26,16 @@ import {
 } from "@mui/icons-material";
 import Layout from "../common/Layout";
 
+/**
+ * RegisterPage Component
+ * Provides user registration interface
+ * Features:
+ * - Full name, email, student ID, and password input fields
+ * - Password visibility toggle
+ * - Interactive button with hover effects
+ * - Form validation
+ * - Responsive design
+ */
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
@@ -28,17 +43,21 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    studentId: "",
     password: "",
+    verifyPassword: "",
+    userType: "student",
   });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isHovering) {
       const button = e.currentTarget;
       const rect = button.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      setMousePosition({ x, y });
+      requestAnimationFrame(() => {
+        setMousePosition({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      });
     }
   };
 
@@ -76,88 +95,148 @@ const RegisterPage = () => {
             >
               Create Account
             </Typography>
-            <Typography className="mt-1 text-center text-gray-100 opacity-90">
-              Join our career fair community
-            </Typography>
           </Box>
 
-          <form onSubmit={handleSubmit} className="p-8 space-y-4">
-            <TextField
-              fullWidth
-              label="Full Name"
-              required
-              className="login-input"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Person className="text-gray-400" />
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) =>
-                setFormData({ ...formData, fullName: e.target.value })
-              }
-            />
-            <TextField
-              fullWidth
-              label="Email Address"
-              type="email"
-              required
-              className="login-input"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Email className="text-gray-400" />
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-            />
-            <TextField
-              fullWidth
-              label="Student ID"
-              required
-              className="login-input"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <School className="text-gray-400" />
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) =>
-                setFormData({ ...formData, studentId: e.target.value })
-              }
-            />
-            <TextField
-              fullWidth
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              required
-              className="login-input"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock className="text-gray-400" />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-            />
+          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            <div className="space-y-4">
+              <TextField
+                fullWidth
+                label="Full Name"
+                required
+                className="login-input"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Person className="text-gray-400" />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                onChange={(e) =>
+                  setFormData({ ...formData, fullName: e.target.value })
+                }
+              />
+
+              <TextField
+                fullWidth
+                label="Email Address"
+                type="email"
+                required
+                className="login-input"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email className="text-gray-400" />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+              />
+
+              <TextField
+                fullWidth
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                required
+                className="login-input"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock className="text-gray-400" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+              />
+
+              <TextField
+                fullWidth
+                label="Verify Password"
+                type={showPassword ? "text" : "password"}
+                required
+                className="login-input"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock className="text-gray-400" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                onChange={(e) =>
+                  setFormData({ ...formData, verifyPassword: e.target.value })
+                }
+                error={
+                  formData.password !== formData.verifyPassword &&
+                  formData.verifyPassword !== ""
+                }
+                helperText={
+                  formData.password !== formData.verifyPassword &&
+                  formData.verifyPassword !== ""
+                    ? "Passwords do not match"
+                    : ""
+                }
+              />
+
+              <FormControl component="fieldset">
+                <FormLabel component="legend" className="text-gray-700">
+                  User Type
+                </FormLabel>
+                <RadioGroup
+                  row
+                  value={formData.userType}
+                  onChange={(e) =>
+                    setFormData({ ...formData, userType: e.target.value })
+                  }
+                >
+                  <FormControlLabel
+                    value="student"
+                    control={<Radio />}
+                    label="Student"
+                  />
+                  <FormControlLabel
+                    value="company"
+                    control={<Radio />}
+                    label="Company"
+                  />
+                  <FormControlLabel
+                    value="faculty"
+                    control={<Radio />}
+                    label="Faculty"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </div>
 
             <Button
               type="submit"
@@ -189,12 +268,12 @@ const RegisterPage = () => {
 
             <Box className="text-center mt-4">
               <Typography variant="body2" className="text-gray-600">
-                Don't have an account?{" "}
+                Already have an account?{" "}
                 <a
-                  href="/register"
+                  href="/login"
                   className="text-blue-500 hover:text-blue-600 font-medium"
                 >
-                  Sign Up
+                  Sign In
                 </a>
               </Typography>
             </Box>

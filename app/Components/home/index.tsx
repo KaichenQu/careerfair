@@ -4,6 +4,15 @@ import React from "react";
 import { Typography, Container } from "@mui/material";
 import Layout from "../common/Layout";
 
+/**
+ * HomePage Component
+ * Landing page of the application
+ * Features:
+ * - Welcome message
+ * - Platform description
+ * - Responsive typography
+ * - Gradient text effects
+ */
 const HomePage: React.FC = () => {
   return (
     <Layout>
@@ -12,10 +21,12 @@ const HomePage: React.FC = () => {
           <Typography
             variant="h4"
             component="h1"
-            className="text-4xl md:text-6xl font-bold mb-8 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 antialiased leading-normal"
+            style={{ lineHeight: "1.2" }}
+            className="text-3xl md:text-6xl font-bold mb-10 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 leading-tight"
           >
-            Welcome to the Career Fair Registration System
+            Career Fair Registration System
           </Typography>
+
           <Typography
             variant="body1"
             className="text-xl md:text-2xl text-gray-700 mb-8 md:text-center lg:px-24 antialiased leading-relaxed"
