@@ -38,3 +38,38 @@ body {
 .button-glow::before {
   animation: buttonGlow 1.5s ease-in-out infinite alternate;
 }
+
+.card-fold-corner {
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+  transition: all 0.3s ease;
+}
+
+.card-fold-shadow {
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+  background: linear-gradient(135deg, rgba(0,0,0,0.1) 0%, transparent 100%);
+}
+
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-wave1 {
+  animation: wave 1s ease-in-out infinite;
+}
+
+.animate-wave2 {
+  animation: wave 1s ease-in-out infinite;
+  animation-delay: 0.1s;
+}
+
+.animate-wave3 {
+  animation: wave 1s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+

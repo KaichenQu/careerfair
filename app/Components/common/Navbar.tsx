@@ -38,7 +38,7 @@ const Navbar = () => {
 
   const menuItems = [
     { text: "Home", icon: <Home />, href: "/" },
-    { text: "Events", icon: <Event />, href: "/events" },
+    { text: "Career Fairs", icon: <Event />, href: "/careerFair" },
     { text: "Companies", icon: <Business />, href: "/companies" },
     { text: "Students", icon: <People />, href: "/students" },
     { text: "Login", icon: <Login />, href: "/login" },
