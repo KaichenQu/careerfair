@@ -40,7 +40,7 @@ const Navbar = () => {
     { text: "Home", icon: <Home />, href: "/" },
     { text: "Career Fairs", icon: <Event />, href: "/careerFair" },
     { text: "Companies", icon: <Business />, href: "/companies" },
-    { text: "Students", icon: <People />, href: "/students" },
+    { text: "Students", icon: <People />, href: "/student" },
     { text: "Login", icon: <Login />, href: "/login" },
   ];
 

@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Career Fair Registration System
 
-## Getting Started
+A Next.js-based platform for managing career fairs, connecting students with employers, and streamlining the recruitment process.
 
-First, run the development server:
+## 🚀 Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠 Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: Next.js 15.0
+- **UI Library**: Material-UI v6
+- **Styling**: Tailwind CSS
+- **State Management**: React Hooks
+- **API Client**: Axios
+- **TypeScript**: For type safety
+- **Authentication**: JWT (planned)
 
-## Learn More
+## 📝 Development Progress
 
-To learn more about Next.js, take a look at the following resources:
+### Completed Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### Core Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- ✅ Project setup with Next.js 15.0
+- ✅ Material UI integration with custom theme
+- ✅ Responsive layout system
+- ✅ TypeScript configuration
+- ✅ Tailwind CSS setup with custom utilities
 
-## Deploy on Vercel
+#### Authentication
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- ✅ Login page with email/password
+- ✅ Registration with user type selection
+- ✅ Password visibility toggle
+- ✅ Form validation
+- ✅ Interactive button effects
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### Career Fair Features
+
+- ✅ Career fair listing page
+- ✅ Position details view
+- ✅ Company information display
+- ✅ Job type indicators (New Grad/Intern/Visa Sponsor)
+
+#### UI Components
+
+- ✅ Responsive navbar with mobile drawer
+- ✅ Loading animations
+- ✅ Back to top button
+- ✅ Card layouts with hover effects
+- ✅ Custom gradient text effects
+
+### In Progress
+
+- 🔄 API integration with backend services
+- 🔄 User authentication flow
+- 🔄 Protected routes implementation
+- 🔄 Career fair data management
+- 🔄 Company registration process
+
+### Planned Features
+
+- 📋 Application tracking system
+- 📋 Resume upload and management
+- 📋 Interview scheduling
+- 📋 Admin dashboard
+- 📋 Real-time notifications
+- 📋 Analytics and reporting
+- 📋 Email notification system
+
+## 🔧 Configuration Files
+
+- TypeScript configuration (tsconfig.json)
+- Tailwind CSS setup (tailwind.config.ts)
+- Next.js configuration (next.config.ts)
+- ESLint rules (.eslintrc.json)
+- Environment variables (.env.example)
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 📚 Documentation References
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Material-UI Documentation](https://mui.com/getting-started/usage/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
