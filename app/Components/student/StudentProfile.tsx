@@ -4,13 +4,7 @@ import React from "react";
 import { Container, Typography, Box, Button, Paper, Grid } from "@mui/material";
 import Layout from "../common/Layout";
 import { Person, WorkHistory } from "@mui/icons-material";
-
-// Sample student data (replace with actual data fetching)
-const studentData = {
-  student_id: "ST123456",
-  major: "Computer Science",
-  name: "John Doe",
-};
+import { studentData } from "../../data/studentData";
 
 const StudentProfile = () => {
   return (
@@ -41,6 +35,12 @@ const StudentProfile = () => {
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
+                  Name: {studentData.student_name}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
                   Major: {studentData.major}
                 </Typography>
               </Box>
@@ -65,6 +65,7 @@ const StudentProfile = () => {
                   variant="contained"
                   startIcon={<Person />}
                   className="bg-blue-500 hover:bg-blue-600 px-6 py-2"
+                  onClick={() => (window.location.href = "/student/profile")}
                 >
                   Profile
                 </Button>
