@@ -10,11 +10,14 @@ import {
   Box,
   InputAdornment,
   IconButton,
+<<<<<<< HEAD
   FormControl,
   FormLabel,
   FormControlLabel,
   Radio,
   RadioGroup,
+=======
+>>>>>>> 622b322d28b2e7f3b5f25db56d40d2e84fa0d2cc
 } from "@mui/material";
 import { Visibility, VisibilityOff, Person, Lock } from "@mui/icons-material";
 import Layout from "../common/Layout";
@@ -35,7 +38,10 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+<<<<<<< HEAD
     userType: "",
+=======
+>>>>>>> 622b322d28b2e7f3b5f25db56d40d2e84fa0d2cc
   });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -164,6 +170,7 @@ const LoginPage = () => {
                   setFormData({ ...formData, password: e.target.value })
                 }
               />
+<<<<<<< HEAD
               <FormControl component="fieldset">
                 <FormLabel component="legend" className="text-gray-700">
                   User Type
@@ -192,6 +199,8 @@ const LoginPage = () => {
                   />
                 </RadioGroup>
               </FormControl>
+=======
+>>>>>>> 622b322d28b2e7f3b5f25db56d40d2e84fa0d2cc
             </div>
 
             <Button
