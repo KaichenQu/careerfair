@@ -48,6 +48,37 @@ const RegisterPage = () => {
     userType: "student",
   });
 
+  const [errors, setErrors] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    verifyPassword: "",
+  });
+
+  const validateForm = () => {
+    const newErrors = {
+      fullName: "",
+      email: "",
+      password: "",
+      verifyPassword: "",
+    };
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Name is required";
+    }
+
+    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (formData.password !== formData.verifyPassword) {
+      newErrors.verifyPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error !== "");
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isHovering) {
       const button = e.currentTarget;

@@ -54,7 +54,7 @@ const FacultyPage = () => {
             >
               <Card className="h-full p-6 relative transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                 {/* Folded corner effect */}
-                <div className="absolute top-0 right-0 w-24 h-24 transition-transform duration-300 origin-top-right group-hover:scale-110">
+                <div className="absolute top-0 right-0 w-24 h-24 transition-transform duration-300 origin-top-right group-hover:scale-110 pointer-events-none">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/20 to-transparent transform rotate-45" />
                   <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden">
                     <div className="absolute top-0 right-0 w-[141%] h-[141%] bg-white transform origin-top-right -rotate-45 translate-x-2 -translate-y-2 shadow-lg" />
@@ -66,7 +66,7 @@ const FacultyPage = () => {
                   </div>
                 </div>
 
-                <Box className="flex flex-col items-center space-y-4">
+                <Box className="flex flex-col items-center space-y-4 relative z-10">
                   {item.icon}
                   <Typography
                     variant="h5"

@@ -1,5 +1,5 @@
 export const studentData = {
-  student_id: "test",
+  student_id: "test1",
   student_name: "Robyn Jiang",
   major: "Computer Science",
   gpa: "4.01",

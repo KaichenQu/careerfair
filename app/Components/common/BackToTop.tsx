@@ -9,19 +9,19 @@ const BackToTop = () => {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
+      if (typeof window !== "undefined") {
+        setIsVisible(window.scrollY > 300);
       }
     };
 
-    window.addEventListener("scroll", toggleVisibility);
-    toggleVisibility();
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", toggleVisibility);
+      toggleVisibility(); // Initial check
 
-    return () => {
-      window.removeEventListener("scroll", toggleVisibility);
-    };
+      return () => {
+        window.removeEventListener("scroll", toggleVisibility);
+      };
+    }
   }, []);
 
   const scrollToTop = () => {

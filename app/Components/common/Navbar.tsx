@@ -51,7 +51,20 @@ const Navbar = () => {
       {menuItems.map((item) => (
         <ListItem
           key={item.text}
-          onClick={() => (window.location.href = item.href)}
+          component={Link}
+          href={item.href}
+          className="transition-colors duration-200 hover:bg-blue-50"
+          sx={{
+            cursor: "pointer",
+            "&:hover": {
+              "& .MuiListItemIcon-root": {
+                color: "#1976d2",
+              },
+              "& .MuiListItemText-primary": {
+                color: "#1976d2",
+              },
+            },
+          }}
         >
           <ListItemIcon>{item.icon}</ListItemIcon>
           <ListItemText primary={item.text} />
