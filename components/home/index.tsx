@@ -4,6 +4,7 @@ import React from "react";
 import { Typography, Container, Button, Grid } from "@mui/material";
 import Layout from "../common/Layout";
 import BusinessCategories from "./BusinessCategories";
+import { useRouter } from "next/navigation";
 
 /**
  * HomePage Component
@@ -15,6 +16,8 @@ import BusinessCategories from "./BusinessCategories";
  * - Gradient text effects
  */
 const HomePage: React.FC = () => {
+  const router = useRouter();
+
   const features = [
     {
       icon: "🎯",
@@ -52,37 +55,44 @@ const HomePage: React.FC = () => {
                 <Typography
                   variant="h4"
                   component="h1"
-                  className="text-4xl md:text-7xl font-extrabold mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 leading-tight"
+                  className="text-4xl md:text-6xl font-bold mb-12 text-gray-900"
                 >
                   Career Fair
                   <br />
-                  Registration System
-                  <br />
-                  <br />
+                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+                    Registration System
+                  </span>
                 </Typography>
 
-                <Typography
-                  variant="body1"
-                  className="text-xl md:text-2xl text-gray-600 mb-8 md:text-center lg:px-24 font-light"
-                >
-                  Connect with leading companies, explore opportunities, and
-                  launch your career journey.
-                </Typography>
+                <p className="text-2xl font-medium text-gray-800 mb-8 max-w-3xl mx-auto leading-relaxed">
+                  "Connecting talented students with leading companies through{" "}
+                  <span className="text-blue-600 font-semibold">
+                    seamless career fair experiences
+                  </span>
+                  . Your future starts here."
+                </p>
 
-                <div className="flex justify-center gap-4">
+                <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                  Join thousands of students and hundreds of companies who have
+                  already found their perfect match through our platform.
+                </p>
+
+                <div className="flex justify-center gap-4 mt-8">
                   <Button
                     variant="contained"
                     size="large"
-                    className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-3"
+                    onClick={() => router.push("/careerFair")}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg"
                   >
                     Browse Fairs
                   </Button>
                   <Button
                     variant="outlined"
                     size="large"
-                    className="border-blue-600 text-blue-600 hover:bg-blue-50 text-lg px-8 py-3"
+                    onClick={() => router.push("/login")}
+                    className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium transition-all duration-300"
                   >
-                    Learn More
+                    Sign In
                   </Button>
                 </div>
               </div>
@@ -99,14 +109,26 @@ const HomePage: React.FC = () => {
                 { number: "1000+", label: "Students Registered" },
                 { number: "200+", label: "Partner Companies" },
               ].map((stat, index) => (
-                <div key={index} className="text-center">
+                <div
+                  key={index}
+                  className="text-center group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
+                >
                   <Typography
                     variant="h3"
-                    className="font-bold text-4xl md:text-5xl text-blue-600 mb-2"
+                    className="font-bold text-5xl md:text-6xl text-transparent bg-clip-text mb-3 group-hover:scale-105 transition-transform duration-300"
+                    style={{
+                      WebkitTextStroke: "2px #3b82f6",
+                      textShadow: "4px 4px 8px rgba(59, 130, 246, 0.2)",
+                    }}
                   >
                     {stat.number}
                   </Typography>
-                  <Typography className="text-gray-600 text-lg">
+                  <Typography
+                    className="text-gray-600 text-lg md:text-xl font-medium tracking-wide"
+                    style={{
+                      textShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                    }}
+                  >
                     {stat.label}
                   </Typography>
                 </div>
@@ -137,19 +159,19 @@ const HomePage: React.FC = () => {
             <Grid container spacing={4}>
               {features.map((feature, index) => (
                 <Grid item xs={12} md={4} key={index}>
-                  <div className="group relative p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                  <div className="h-full group relative p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative z-10">
-                      <div className="w-12 h-12 mb-4 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl">
+                    <div className="relative z-10 flex flex-col h-full">
+                      <div className="w-12 h-12 mb-6 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl">
                         {feature.icon}
                       </div>
                       <Typography
                         variant="h5"
-                        className="font-bold mb-3 text-gray-800"
+                        className="font-bold mb-4 text-gray-800"
                       >
                         {feature.title}
                       </Typography>
-                      <Typography className="text-gray-600">
+                      <Typography className="text-gray-600 flex-grow">
                         {feature.description}
                       </Typography>
                     </div>
