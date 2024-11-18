@@ -26,11 +26,6 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
-.button-glow::before {
-  animation: buttonGlow 1.5s ease-in-out infinite alternate;
-}
-
-
 @keyframes wave {
   0%, 100% {
     transform: translateY(0);
@@ -39,42 +34,3 @@ body {
     transform: translateY(-12px);
   }
 }
-
-.animate-wave1 {
-  animation: wave 1s ease-in-out infinite;
-}
-
-.animate-wave2 {
-  animation: wave 1s ease-in-out infinite;
-  animation-delay: 0.1s;
-}
-
-.animate-wave3 {
-  animation: wave 1s ease-in-out infinite;
-  animation-delay: 0.2s;
-}
-
-@keyframes connectLine {
-  from {
-    stroke-dashoffset: 200;
-    opacity: 0;
-  }
-  to {
-    stroke-dashoffset: 0;
-    opacity: 0.3;
-  }
-}
-
-@keyframes flowingDash {
-  to {
-    stroke-dashoffset: -200;
-  }
-}
-
-.connecting-line {
-  stroke-dasharray: 5, 10;
-  animation: 
-    connectLine 0.8s ease-out forwards,
-    flowingDash 10s linear infinite;
-}
-

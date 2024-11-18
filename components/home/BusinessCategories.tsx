@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 
 const BusinessCategories = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -122,17 +123,23 @@ const BusinessCategories = () => {
                   transition={{
                     opacity: { duration: 0.5, delay: index * 0.1 },
                     y: {
-                      duration: 1.5,
+                      duration: 2,
                       repeat: Infinity,
                       ease: "easeInOut",
-                      delay: index * 0.1,
+                      delay: index * 0.15,
                     },
                   }}
                 >
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-white via-gray-50 to-gray-100 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-                    <div className="text-3xl filter drop-shadow-md">
-                      {getIcon(index)}
-                    </div>
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 p-2">
+                    <img
+                      src={getIcon(index)}
+                      alt="Company Logo"
+                      className="w-full h-full object-contain filter drop-shadow-md"
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://via.placeholder.com/150x50/ffffff/000000?text=Company+Logo";
+                      }}
+                    />
                   </div>
                 </motion.div>
               ))}
@@ -146,59 +153,36 @@ const BusinessCategories = () => {
 
 const getPosition = (index: number) => {
   const positions = [
-    "top-1/2 left-[15%] -translate-y-1/2",
-    "top-1/2 right-[15%] -translate-y-1/2",
-    "top-[20%] left-[25%] -translate-y-1/2",
-    "top-[20%] right-[25%] -translate-y-1/2",
-    "bottom-[20%] right-[25%] translate-y-1/2",
-    "bottom-[20%] left-[25%] translate-y-1/2",
-    "top-1/2 left-[5%] -translate-y-1/2",
-    "top-1/2 right-[5%] -translate-y-1/2",
+    // Left side (4 positions) - Top row
+    "top-[25%] left-[15%] -translate-y-1/2",
+    "top-[25%] left-[30%] -translate-y-1/2",
+    // Left side (4 positions) - Bottom row
+    "top-[75%] left-[15%] -translate-y-1/2",
+    "top-[75%] left-[30%] -translate-y-1/2",
+    // Right side (4 positions) - Top row
+    "top-[25%] right-[15%] -translate-y-1/2",
+    "top-[25%] right-[30%] -translate-y-1/2",
+    // Right side (4 positions) - Bottom row
+    "top-[75%] right-[15%] -translate-y-1/2",
+    "top-[75%] right-[30%] -translate-y-1/2",
   ];
   return positions[index];
 };
 
 const getIcon = (index: number) => {
-  const icons = ["💼", "🎓", "💡", "🌟", "📊", "🤝", "📈", "🎯"];
-  return icons[index];
-};
-
-const getIconPositions = () => {
-  const centerX = 250; // Center of the container
-  const centerY = 250;
-  const radius = 150; // Distance from center to icons
-
-  // Calculate 8 positions around a circle
-  return [...Array(8)].map((_, index) => {
-    const angle = (index * Math.PI) / 4; // Divide circle into 8 parts
-    const x = centerX + radius * Math.cos(angle);
-    const y = centerY + radius * Math.sin(angle);
-    return { x, y };
-  });
-};
-
-// Use this to generate the SVG paths
-const getConnectingLinePath = (index: number) => {
-  // Center coordinates
-  const centerX = 250;
-  const centerY = 250;
-
-  // Calculate positions for each icon
-  const positions = [
-    { x: 100, y: 250 }, // Left
-    { x: 400, y: 250 }, // Right
-    { x: 150, y: 150 }, // Top Left
-    { x: 350, y: 150 }, // Top Right
-    { x: 350, y: 350 }, // Bottom Right
-    { x: 150, y: 350 }, // Bottom Left
-    { x: 50, y: 250 }, // Far Left
-    { x: 450, y: 250 }, // Far Right
+  const companyLogos = [
+    // Left side (4 companies)
+    "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/1000px-IBM_logo.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/1000px-Microsoft_logo.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1000px-Amazon_logo.svg.png",
+    // Right side (4 companies)
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/1200px-Meta_Platforms_Inc._logo.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1000px-Apple_logo_black.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1000px-Netflix_2015_logo.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Adobe_Corporate_logo.svg/2560px-Adobe_Corporate_logo.svg.png",
   ];
-
-  const start = positions[index];
-  return `M ${start.x} ${start.y} Q ${(start.x + centerX) / 2} ${
-    (start.y + centerY) / 2
-  } ${centerX} ${centerY}`;
+  return companyLogos[index];
 };
 
 export default BusinessCategories;
