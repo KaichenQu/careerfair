@@ -1,4 +1,4 @@
-import FacultyDashbord from "../Components/facultyComp/facultyDashbord";
+import FacultyDashbord from "../../components/facultyComp/facultyDashbord";
 
 export default function facultyDashboard() {
   return <FacultyDashbord />;

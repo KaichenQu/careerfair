@@ -22,7 +22,7 @@ import {
   Class,
   Edit as EditIcon,
 } from "@mui/icons-material";
-import { studentData } from "../../data/studentData";
+import { studentData } from "../../app/data/studentData";
 import axios from "axios";
 
 const StudentProfileDetails = () => {

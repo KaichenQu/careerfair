@@ -1,23 +1,16 @@
 "use client";
 
 import React from "react";
-import {
-  Container,
-  Typography,
-  Card,
-  Box,
-  Button,
-  Chip,
-} from "@mui/material";
+import { Container, Typography, Card, Box, Button, Chip } from "@mui/material";
 import {
   Event as EventIcon,
   LocationOn as LocationIcon,
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
 
-import BackToTop from "@/app/Components/common/BackToTop";
-import Layout from "@/app/Components/common/Layout";
-import Loading from "@/app/Components/common/Loading";
+import BackToTop from "@/components/common/BackToTop";
+import Layout from "@/components/common/Layout";
+import Loading from "@/components/common/Loading";
 
 const registeredFairs = [
   {
@@ -65,7 +58,6 @@ export default function RegisteredCareerFairPage() {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-100">
-        
         <Container maxWidth="lg" className="py-12">
           <Typography
             variant="h3"
@@ -120,11 +112,13 @@ export default function RegisteredCareerFairPage() {
                     <Box className="mt-auto">
                       <Chip
                         label={fair.status}
-                        color={fair.status === "Confirmed" ? "success" : "warning"}
+                        color={
+                          fair.status === "Confirmed" ? "success" : "warning"
+                        }
                         variant="outlined"
                         className="mb-4"
                       />
-                      
+
                       <Box className="flex gap-2">
                         <Button
                           variant="contained"
@@ -134,11 +128,7 @@ export default function RegisteredCareerFairPage() {
                         >
                           Withdraw
                         </Button>
-                        <Button
-                          variant="outlined"
-                          fullWidth
-                          color="primary"
-                        >
+                        <Button variant="outlined" fullWidth color="primary">
                           Details
                         </Button>
                       </Box>

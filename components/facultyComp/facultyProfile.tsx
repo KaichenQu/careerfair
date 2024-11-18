@@ -4,7 +4,7 @@ import React from "react";
 import { Container, Typography, Box, Button, Paper, Grid } from "@mui/material";
 import Layout from "../common/Layout";
 import { Person, WorkHistory } from "@mui/icons-material";
-import { facultyData } from "../../data/facultyData";
+import { facultyData } from "../../app/data/facultyData";
 
 const FacultyProfile = () => {
   return (

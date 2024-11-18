@@ -10,14 +10,14 @@ import {
   CardContent,
   Chip,
 } from "@mui/material";
-import Layout from "../../../Components/common/Layout";
+import Layout from "../../../../components/common/Layout";
 import {
   AttachMoney,
   LocationOn,
   Business,
   Description,
 } from "@mui/icons-material";
-import Loading from "../../../Components/common/Loading";
+import Loading from "../../../../components/common/Loading";
 
 interface Position {
   id: string | number;

@@ -11,7 +11,7 @@ import {
   Skeleton,
   Chip,
 } from "@mui/material";
-import Layout from "../../../Components/common/Layout";
+import Layout from "../../../../components/common/Layout";
 import { useParams } from "next/navigation";
 import {
   AttachMoney,
@@ -19,7 +19,7 @@ import {
   Business,
   Description,
 } from "@mui/icons-material";
-import Loading from "../../../Components/common/Loading";
+import Loading from "../../../../components/common/Loading";
 
 const samplePositions = {
   cf001: [

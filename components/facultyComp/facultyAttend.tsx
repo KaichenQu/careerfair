@@ -1,21 +1,14 @@
 "use client";
 
 import React from "react";
-import {
-  Container,
-  Typography,
-  Card,
-  Box,
-  Button,
-  Chip,
-} from "@mui/material";
+import { Container, Typography, Card, Box, Button, Chip } from "@mui/material";
 import {
   Event as EventIcon,
   LocationOn as LocationIcon,
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
 
-import Navbar from "@/app/Components/common/Navbar";
+import Navbar from "@/components/common/Navbar";
 
 const attendedFairs = [
   {
@@ -106,12 +99,8 @@ export default function AttendedCareerFairPage() {
                       variant="outlined"
                       className="mb-4"
                     />
-                    
-                    <Button
-                      variant="outlined"
-                      fullWidth
-                      color="primary"
-                    >
+
+                    <Button variant="outlined" fullWidth color="primary">
                       View Details
                     </Button>
                   </Box>
