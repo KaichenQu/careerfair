@@ -25,6 +25,7 @@ import {
   School,
 } from "@mui/icons-material";
 import Layout from "../common/Layout";
+import { registerUser } from "../../services/api";
 
 /**
  * RegisterPage Component
@@ -53,6 +54,7 @@ const RegisterPage = () => {
     email: "",
     password: "",
     verifyPassword: "",
+    general: "",
   });
 
   const validateForm = () => {
@@ -61,6 +63,7 @@ const RegisterPage = () => {
       email: "",
       password: "",
       verifyPassword: "",
+      general: "",
     };
 
     if (!formData.fullName.trim()) {
@@ -98,9 +101,30 @@ const RegisterPage = () => {
     setMousePosition({ x: -100, y: -100 });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Register attempt with:", formData);
+
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const response = await registerUser(formData);
+
+      // Handle successful registration
+      if (response.user_id) {
+        // Redirect to login page or dashboard
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      // Handle registration error
+      console.error("Registration failed:", error);
+      // You could set an error state here to display to the user
+      setErrors({
+        ...errors,
+        general: error instanceof Error ? error.message : "Registration failed",
+      });
+    }
   };
 
   return (

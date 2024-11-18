@@ -18,16 +18,8 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff, Person, Lock } from "@mui/icons-material";
 import Layout from "../common/Layout";
+import { loginUser } from "../../services/api";
 
-/**
- * LoginPage Component
- * Provides a user interface for authentication
- * Features:
- * - Email and password input fields
- * - Show/hide password toggle
- * - Interactive button with hover effects
- * - Responsive design
- */
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
@@ -37,6 +29,7 @@ const LoginPage = () => {
     password: "",
     userType: "",
   });
+  const [error, setError] = useState<string>("");
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isHovering) {
@@ -60,9 +53,30 @@ const LoginPage = () => {
     setMousePosition({ x: -100, y: -100 });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt with:", formData);
+
+    if (!formData.userType) {
+      setError("Please select a user type");
+      return;
+    }
+
+    try {
+      console.log("Submitting with data:", {
+        userId: parseInt(formData.email),
+        password: formData.password,
+        userType: formData.userType,
+      });
+
+      await loginUser({
+        userId: parseInt(formData.email),
+        password: formData.password,
+        userType: formData.userType,
+      });
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError(error instanceof Error ? error.message : "Login failed");
+    }
   };
 
   return (
@@ -93,11 +107,18 @@ const LoginPage = () => {
             </Typography>
           </Box>
 
+          {error && (
+            <Box className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              <Typography>{error}</Typography>
+            </Box>
+          )}
+
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
             <div className="space-y-4">
               <TextField
                 fullWidth
-                label="Email Address"
+                label="User ID"
+                type="number"
                 variant="outlined"
                 required
                 className="login-input"
@@ -193,7 +214,6 @@ const LoginPage = () => {
                   />
                 </RadioGroup>
               </FormControl>
-
             </div>
 
             <Button
