@@ -23,6 +23,7 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 /**
  * Navbar Component
@@ -35,16 +36,21 @@ import Link from "next/link";
  */
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
+
+  const handleNavigation = (href: string) => {
+    if (href === "/" && window.location.pathname === "/") {
+      const mainContainer = document.querySelector(".snap-y");
+      if (mainContainer) {
+        mainContainer.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    } else {
+      router.push(href);
+    }
+  };
 
   const menuItems = [
-    {
-      text: "Home",
-      icon: <Home />,
-      href: "/",
-      onClick: () => {
-        window.location.href = "/";
-      },
-    },
+    { text: "Home", icon: <Home />, href: "/" },
     { text: "Career Fairs", icon: <Event />, href: "/careerFair" },
     { text: "Companies", icon: <Business />, href: "/companies" },
     { text: "Students", icon: <People />, href: "/student" },
@@ -58,8 +64,7 @@ const Navbar = () => {
       {menuItems.map((item) => (
         <ListItem
           key={item.text}
-          component={Link}
-          href={item.href}
+          onClick={() => handleNavigation(item.href)}
           className="transition-colors duration-200 hover:bg-blue-50"
           sx={{
             cursor: "pointer",
@@ -83,7 +88,11 @@ const Navbar = () => {
   return (
     <AppBar position="static" sx={{ backgroundColor: "#1976d2" }}>
       <Toolbar>
-        <Box className="ml-2 flex items-center" sx={{ flexGrow: 2 }}>
+        <Box
+          className="ml-2 flex items-center cursor-pointer"
+          sx={{ flexGrow: 2 }}
+          onClick={() => handleNavigation("/")}
+        >
           <img
             src="https://cdn-icons-png.flaticon.com/512/6427/6427283.png"
             alt="Career Fair Logo"
@@ -116,7 +125,7 @@ const Navbar = () => {
               key={item.text}
               color="inherit"
               startIcon={item.icon}
-              onClick={item.onClick}
+              onClick={() => handleNavigation(item.href)}
             >
               {item.text}
             </Button>

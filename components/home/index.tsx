@@ -50,7 +50,10 @@ const HomePage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="h-[calc(100vh-64px)] snap-y snap-mandatory overflow-y-auto scroll-smooth">
+      <div
+        id="homeContainer"
+        className="h-[calc(100vh-64px)] snap-y snap-mandatory overflow-y-auto scroll-smooth"
+      >
         {/* First Page - Hero Section */}
         <div className="snap-start h-[calc(100vh-64px)] relative flex items-center">
           <div className="absolute inset-0 z-0 opacity-10">
