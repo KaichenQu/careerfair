@@ -63,13 +63,13 @@ const LoginPage = () => {
 
     try {
       console.log("Submitting with data:", {
-        userId: parseInt(formData.email),
+        email: formData.email,
         password: formData.password,
         userType: formData.userType,
       });
 
       await loginUser({
-        userId: parseInt(formData.email),
+        email: formData.email,
         password: formData.password,
         userType: formData.userType,
       });
@@ -117,8 +117,8 @@ const LoginPage = () => {
             <div className="space-y-4">
               <TextField
                 fullWidth
-                label="User ID"
-                type="number"
+                label="Email"
+                type="email"
                 variant="outlined"
                 required
                 className="login-input"

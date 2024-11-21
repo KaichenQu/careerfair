@@ -1,4 +1,4 @@
-import DataAnalysis from '@/app/Components/adminPage/dataAnalysis';
+import DataAnalysis from '@/app/../components/admin/dataAnalysis';
 
 // Example data - replace with your actual data fetching logic
 const sampleReportContent = {

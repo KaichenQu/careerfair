@@ -1,4 +1,4 @@
-import AdminProfile from "@/app/Components/adminPage/adminProfile";
+import AdminProfile from "@/app/../components/admin/adminProfile";
 
 export default function AdminDashboard() {
   return <AdminProfile />;

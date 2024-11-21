@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Layout from '@/app/Components/common/layout';
+import Layout from '@/app/../components/common/Layout';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 

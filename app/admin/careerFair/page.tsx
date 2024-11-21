@@ -1,4 +1,4 @@
-import AdminPage from "../../Components/adminPage/adminCareerFair";
+import AdminPage from "@/app/../components/admin/adminCareerFair";
 
 export default function AdminDashboard() {
   return <AdminPage />;

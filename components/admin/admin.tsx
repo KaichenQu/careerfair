@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Layout from '@/app/Components/common/Layout';
+import Layout from '@/app/../components/common/Layout';
 import { Container, Typography, Box, Button, Card, Grid } from "@mui/material";
 import {
   Person as PersonIcon,

@@ -1,6 +1,6 @@
 "use client";
 
-import CreateCareerFair from '@/app/Components/adminPage/createAddCareerFair';
+import CreateCareerFair from '@/app/../components/admin/createAddCareerFair';
 import { useRouter } from 'next/navigation';
 
 interface CareerFairData {

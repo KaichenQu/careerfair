@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from 'react';
-import { adminProfile } from '@/app/data/adminProfile';
+import { adminProfile } from '@/app/../data/adminProfile';
 import { toast } from 'react-hot-toast';
-import Layout from '@/app/Components/common/layout';
+import Layout from '@/app/../components/common/Layout';
 import { useRouter } from 'next/navigation';
 
 interface Props {

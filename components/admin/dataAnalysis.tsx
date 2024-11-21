@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Layout from '@/app/Components/common/layout';
+import Layout from '@/app/../components/common/Layout';
 import {
   BarChart,
   Bar,
@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import { ReportContent } from '@/app/../data/reports';
 
 interface Props {
   careerFairId: string;
