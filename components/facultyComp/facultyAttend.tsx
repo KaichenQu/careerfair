@@ -8,7 +8,7 @@ import {
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
 
-import Navbar from "@/components/common/Navbar";
+import Navbar from "@/Components/common/Navbar";
 
 const attendedFairs = [
   {
