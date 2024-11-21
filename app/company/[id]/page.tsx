@@ -18,7 +18,7 @@ export default function CompanyPage({ params }: PageProps) {
 
   return (
     <main>
-      <CompanyDashboard companyId={companyId} />
+      <CompanyDashboard company={company} />
     </main>
   );
 }

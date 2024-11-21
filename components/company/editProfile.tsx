@@ -4,20 +4,17 @@ import { useState } from 'react';
 import { Company } from '@/data/company';
 import { useRouter } from 'next/navigation';
 import { sampleCompanies } from '@/data/company';
+import Layout from '@/components/common/Layout';
 
 interface PageProps {
   params: {
-    id: string;
+    id: number;
   }
-}
-
-interface CompanyEditFormProps {
-  company: Company;
 }
 
 export default function EditCompanyProfile({ params }: PageProps) {
   const router = useRouter();
-  const companyId = parseInt(params.id);
+  const companyId = params.id;
   const company = sampleCompanies.find(c => c.id === companyId);
 
   const [formData, setFormData] = useState({
@@ -45,9 +42,10 @@ export default function EditCompanyProfile({ params }: PageProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Edit Company Profile</h1>
-      
+    <Layout>
+      <div className="max-w-2xl mx-auto p-6">
+        <h1 className="text-2xl font-bold mb-6">Edit Company Profile</h1>
+        
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           {/* Contact Name */}
@@ -116,6 +114,7 @@ export default function EditCompanyProfile({ params }: PageProps) {
           </button>
         </div>
       </form>
-    </div>
+      </div>
+    </Layout>
   );
 }
