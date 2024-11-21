@@ -34,22 +34,22 @@ const registerUser = async (userData: {
 };
 
 const loginUser = async (credentials: {
-  userId: number;
+  email: string;
   password: string;
   userType: string;
 }) => {
   console.log("Making login request to:", `${API_BASE_URL}/login/`);
   console.log("With credentials:", {
-    user_id: credentials.userId,
+    email: credentials.email,
     password: "********",
     user_type: credentials.userType,
   });
 
   try {
     const response = await axios.post(`${API_BASE_URL}/login/`, {
-      user_id: credentials.userId,
+      email: credentials.email,
       password: credentials.password,
-      user_type: credentials.userType,
+      user_type: credentials.userType
     });
 
     console.log("Login response status:", response.status);
