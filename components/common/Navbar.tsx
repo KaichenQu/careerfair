@@ -37,7 +37,14 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const menuItems = [
-    { text: "Home", icon: <Home />, href: "/" },
+    {
+      text: "Home",
+      icon: <Home />,
+      href: "/",
+      onClick: () => {
+        window.location.href = "/";
+      },
+    },
     { text: "Career Fairs", icon: <Event />, href: "/careerFair" },
     { text: "Companies", icon: <Business />, href: "/companies" },
     { text: "Students", icon: <People />, href: "/student" },
@@ -109,8 +116,7 @@ const Navbar = () => {
               key={item.text}
               color="inherit"
               startIcon={item.icon}
-              component={Link}
-              href={item.href}
+              onClick={item.onClick}
             >
               {item.text}
             </Button>

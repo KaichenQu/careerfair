@@ -153,18 +153,17 @@ const BusinessCategories = () => {
 
 const getPosition = (index: number) => {
   const positions = [
-    // Left side (4 positions) - Top row
-    "top-[25%] left-[15%] -translate-y-1/2",
-    "top-[25%] left-[30%] -translate-y-1/2",
-    // Left side (4 positions) - Bottom row
-    "top-[75%] left-[15%] -translate-y-1/2",
-    "top-[75%] left-[30%] -translate-y-1/2",
-    // Right side (4 positions) - Top row
-    "top-[25%] right-[15%] -translate-y-1/2",
-    "top-[25%] right-[30%] -translate-y-1/2",
-    // Right side (4 positions) - Bottom row
-    "top-[75%] right-[15%] -translate-y-1/2",
-    "top-[75%] right-[30%] -translate-y-1/2",
+    // Top row (3 positions)
+    "top-[20%] left-[20%] -translate-y-1/2",
+    "top-[10%] left-[50%] -translate-x-1/2 -translate-y-1/2",
+    "top-[20%] right-[20%] -translate-y-1/2",
+    // Middle row (2 positions)
+    "top-[50%] left-[10%] -translate-y-1/2",
+    "top-[50%] right-[10%] -translate-y-1/2",
+    // Bottom row (3 positions)
+    "top-[80%] left-[20%] -translate-y-1/2",
+    "top-[80%] left-[50%] -translate-x-1/2 -translate-y-1/2",
+    "top-[80%] right-[20%] -translate-y-1/2",
   ];
   return positions[index];
 };

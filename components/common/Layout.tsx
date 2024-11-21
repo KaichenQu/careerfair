@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import BackToTop from "./BackToTop";
+import ChatBox from "./ChatBox";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Navbar />
       <main className="w-full">{children}</main>
       <BackToTop />
+      <ChatBox />
     </div>
   );
 };

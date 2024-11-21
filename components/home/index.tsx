@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Typography, Container, Button, Grid } from "@mui/material";
 import Layout from "../common/Layout";
 import BusinessCategories from "./BusinessCategories";
 import { useRouter } from "next/navigation";
+import { KeyboardArrowDown } from "@mui/icons-material";
 
 /**
  * HomePage Component
@@ -17,6 +18,14 @@ import { useRouter } from "next/navigation";
  */
 const HomePage: React.FC = () => {
   const router = useRouter();
+  const secondPageRef = useRef<HTMLDivElement>(null);
+
+  const scrollToNextSection = () => {
+    secondPageRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const features = [
     {
@@ -41,105 +50,139 @@ const HomePage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          {/* Background Pattern */}
+      <div className="h-[calc(100vh-64px)] snap-y snap-mandatory overflow-y-auto scroll-smooth">
+        {/* First Page - Hero Section */}
+        <div className="snap-start h-[calc(100vh-64px)] relative flex items-center">
           <div className="absolute inset-0 z-0 opacity-10">
             <div className="absolute inset-0 bg-grid-gray-900/[0.04] bg-[size:20px_20px]" />
           </div>
 
-          <div className="relative pt-20 pb-24 px-4 sm:px-6 lg:px-8">
-            <Container maxWidth="lg" className="text-center">
-              <div className="relative z-10 mb-16">
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  className="text-4xl md:text-6xl font-bold mb-12 text-gray-900"
+          <Container maxWidth="lg" className="relative z-10">
+            <div className="text-center">
+              <Typography
+                variant="h4"
+                component="h1"
+                className="text-4xl md:text-6xl font-bold mb-12 text-gray-900"
+              >
+                Career Fair
+                <br />
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+                  Registration System
+                </span>
+              </Typography>
+
+              <p className="text-2xl font-medium text-gray-800 mb-8 max-w-3xl mx-auto leading-relaxed">
+                "Connecting talented students with leading companies through{" "}
+                <span className="text-blue-600 font-semibold">
+                  seamless career fair experiences
+                </span>
+                . Your future starts here."
+              </p>
+
+              <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                Join thousands of students and hundreds of companies who have
+                already found their perfect match through our platform.
+              </p>
+
+              <div className="flex justify-center gap-4 mt-8">
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => router.push("/careerFair")}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg"
                 >
-                  Career Fair
-                  <br />
-                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
-                    Registration System
-                  </span>
-                </Typography>
-
-                <p className="text-2xl font-medium text-gray-800 mb-8 max-w-3xl mx-auto leading-relaxed">
-                  "Connecting talented students with leading companies through{" "}
-                  <span className="text-blue-600 font-semibold">
-                    seamless career fair experiences
-                  </span>
-                  . Your future starts here."
-                </p>
-
-                <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-                  Join thousands of students and hundreds of companies who have
-                  already found their perfect match through our platform.
-                </p>
-
-                <div className="flex justify-center gap-4 mt-8">
-                  <Button
-                    variant="contained"
-                    size="large"
-                    onClick={() => router.push("/careerFair")}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg"
-                  >
-                    Browse Fairs
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    onClick={() => router.push("/login")}
-                    className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium transition-all duration-300"
-                  >
-                    Sign In
-                  </Button>
-                </div>
+                  Browse Fairs
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  onClick={() => router.push("/login")}
+                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium transition-all duration-300"
+                >
+                  Sign In
+                </Button>
               </div>
-            </Container>
-          </div>
-        </div>
 
-        {/* Stats Section */}
-        <div className="bg-white py-16">
-          <Container maxWidth="lg">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                { number: "50+", label: "Career Fairs" },
-                { number: "1000+", label: "Students Registered" },
-                { number: "200+", label: "Partner Companies" },
-              ].map((stat, index) => (
-                <div
-                  key={index}
-                  className="text-center group cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
+              <div className="mt-12">
+                <Button
+                  onClick={scrollToNextSection}
+                  className="animate-bounce"
+                  sx={{
+                    color: "rgba(59, 130, 246, 0.8)",
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                      color: "rgba(59, 130, 246, 1)",
+                    },
+                  }}
                 >
-                  <Typography
-                    variant="h3"
-                    className="font-bold text-5xl md:text-6xl text-transparent bg-clip-text mb-3 group-hover:scale-105 transition-transform duration-300"
-                    style={{
-                      WebkitTextStroke: "2px #3b82f6",
-                      textShadow: "4px 4px 8px rgba(59, 130, 246, 0.2)",
-                    }}
-                  >
-                    {stat.number}
-                  </Typography>
-                  <Typography
-                    className="text-gray-600 text-lg md:text-xl font-medium tracking-wide"
-                    style={{
-                      textShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                    }}
-                  >
-                    {stat.label}
-                  </Typography>
-                </div>
-              ))}
+                  <KeyboardArrowDown fontSize="large" />
+                </Button>
+              </div>
+              <br />
+              <br />
             </div>
           </Container>
         </div>
 
-        <BusinessCategories />
+        {/* Second Page - Stats Section */}
+        <div ref={secondPageRef} className="snap-start h-[calc(100vh-64px)]">
+          <div className="bg-gradient-to-b from-white via-blue-50/30 to-purple-50/30 py-10">
+            <Container maxWidth="lg">
+              <Typography
+                variant="h3"
+                className="text-center text-2xl md:text-5xl font-bold mb-16 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text pb-1"
+                style={{
+                  paddingBottom: "0.15em",
+                  lineHeight: "1.3",
+                }}
+              >
+                Our Growing Community
+              </Typography>
 
-        <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+              <div className="grid grid-cols-1 md:grid-cols-3">
+                {[
+                  { number: "30+", label: "Colleges", icon: "🎓" },
+                  { number: "1000+", label: "Students Registered", icon: "👥" },
+                  { number: "200+", label: "Partner Companies", icon: "🏢" },
+                ].map((stat, index) => (
+                  <div
+                    key={index}
+                    className="text-center group cursor-pointer transform transition-all duration-300 hover:-translate-y-2"
+                  >
+                    <div className="mb-4 text-4xl">{stat.icon}</div>
+                    <Typography
+                      variant="h3"
+                      className="font-bold text-5xl md:text-6xl text-transparent bg-clip-text mb-3 group-hover:scale-105 transition-transform duration-300"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
+                        WebkitBackgroundClip: "text",
+                        textShadow: "4px 4px 8px rgba(59, 130, 246, 0.2)",
+                      }}
+                    >
+                      {stat.number}
+                    </Typography>
+                    <Typography
+                      className="text-gray-600 text-lg md:text-xl font-medium tracking-wide"
+                      style={{
+                        textShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                      }}
+                    >
+                      {stat.label}
+                    </Typography>
+                  </div>
+                ))}
+              </div>
+              <BusinessCategories />
+            </Container>
+          </div>
+        </div>
+
+        {/* Features section */}
+        <section
+          id="features-section"
+          className="snap-start h-[calc(100vh-64px)] py-20 bg-gradient-to-b from-white to-gray-50"
+        >
           <Container maxWidth="lg">
             <div className="text-center mb-16">
               <Typography

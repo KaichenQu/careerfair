@@ -3,16 +3,21 @@ import { Box, Typography } from "@mui/material";
 
 const Loading = () => {
   return (
-    <Box className="min-h-[60vh] flex flex-col items-center justify-center space-y-6">
-      <div className="flex items-center space-x-2">
-        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 animate-wave1" />
-        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-600 animate-wave2" />
-        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 animate-wave3" />
+    <Box className="flex flex-col justify-center items-center min-h-[60vh] gap-4">
+      <div className="flex space-x-2">
+        {[...Array(3)].map((_, index) => (
+          <div
+            key={index}
+            className="w-4 h-4 bg-blue-500 rounded-full animate-bounce"
+            style={{
+              animationDelay: `${index * 0.15}s`,
+              animationDuration: "0.8s",
+              backgroundColor: "rgb(59, 130, 246)", // Explicit blue color
+            }}
+          />
+        ))}
       </div>
-      <Typography
-        variant="h6"
-        className="text-gray-600 animate-pulse font-light tracking-wider"
-      >
+      <Typography className="text-gray-600 font-medium" variant="h6">
         Loading...
       </Typography>
     </Box>
