@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
-import { adminProfile } from '@/app/../data/adminProfile';
-import { toast } from 'react-hot-toast';
-import Layout from '@/app/../components/common/Layout';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { adminProfile } from "@/app/../data/adminProfile";
+import { toast } from "react-hot-toast";
+import Layout from "@/components/common/Layout";
+import { useRouter } from "next/navigation";
 
 interface Props {
   id: string;
@@ -13,26 +13,26 @@ interface Props {
 const AdminEditEmail = ({ id }: Props) => {
   const router = useRouter();
   const [newEmail, setNewEmail] = useState(adminProfile.email);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(newEmail)) {
-      toast.error('Please enter a valid email address');
+      toast.error("Please enter a valid email address");
       return;
     }
 
     try {
       // Here you would make an API call to update the email using the id
       // await updateEmail(id, newEmail, password);
-      
-      toast.success('Email updated successfully');
-      router.push('/admin/profile'); // Redirect back to profile page
+
+      toast.success("Email updated successfully");
+      router.push("/admin/profile"); // Redirect back to profile page
     } catch (error) {
-      toast.error('Failed to update email');
+      toast.error("Failed to update email");
     }
   };
 
@@ -41,7 +41,7 @@ const AdminEditEmail = ({ id }: Props) => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-md mx-auto bg-white shadow rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-6">Change Email Address</h2>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* ID Display */}
             <div className="flex flex-col">
@@ -104,7 +104,7 @@ const AdminEditEmail = ({ id }: Props) => {
               </button>
               <button
                 type="button"
-                onClick={() => router.push('/admin/profile')}
+                onClick={() => router.push("/admin/profile")}
                 className="flex-1 bg-gray-100 text-gray-600 py-2 px-4 rounded-md 
                          hover:bg-gray-200 transition-colors duration-200"
               >
@@ -118,4 +118,4 @@ const AdminEditEmail = ({ id }: Props) => {
   );
 };
 
-export default AdminEditEmail; 
+export default AdminEditEmail;
