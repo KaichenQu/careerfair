@@ -1,88 +1,150 @@
 "use client";
 
-import React from "react";
-import { Container, Typography, Box, Button, Paper, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { 
+  Container, 
+  Typography, 
+  Card, 
+  Box, 
+  Button,
+  Grid,
+  Divider,
+  Skeleton
+} from "@mui/material";
+import { useRouter } from "next/navigation";
+import { facultyAPI, type FacultyProfile } from "@/services/api";
 import Layout from "../common/Layout";
-import { Person, WorkHistory } from "@mui/icons-material";
-import { facultyData } from "../../app/data/facultyData";
+import { 
+  Dashboard as DashboardIcon,
+  Edit as EditIcon,
+  EventAvailable as RegisterIcon,
+  History as HistoryIcon
+} from "@mui/icons-material";
+import Image from "next/image";
 
-const FacultyProfile = () => {
+
+
+const FacultyProfilePage = () => {
+  const router = useRouter();
+  const [profile, setProfile] = useState<FacultyProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await facultyAPI.getProfile();
+        setProfile(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const ProfileField = ({ label, value }: { label: string; value: string | undefined }) => (
+    <Box className="mb-6 text-center">
+      <Typography variant="h6" className="text-gray-600 font-medium mb-2">
+        {label}
+      </Typography>
+      <Typography variant="h5" className="text-gray-800">
+        {value || "Not provided"}
+      </Typography>
+    </Box>
+  );
+
+  if (loading) {
+    return (
+      <Layout>
+        <Container maxWidth="lg" className="py-12">
+          <Skeleton variant="rectangular" height={200} className="mb-4" />
+          <Skeleton variant="rectangular" height={400} />
+        </Container>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
-      <Container maxWidth="md" className="py-12">
-        <Paper elevation={3} className="p-8 rounded-xl">
+      <Container maxWidth="lg" className="py-12">
+        <Card className="p-8 shadow-lg">
+          {/* Header */}
+          <Box className="mb-8 text-center">
+            <Typography
+              variant="h3"
+              className="mb-2 font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
+            >
+              Faculty Profile
+            </Typography>
+            <Typography variant="subtitle1" className="text-gray-600">
+              {profile?.department}
+            </Typography>
+          </Box>
+
+          <Divider className="mb-8" />
+
+          {/* Two-Column Layout */}
           <Grid container spacing={4}>
-            {/* Faculty Info Section */}
-            <Grid item xs={12}>
-              <Typography
-                variant="h4"
-                className="text-center font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
-              >
-                Faculty Profile
-              </Typography>
-            </Grid>
-
-            {/* Faculty Details */}
+            {/* Left Column - Profile Information */}
             <Grid item xs={12} md={6}>
-              <Box className="space-y-4">
-                <Typography
-                  variant="h6"
-                  className="font-semibold text-gray-800"
-                >
-                  Faculty Name: {facultyData.faculty_name}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  className="font-semibold text-gray-800"
-                >
-                  Name: {facultyData.name}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  className="font-semibold text-gray-800"
-                >
-                  Major: {facultyData.major}
-                </Typography>
+              <Box className="space-y-6 pr-4">
+                <ProfileField label="Faculty ID" value={profile?.faculty_id.toString()} />
+                <ProfileField label="Name" value={profile?.name} />
+                <ProfileField label="Email" value={profile?.email} />
+                <ProfileField label="Department" value={profile?.department} />
+            
               </Box>
             </Grid>
 
-            {/* Photo Placeholder */}
+            {/* Right Column - Image */}
             <Grid item xs={12} md={6}>
-              <Box
-                className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center"
-                sx={{ minHeight: "200px" }}
-              >
-                <Typography className="text-gray-500">
-                  Photo Placeholder
-                </Typography>
-              </Box>
+              <Box 
+                component="img"
+                src="https://picsum.photos/800/600"
+                alt="Faculty Image"
+                className="w-full h-[400px] object-cover rounded-lg shadow-md"
+              />
             </Grid>
 
             {/* Action Buttons */}
             <Grid item xs={12}>
-              <Box className="flex justify-center space-x-4 mt-6">
+              <Box className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-200">
                 <Button
+                  fullWidth
                   variant="contained"
-                  startIcon={<Person />}
-                  className="bg-blue-500 hover:bg-blue-600 px-6 py-2"
-                  onClick={() => (window.location.href = "/student/profile")}
+                  startIcon={<EditIcon />}
+                  onClick={() => router.push('/faculty/edit-profile')}
+                  className="bg-blue-600 hover:bg-blue-700 normal-case"
                 >
-                  Profile
+                  Edit Profile
                 </Button>
                 <Button
+                  fullWidth
                   variant="contained"
-                  startIcon={<WorkHistory />}
-                  className="bg-purple-500 hover:bg-purple-600 px-6 py-2"
+                  startIcon={<RegisterIcon />}
+                  onClick={() => router.push('/faculty/registered-fairs')}
+                  className="bg-purple-600 hover:bg-purple-700 normal-case"
                 >
-                  Applied Positions
+                  Registered Fairs
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<HistoryIcon />}
+                  onClick={() => router.push('/faculty/attendance-history')}
+                  className="bg-indigo-600 hover:bg-indigo-700 normal-case"
+                >
+                  Attendance History
                 </Button>
               </Box>
             </Grid>
           </Grid>
-        </Paper>
+        </Card>
       </Container>
     </Layout>
   );
 };
 
-export default FacultyProfile;
+export default FacultyProfilePage;
