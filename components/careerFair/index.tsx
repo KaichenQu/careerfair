@@ -1,74 +1,53 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { Event as EventIcon, LocationOn, People } from "@mui/icons-material";
 import {
-  Container,
-  Typography,
+  Box,
   Card,
   CardContent,
+  Container,
   Grid,
-  Chip,
-  Box,
-  Skeleton,
+  Typography,
 } from "@mui/material";
-import {
-  Event as EventIcon,
-  LocationOn,
-  Business,
-  People,
-} from "@mui/icons-material";
-import Layout from "../common/Layout";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { getCareerFairs } from "../../services/careerFairService";
+import Layout from "../common/Layout";
 import Loading from "../common/Loading";
 
-// Sample data
-const sampleCareerFairs = [
-  {
-    id: "cf001",
-    name: "Tech Innovation Fair 2024",
-    date: "April 15, 2024",
-    location: "University Center Grand Hall",
-    description:
-      "Connect with leading tech companies and explore opportunities in software development, AI, and data science.",
-    companies: ["Google", "Microsoft", "Amazon", "Meta", "Apple"],
-    attendees: 500,
-  },
-  {
-    id: "cf002",
-    name: "Engineering Career Expo",
-    date: "May 1, 2024",
-    location: "Engineering Building Complex",
-    description:
-      "Meet top engineering firms and discover internship and full-time positions across all engineering disciplines.",
-    companies: ["Boeing", "SpaceX", "Tesla", "Intel", "AMD"],
-    attendees: 350,
-  },
-  {
-    id: "cf003",
-    name: "Business & Finance Summit",
-    date: "May 20, 2024",
-    location: "Business School Auditorium",
-    description:
-      "Network with financial institutions and consulting firms for roles in banking, consulting, and finance.",
-    companies: ["Goldman Sachs", "JP Morgan", "McKinsey", "Deloitte", "KPMG"],
-    attendees: 400,
-  },
-];
+interface CareerFair {
+  id: number;
+  name: string;
+  date: string;
+  location: string;
+  description: string;
+  attendees: number;
+}
 
 const careerFairPage = () => {
   const [loading, setLoading] = useState(true);
-  const [careerFairs, setCareerFairs] = useState(sampleCareerFairs);
+  const [careerFairs, setCareerFairs] = useState<CareerFair[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    const fetchCareerFairs = async () => {
+      try {
+        setLoading(true);
+        const data = await getCareerFairs();
+        setCareerFairs(data);
+      } catch (error) {
+        console.error("Error fetching career fairs:", error);
+        toast.error("Failed to fetch career fairs. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchCareerFairs();
   }, []);
 
-  const handleCardClick = (fairId: string) => {
+  const handleCardClick = (fairId: number) => {
     router.push(`/careerFair/${fairId}/positions`);
   };
 
@@ -97,8 +76,8 @@ const careerFairPage = () => {
             <Loading />
           ) : (
             <Grid container spacing={4}>
-              {careerFairs.map((fair, index) => (
-                <Grid item xs={12} md={6} lg={4} key={index}>
+              {careerFairs.map((fair: CareerFair) => (
+                <Grid item xs={12} md={6} lg={4} key={fair.id}>
                   <div
                     onClick={() => handleCardClick(fair.id)}
                     className="group h-full"
@@ -116,7 +95,16 @@ const careerFairPage = () => {
                         <Box className="space-y-3">
                           <Box className="flex items-center space-x-2 text-gray-600">
                             <EventIcon className="text-blue-500" />
-                            <Typography>{fair.date}</Typography>
+                            <Typography>
+                              {new Date(fair.date).toLocaleDateString("en-US", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </Typography>
                           </Box>
 
                           <Box className="flex items-center space-x-2 text-gray-600">
@@ -127,9 +115,15 @@ const careerFairPage = () => {
                           <Box className="flex items-center space-x-2 text-gray-600">
                             <People className="text-blue-500" />
                             <Typography>
-                              {fair.attendees}+ Expected Attendees
+                              {fair.attendees > 0
+                                ? `${fair.attendees}+ Registered`
+                                : "Registration Open"}
                             </Typography>
                           </Box>
+
+                          <Typography variant="body2" color="textSecondary">
+                            {fair.description}
+                          </Typography>
                         </Box>
                       </CardContent>
                     </Card>

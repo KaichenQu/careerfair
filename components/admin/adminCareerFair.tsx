@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
 import Layout from "@/components/common/Layout";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
+
+import { getCareerFairs, deleteCareerFair } from "@/services/careerFairService";
+
 
 interface CareerFair {
   fair_id: string;
@@ -17,22 +22,24 @@ interface CareerFair {
 const AdminCareerFair = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [careerFairs, setCareerFairs] = useState<CareerFair[]>([
-    {
-      fair_id: "CF2024-1",
-      name: "Spring Career Fair 2024",
-      date: "2024-03-15T10:00",
-      location: "Student Union Building",
-      description: "Annual spring career fair for all majors",
-    },
-    {
-      fair_id: "CF2024-2",
-      name: "Tech Career Fair 2024",
-      date: "2024-04-20T09:00",
-      location: "Engineering Building",
-      description: "Career fair focused on technology and engineering roles",
-    },
-  ]);
+  const [careerFairs, setCareerFairs] = useState<CareerFair[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCareerFairs = async () => {
+      try {
+        const data = await getCareerFairs();
+        setCareerFairs(data);
+      } catch (error) {
+        toast.error("Failed to fetch career fairs");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCareerFairs();
+  }, []);
+
 
   const filteredFairs = careerFairs.filter(
     (fair) =>
@@ -42,8 +49,8 @@ const AdminCareerFair = () => {
 
   const handleDelete = async (fairId: string) => {
     try {
-      // Here you would make an API call to delete the career fair
-      // await deleteFair(fairId);
+
+      await deleteCareerFair(fairId);
 
       setCareerFairs((prevFairs) =>
         prevFairs.filter((fair) => fair.fair_id !== fairId)
