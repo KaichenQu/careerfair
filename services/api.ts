@@ -236,7 +236,6 @@ interface FacultyProfile {
   name: string;
   email: string;
   department: string;
-  position: string;
 }
 
 interface FacultyCareerFair {
@@ -287,22 +286,24 @@ const facultyAPI = {
   },
 
   // Update faculty profile
-  updateProfile: async (profileData: Partial<FacultyProfile>): Promise<FacultyProfile> => {
-    try {
-      const storedUserId = localStorage.getItem('user_id');
-      if (!storedUserId) {
-        throw new Error('User ID is not set. Please login first.');
-      }
+  updateProfile: async (userId: string, data: {
+    name?: string;
+    email?: string;
+    department?: string;
+  }): Promise<void> => {
+    const response = await fetch(`http://127.0.0.1:8000/faculty/${userId}/profile`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add authorization header if needed
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(data),
+    });
 
-      const response = await axios.put(
-        `${API_BASE_URL}/faculty/${storedUserId}/profile`,
-        profileData
-      );
-      console.log("Profile updated:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error updating faculty profile:", error);
-      throw error;
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Failed to update profile');
     }
   },
 

@@ -79,6 +79,25 @@ const FacultyProfilePage = () => {
     }
   };
 
+  const handleEditProfile = () => {
+    const userId = localStorage.getItem('user_id');
+    if (!userId) {
+      console.error("No user ID found");
+      return;
+    }
+    
+    router.push(`/faculty/${userId}/edit`);
+  };
+
+  const handleAttendClick = () => {
+    const userId = localStorage.getItem('user_id');
+    if (!userId) {
+      console.error("No user ID found");
+      return;
+    }
+    router.push(`/faculty/${userId}/attend`);
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -139,7 +158,7 @@ const FacultyProfilePage = () => {
                   fullWidth
                   variant="contained"
                   startIcon={<EditIcon />}
-                  onClick={() => router.push('/faculty/edit-profile')}
+                  onClick={handleEditProfile}
                   className="bg-blue-600 hover:bg-blue-700 normal-case"
                 >
                   Edit Profile
@@ -153,7 +172,7 @@ const FacultyProfilePage = () => {
                 >
                   Registered Fairs
                 </Button>
-                <Button
+                {/* <Button
                   fullWidth
                   variant="contained"
                   startIcon={<HistoryIcon />}
@@ -161,6 +180,15 @@ const FacultyProfilePage = () => {
                   className="bg-indigo-600 hover:bg-indigo-700 normal-case"
                 >
                   Attendance History
+                </Button> */}
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<HistoryIcon />}
+                  onClick={handleAttendClick}
+                  className="bg-blue-600 hover:bg-blue-700 normal-case"
+                >
+                  Attend Fair
                 </Button>
               </Box>
             </Grid>
