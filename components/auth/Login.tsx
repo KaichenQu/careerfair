@@ -19,6 +19,12 @@ import {
 import { Visibility, VisibilityOff, Person, Lock } from "@mui/icons-material";
 import Layout from "../common/Layout";
 import { loginUser } from "../../services/api";
+import {
+  School as SchoolIcon,
+  Business as BusinessIcon,
+  Person as PersonIcon,
+  AdminPanelSettings as AdminIcon,
+} from "@mui/icons-material";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -68,20 +74,16 @@ const LoginPage = () => {
         userType: formData.userType,
       });
 
-
       const loginData = await loginUser({
-
         email: formData.email,
         password: formData.password,
         userType: formData.userType,
       });
 
       if (loginData) {
-        localStorage.setItem('company_profile', JSON.stringify(loginData));
+        localStorage.setItem("company_profile", JSON.stringify(loginData));
         console.log(loginData);
       }
-
-
     } catch (error) {
       console.error("Login failed:", error);
       setError(error instanceof Error ? error.message : "Login failed");
@@ -195,32 +197,100 @@ const LoginPage = () => {
                 }
               />
 
-              <FormControl component="fieldset">
-                <FormLabel component="legend" className="text-gray-700">
-                  User Type
+              <FormControl component="fieldset" className="w-full">
+                <FormLabel component="legend" className="text-gray-700 mb-3">
+                  Select User Type
                 </FormLabel>
                 <RadioGroup
-                  row
                   value={formData.userType}
                   onChange={(e) =>
                     setFormData({ ...formData, userType: e.target.value })
                   }
+                  className="grid grid-cols-2 gap-4"
                 >
-                  <FormControlLabel
-                    value="student"
-                    control={<Radio />}
-                    label="Student"
-                  />
-                  <FormControlLabel
-                    value="company"
-                    control={<Radio />}
-                    label="Company"
-                  />
-                  <FormControlLabel
-                    value="faculty"
-                    control={<Radio />}
-                    label="Faculty"
-                  />
+                  <Paper
+                    elevation={formData.userType === "student" ? 8 : 1}
+                    className={`relative cursor-pointer transition-all duration-200 ${
+                      formData.userType === "student"
+                        ? "bg-blue-50 border-blue-500"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <FormControlLabel
+                      value="student"
+                      control={<Radio />}
+                      label={
+                        <Box className="flex items-center p-2">
+                          <SchoolIcon className="text-blue-500 mr-2" />
+                          <Typography>Student</Typography>
+                        </Box>
+                      }
+                      className="m-0 w-full"
+                    />
+                  </Paper>
+
+                  <Paper
+                    elevation={formData.userType === "company" ? 8 : 1}
+                    className={`relative cursor-pointer transition-all duration-200 ${
+                      formData.userType === "company"
+                        ? "bg-purple-50 border-purple-500"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <FormControlLabel
+                      value="company"
+                      control={<Radio />}
+                      label={
+                        <Box className="flex items-center p-2">
+                          <BusinessIcon className="text-purple-500 mr-2" />
+                          <Typography>Company</Typography>
+                        </Box>
+                      }
+                      className="m-0 w-full"
+                    />
+                  </Paper>
+
+                  <Paper
+                    elevation={formData.userType === "faculty" ? 8 : 1}
+                    className={`relative cursor-pointer transition-all duration-200 ${
+                      formData.userType === "faculty"
+                        ? "bg-green-50 border-green-500"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <FormControlLabel
+                      value="faculty"
+                      control={<Radio />}
+                      label={
+                        <Box className="flex items-center p-2">
+                          <PersonIcon className="text-green-500 mr-2" />
+                          <Typography>Faculty</Typography>
+                        </Box>
+                      }
+                      className="m-0 w-full"
+                    />
+                  </Paper>
+
+                  <Paper
+                    elevation={formData.userType === "admin" ? 8 : 1}
+                    className={`relative cursor-pointer transition-all duration-200 ${
+                      formData.userType === "admin"
+                        ? "bg-red-50 border-red-500"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <FormControlLabel
+                      value="admin"
+                      control={<Radio />}
+                      label={
+                        <Box className="flex items-center p-2">
+                          <AdminIcon className="text-red-500 mr-2" />
+                          <Typography>Admin</Typography>
+                        </Box>
+                      }
+                      className="m-0 w-full"
+                    />
+                  </Paper>
                 </RadioGroup>
               </FormControl>
             </div>
