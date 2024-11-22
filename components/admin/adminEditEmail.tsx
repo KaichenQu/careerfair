@@ -1,10 +1,12 @@
 "use client";
 
+
 import { useState } from "react";
 import { adminProfile } from "@/app/../data/adminProfile";
 import { toast } from "react-hot-toast";
 import Layout from "@/components/common/Layout";
 import { useRouter } from "next/navigation";
+
 
 interface Props {
   id: string;
@@ -13,6 +15,7 @@ interface Props {
 const AdminEditEmail = ({ id }: Props) => {
   const router = useRouter();
   const [newEmail, setNewEmail] = useState(adminProfile.email);
+
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,6 +25,7 @@ const AdminEditEmail = ({ id }: Props) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(newEmail)) {
       toast.error("Please enter a valid email address");
+
       return;
     }
 
@@ -104,7 +108,9 @@ const AdminEditEmail = ({ id }: Props) => {
               </button>
               <button
                 type="button"
-                onClick={() => router.push("/admin/profile")}
+
+                onClick={() => router.push('/admin/profile')}
+
                 className="flex-1 bg-gray-100 text-gray-600 py-2 px-4 rounded-md 
                          hover:bg-gray-200 transition-colors duration-200"
               >
@@ -118,4 +124,4 @@ const AdminEditEmail = ({ id }: Props) => {
   );
 };
 
-export default AdminEditEmail;
+export default AdminEditEmail; 

@@ -1,14 +1,12 @@
 "use client";
 
-
 import { useState, useEffect } from "react";
-
 import { useRouter } from "next/navigation";
 import Layout from "@/components/common/Layout";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
-
 import { getCareerFairs, deleteCareerFair } from "@/services/careerFairService";
+
 
 
 interface CareerFair {
@@ -103,7 +101,6 @@ const AdminCareerFair = () => {
                        focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           {/* Career Fairs List */}
           <div className="space-y-4">
             {filteredFairs.length === 0 ? (

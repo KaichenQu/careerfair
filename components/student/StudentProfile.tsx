@@ -1,12 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
-import { Container, Typography, Box, Button, Paper, Grid } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Container, Typography, Box, Button, Paper, Grid, CircularProgress } from "@mui/material";
 import Layout from "../common/Layout";
-import { Person, WorkHistory } from "@mui/icons-material";
-import { studentData } from "../../app/data/studentData";
+import { Person, WorkHistory, Edit } from "@mui/icons-material";
+import { studentAPI, type StudentProfile } from "@/services/api";
 
-const StudentProfile = () => {
+const StudentProfile = ({ id }: { id: number }) => {
+  const [profile, setProfile] = useState<StudentProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const data = await studentAPI.getStudentById(id);
+        setProfile(data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error loading profile:', err);
+        setError('Failed to load student profile');
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, [id]);
+
+  if (loading) return <CircularProgress />;
+  if (error) return <div>Error: {error}</div>;
+  if (!profile) return <div>No profile found</div>;
+
   return (
     <Layout>
       <Container maxWidth="md" className="py-12">
@@ -25,23 +49,26 @@ const StudentProfile = () => {
             {/* Student Details */}
             <Grid item xs={12} md={6}>
               <Box className="space-y-4">
-                <Typography
-                  variant="h6"
-                  className="font-semibold text-gray-800"
-                >
-                  Student ID: {studentData.student_id}
+                <Typography variant="h6" className="font-semibold text-gray-800">
+                  Student ID: {profile.student_id}
                 </Typography>
-                <Typography
-                  variant="h6"
-                  className="font-semibold text-gray-800"
-                >
-                  Name: {studentData.student_name}
+                <Typography variant="h6" className="font-semibold text-gray-800">
+                  Name: {profile.name}
                 </Typography>
-                <Typography
-                  variant="h6"
-                  className="font-semibold text-gray-800"
-                >
-                  Major: {studentData.major}
+                <Typography variant="h6" className="font-semibold text-gray-800">
+                  Email: {profile.email}
+                </Typography>
+                <Typography variant="h6" className="font-semibold text-gray-800">
+                  Major: {profile.major}
+                </Typography>
+                <Typography variant="h6" className="font-semibold text-gray-800">
+                  Academic Year: {profile.academic_year}
+                </Typography>
+                <Typography variant="h6" className="font-semibold text-gray-800">
+                  GPA: {profile.gpa}
+                </Typography>
+                <Typography variant="h6" className="font-semibold text-gray-800">
+                  Resume: {profile.resume_uploaded ? "Uploaded" : "Not Uploaded"}
                 </Typography>
               </Box>
             </Grid>
@@ -49,13 +76,11 @@ const StudentProfile = () => {
             {/* Photo Placeholder */}
             <Grid item xs={12} md={6}>
               <Box
-                className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center"
-                sx={{ minHeight: "200px" }}
-              >
-                <Typography className="text-gray-500">
-                  Photo Placeholder
-                </Typography>
-              </Box>
+                component="img"
+                src="https://picsum.photos/400/400"
+                alt="Profile Image"
+                className="w-full h-[400px] object-cover rounded-lg shadow-md"
+              />
             </Grid>
 
             {/* Action Buttons */}
@@ -63,9 +88,16 @@ const StudentProfile = () => {
               <Box className="flex justify-center space-x-4 mt-6">
                 <Button
                   variant="contained"
+                  startIcon={<Edit />}
+                  className="bg-green-500 hover:bg-green-600 px-6 py-2"
+                  onClick={() => window.location.href = `/student/${profile.student_id}/edit`}
+                >
+                  Edit Profile
+                </Button>
+                <Button
+                  variant="contained"
                   startIcon={<Person />}
                   className="bg-blue-500 hover:bg-blue-600 px-6 py-2"
-                  onClick={() => (window.location.href = "/student/profile")}
                 >
                   Profile
                 </Button>

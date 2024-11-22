@@ -1,7 +1,9 @@
 "use client";
 
+
 import { useState, useEffect } from "react";
 import Layout from "@/components/common/Layout";
+
 import {
   BarChart,
   Bar,
@@ -10,6 +12,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+
   ResponsiveContainer,
 } from "recharts";
 import { ReportContent } from "@/app/../data/reports";
@@ -59,16 +62,20 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
   ];
 
   const calculateAttendanceRate = (attended: number, registered: number) => {
+
     return registered ? ((attended / registered) * 100).toFixed(1) : "0";
+
   };
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white shadow rounded-lg p-6">
+
           <h1 className="text-2xl font-bold mb-6">
             Career Fair Analysis Report
           </h1>
+
           <p className="text-gray-600 mb-6">Career Fair ID: {careerFairId}</p>
 
           {/* Summary Cards */}
@@ -77,6 +84,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Students</h3>
               <div className="space-y-2">
+
                 <p>Registered: {reportData?.total_registered_students || 0}</p>
                 <p>Attended: {reportData?.total_attended_students || 0}</p>
                 <p className="text-blue-600">
@@ -95,6 +103,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Companies</h3>
               <div className="space-y-2">
+
                 <p>Registered: {reportData?.total_registered_companies || 0}</p>
                 <p>Attended: {reportData?.total_attended_companies || 0}</p>
                 <p className="text-green-600">
@@ -121,6 +130,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
                     (reportData?.total_registered_companies || 0)
 
                   ).toFixed(1)}
+
                 </p>
               </div>
             </div>
@@ -128,6 +138,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
 
           {/* Attendance Chart */}
           <div className="mt-8">
+
             <h2 className="text-xl font-semibold mb-4">
               Attendance Comparison
             </h2>
@@ -190,4 +201,6 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
   );
 };
 
+
 export default DataAnalysis;
+

@@ -1,3 +1,4 @@
+
 import CompanyDashboard from '@/components/company/company';
 import { sampleCompanies } from '@/data/company';
 import { notFound } from 'next/navigation';
@@ -19,6 +20,7 @@ export default function CompanyPage({ params }: PageProps) {
   return (
     <main>
       <CompanyDashboard companyId={companyId} />
+
     </main>
   );
 }

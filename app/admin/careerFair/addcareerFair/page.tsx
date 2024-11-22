@@ -1,7 +1,9 @@
 "use client";
 
+
 import CreateCareerFair from "@/components/admin/createAddCareerFair";
 import { useRouter } from "next/navigation";
+
 
 interface CareerFairData {
   fair_id: string;

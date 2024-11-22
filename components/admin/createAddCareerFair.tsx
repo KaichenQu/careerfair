@@ -1,9 +1,11 @@
 "use client";
 
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Layout from "@/components/common/Layout";
 import { toast } from "react-hot-toast";
+
 
 interface CareerFair {
   fair_id: string;
@@ -23,17 +25,20 @@ const CreateCareerFair = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<CareerFair>({
+
     fair_id: "",
     name: "",
     date: "",
     location: "",
     description: "",
+
   });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -42,6 +47,7 @@ const CreateCareerFair = () => {
 
   const validateForm = (): boolean => {
     if (!formData.fair_id.trim()) {
+
       toast.error("Fair ID is required");
       return false;
     }
@@ -80,6 +86,7 @@ const CreateCareerFair = () => {
       // });
       // const result: CareerFairResponse = await response.json();
 
+
       // Simulating API call with response
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -91,12 +98,15 @@ const CreateCareerFair = () => {
           fair_id: formData.fair_id.trim(),
           name: formData.name.trim(),
           location: formData.location.trim(),
+
           description: formData.description.trim(),
         },
+
       };
 
       if (result.success && result.data) {
         // Log the created career fair data
+
         console.log("Created Career Fair:", result.data);
 
         // You can also store it in localStorage or state management if needed
@@ -118,6 +128,7 @@ const CreateCareerFair = () => {
     } catch (error) {
       toast.error("Failed to create career fair");
       console.error("Error creating career fair:", error);
+
     } finally {
       setIsSubmitting(false);
     }
@@ -125,6 +136,7 @@ const CreateCareerFair = () => {
 
   // Preview section to show the data being created
   const renderPreview = () => {
+
     const hasData = Object.values(formData).some(
       (value) => value.trim() !== ""
     );
@@ -135,6 +147,7 @@ const CreateCareerFair = () => {
       <div className="mt-8 p-4 bg-gray-50 rounded-md">
         <h2 className="text-lg font-semibold mb-4">Career Fair Preview</h2>
         <div className="space-y-2 text-sm">
+
           <p>
             <span className="font-medium">Fair ID:</span> {formData.fair_id}
           </p>
@@ -151,6 +164,7 @@ const CreateCareerFair = () => {
             <span className="font-medium">Description:</span>{" "}
             {formData.description}
           </p>
+
         </div>
       </div>
     );
@@ -257,11 +271,13 @@ const CreateCareerFair = () => {
                 disabled={isSubmitting}
                 className={`flex-1 bg-blue-500 text-white py-2 px-4 rounded-md 
                          hover:bg-blue-600 transition-colors duration-200
+
                          ${
                            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                          }`}
               >
                 {isSubmitting ? "Creating..." : "Create Career Fair"}
+
               </button>
               <button
                 type="button"

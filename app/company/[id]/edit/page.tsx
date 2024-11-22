@@ -19,7 +19,9 @@ export default function CompanyEditPage({ params }: PageProps) {
 
   return (
     <main>
-      <CompanyEditForm company={company} />
+
+      <CompanyEditForm params={{id: companyId}} />
+
     </main>
   );
 }

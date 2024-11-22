@@ -68,11 +68,20 @@ const LoginPage = () => {
         userType: formData.userType,
       });
 
-      await loginUser({
+
+      const loginData = await loginUser({
+
         email: formData.email,
         password: formData.password,
         userType: formData.userType,
       });
+
+      if (loginData) {
+        localStorage.setItem('company_profile', JSON.stringify(loginData));
+        console.log(loginData);
+      }
+
+
     } catch (error) {
       console.error("Login failed:", error);
       setError(error instanceof Error ? error.message : "Login failed");
