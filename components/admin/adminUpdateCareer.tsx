@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Layout from '@/app/../components/common/Layout';
-import { toast } from 'react-hot-toast';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Layout from "@/components/common/Layout";
+import { toast } from "react-hot-toast";
 
 interface CareerFair {
   fair_id: string;
@@ -25,10 +25,10 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [careerFair, setCareerFair] = useState<CareerFair>({
     fair_id: fairId,
-    name: '',
-    date: '',
-    location: '',
-    description: ''
+    name: "",
+    date: "",
+    location: "",
+    description: "",
   });
 
   // Fetch career fair data based on ID
@@ -38,21 +38,21 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
         // Replace with your actual API call
         // const response = await fetch(`/api/career-fairs/${fairId}`);
         // const data = await response.json();
-        
+
         // Simulated API response
         const data = {
           fair_id: fairId,
           name: "Spring Career Fair 2024",
           date: "2024-03-15T10:00",
           location: "Student Union Building",
-          description: "Annual spring career fair for all majors"
+          description: "Annual spring career fair for all majors",
         };
 
         setCareerFair(data);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching career fair:', error);
-        toast.error('Failed to fetch career fair data');
+        console.error("Error fetching career fair:", error);
+        toast.error("Failed to fetch career fair data");
       }
     };
 
@@ -63,9 +63,9 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setCareerFair(prev => ({
+    setCareerFair((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -85,10 +85,10 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
       // const updatedData = await response.json();
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Log the updated data
-      console.log('Updated Career Fair:', careerFair);
+      console.log("Updated Career Fair:", careerFair);
 
       // Return the updated career fair data
       const updatedCareerFair: CareerFair = {
@@ -96,20 +96,22 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
         name: careerFair.name,
         date: careerFair.date,
         location: careerFair.location,
-        description: careerFair.description
+        description: careerFair.description,
       };
 
       // Store the updated data (optional)
-      localStorage.setItem('updatedCareerFair', JSON.stringify(updatedCareerFair));
+      localStorage.setItem(
+        "updatedCareerFair",
+        JSON.stringify(updatedCareerFair)
+      );
 
-      toast.success('Career fair updated successfully');
-      router.push('/admin/career-fairs');
-      
+      toast.success("Career fair updated successfully");
+      router.push("/admin/career-fairs");
+
       return updatedCareerFair;
-
     } catch (error) {
-      console.error('Error updating career fair:', error);
-      toast.error('Failed to update career fair');
+      console.error("Error updating career fair:", error);
+      toast.error("Failed to update career fair");
     } finally {
       setIsSubmitting(false);
     }
@@ -130,16 +132,30 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto bg-white shadow rounded-lg p-6">
           <h1 className="text-2xl font-bold mb-6">Update Career Fair</h1>
-          
+
           {/* Preview current data */}
           <div className="mb-6 p-4 bg-gray-50 rounded-md">
             <h2 className="text-lg font-semibold mb-2">Current Information</h2>
             <div className="space-y-2">
-              <p><span className="font-medium">Fair ID:</span> {careerFair.fair_id}</p>
-              <p><span className="font-medium">Name:</span> {careerFair.name}</p>
-              <p><span className="font-medium">Date:</span> {new Date(careerFair.date).toLocaleString()}</p>
-              <p><span className="font-medium">Location:</span> {careerFair.location}</p>
-              <p><span className="font-medium">Description:</span> {careerFair.description}</p>
+              <p>
+                <span className="font-medium">Fair ID:</span>{" "}
+                {careerFair.fair_id}
+              </p>
+              <p>
+                <span className="font-medium">Name:</span> {careerFair.name}
+              </p>
+              <p>
+                <span className="font-medium">Date:</span>{" "}
+                {new Date(careerFair.date).toLocaleString()}
+              </p>
+              <p>
+                <span className="font-medium">Location:</span>{" "}
+                {careerFair.location}
+              </p>
+              <p>
+                <span className="font-medium">Description:</span>{" "}
+                {careerFair.description}
+              </p>
             </div>
           </div>
 
@@ -229,13 +245,15 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
                 disabled={isSubmitting}
                 className={`flex-1 bg-blue-500 text-white py-2 px-4 rounded-md 
                          hover:bg-blue-600 transition-colors duration-200
-                         ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                         ${
+                           isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                         }`}
               >
-                {isSubmitting ? 'Updating...' : 'Update Career Fair'}
+                {isSubmitting ? "Updating..." : "Update Career Fair"}
               </button>
               <button
                 type="button"
-                onClick={() => router.push('/adminPage/careerFair')}
+                onClick={() => router.push("/adminPage/careerFair")}
                 className="flex-1 bg-gray-100 text-gray-600 py-2 px-4 rounded-md 
                          hover:bg-gray-200 transition-colors duration-200"
               >
@@ -249,4 +267,4 @@ const AdminUpdateCareer = ({ fairId, initialData, onUpdateSuccess }: Props) => {
   );
 };
 
-export default AdminUpdateCareer; 
+export default AdminUpdateCareer;
