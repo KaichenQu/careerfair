@@ -236,7 +236,20 @@ interface FacultyProfile {
   name: string;
   email: string;
   department: string;
-  position: string;
+}
+
+interface FacultyCareerFair {
+  fair_id: number;
+  fair_name: string;
+  careerfair_date: string;
+  location: string;
+  description: string;
+  admin_id: number;
+}
+
+interface FacultyDashboardData {
+  registered_fairs: FacultyCareerFair[];
+  attended_fairs: FacultyCareerFair[];
 }
 
 const facultyAPI = {
@@ -273,25 +286,40 @@ const facultyAPI = {
   },
 
   // Update faculty profile
-  updateProfile: async (profileData: Partial<FacultyProfile>): Promise<FacultyProfile> => {
-    try {
-      const storedUserId = localStorage.getItem('user_id');
-      if (!storedUserId) {
-        throw new Error('User ID is not set. Please login first.');
-      }
+  updateProfile: async (userId: string, data: {
+    name?: string;
+    email?: string;
+    department?: string;
+  }): Promise<void> => {
+    const response = await fetch(`http://127.0.0.1:8000/faculty/${userId}/profile`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add authorization header if needed
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(data),
+    });
 
-      const response = await axios.put(
-        `${API_BASE_URL}/faculty/${storedUserId}/profile`,
-        profileData
-      );
-      console.log("Profile updated:", response.data);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Failed to update profile');
+    }
+  },
+
+  // Get dashboard data
+  getDashboard: async (facultyId: string | number): Promise<FacultyDashboardData> => {
+    try {
+      console.log("Fetching dashboard data for faculty ID:", facultyId);
+      const response = await axios.get(`${API_BASE_URL}/faculty/${facultyId}/dashboard`);
+      console.log("Dashboard data received:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error updating faculty profile:", error);
+      console.error("Error fetching faculty dashboard:", error);
       throw error;
     }
-  }
+  },
 };
 
 // Export everything at once
-export { loginUser, registerUser, companyAPI, studentAPI, facultyAPI, type StudentProfile, type FacultyProfile };
+export { loginUser, registerUser, companyAPI, studentAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData };

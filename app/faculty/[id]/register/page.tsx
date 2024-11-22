@@ -1,5 +1,5 @@
-import RegisterCareerFair from "../../../components/facultyComp/facultyReg";
+import FacultyReg from "@/components/facultyComp/facultyReg";
 
 export default function RegisterFairPage() {
-  return <RegisterCareerFair />;
+  return <FacultyReg />;
 }

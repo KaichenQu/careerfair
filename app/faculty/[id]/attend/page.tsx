@@ -1,5 +1,5 @@
-import AttendCareerFair from "../../../components/facultyComp/facultyAttend";
+import AttendCareerFair from "@/components/facultyComp/facultyAttend";
 
-export default function RegisterFairPage() {
+export default function AttendPage() {
   return <AttendCareerFair />;
 }
