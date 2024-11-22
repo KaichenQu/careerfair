@@ -47,7 +47,7 @@ const careerFairPage = () => {
     fetchCareerFairs();
   }, []);
 
-  const handleCardClick = (fairId: string) => {
+  const handleCardClick = (fairId: number) => {
     router.push(`/careerFair/${fairId}/positions`);
   };
 
