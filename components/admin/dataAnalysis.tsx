@@ -111,9 +111,8 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
                 <p>
                   Average Positions per Company:
                   {(
-                    reportData?.total_positions ||
-                    0 / reportData?.total_registered_companies ||
-                    0
+                    (reportData?.total_positions || 0) /
+                    (reportData?.total_registered_companies || 0)
                   ).toFixed(1)}
                 </p>
               </div>
@@ -171,9 +170,8 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
               <li>
                 Average positions per company:{" "}
                 {(
-                  reportData?.total_positions ||
-                  0 / reportData?.total_registered_companies ||
-                  0
+                  (reportData?.total_positions || 0) /
+                  (reportData?.total_registered_companies || 1)
                 ).toFixed(1)}
               </li>
             </ul>
