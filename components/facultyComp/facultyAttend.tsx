@@ -1,126 +1,174 @@
 "use client";
 
-import React from "react";
-import { Container, Typography, Card, Box, Button, Chip } from "@mui/material";
-import {
-  Event as EventIcon,
-  LocationOn as LocationIcon,
-  AccessTime as TimeIcon,
+import React, { useEffect, useState } from "react";
+import { 
+  Container, 
+  Typography, 
+  Card, 
+  Box, 
+  Button,
+  Grid,
+  Divider,
+  Skeleton
+} from "@mui/material";
+import { useRouter } from "next/navigation";
+import { facultyAPI, type FacultyProfile, type FacultyCareerFair } from "@/services/api";
+import Layout from "../common/Layout";
+import { 
+  Dashboard as DashboardIcon,
+  Edit as EditIcon,
+  EventAvailable as RegisterIcon,
+  History as HistoryIcon
 } from "@mui/icons-material";
+import Image from "next/image";
 
-import Navbar from "@/components/common/Navbar";
 
-const attendedFairs = [
-  {
-    id: 1,
-    name: "Spring Tech Career Fair 2024",
-    date: "2024-04-15",
-    time: "10:00 AM - 4:00 PM",
-    location: "University Center Ballroom",
-    status: "Attended",
-  },
-  {
-    id: 2,
-    name: "Engineering Career Expo",
-    date: "2024-05-20",
-    time: "9:00 AM - 3:00 PM",
-    location: "Engineering Building",
-    status: "Attended",
-  },
-  {
-    id: 3,
-    name: "Business & Finance Fair",
-    date: "2024-06-10",
-    time: "11:00 AM - 5:00 PM",
-    location: "Business School Auditorium",
-    status: "Attended",
-  },
-];
 
-export default function AttendedCareerFairPage() {
-  return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
-      <Container maxWidth="lg" className="py-12">
-        <Typography
-          variant="h3"
-          component="h1"
-          className="mb-8 text-center font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
-        >
-          Attended Career Fairs
-        </Typography>
+const FacultyProfilePage = () => {
+  const router = useRouter();
+  const [profile, setProfile] = useState<FacultyProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-        <Box className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {attendedFairs.map((fair) => (
-            <div key={fair.id} className="cursor-pointer group">
-              <Card className="h-full p-6 relative transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-white">
-                {/* Folded corner effect */}
-                <div className="absolute top-0 right-0 w-24 h-24 transition-transform duration-300 origin-top-right group-hover:scale-110">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/20 to-transparent transform rotate-45" />
-                  <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-[141%] h-[141%] bg-white transform origin-top-right -rotate-45 translate-x-2 -translate-y-2 shadow-lg" />
-                  </div>
-                </div>
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await facultyAPI.getProfile();
+        setProfile(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                <Box className="flex flex-col h-full">
-                  <Typography
-                    variant="h5"
-                    className="font-bold text-gray-800 mb-4"
-                  >
-                    {fair.name}
-                  </Typography>
+    fetchProfile();
+  }, []);
 
-                  <Box className="flex items-center gap-2 mb-3 text-gray-600">
-                    <EventIcon className="text-blue-500" />
-                    <Typography>
-                      {new Date(fair.date).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </Typography>
-                  </Box>
-
-                  <Box className="flex items-center gap-2 mb-3 text-gray-600">
-                    <TimeIcon className="text-blue-500" />
-                    <Typography>{fair.time}</Typography>
-                  </Box>
-
-                  <Box className="flex items-center gap-2 mb-4 text-gray-600">
-                    <LocationIcon className="text-blue-500" />
-                    <Typography>{fair.location}</Typography>
-                  </Box>
-
-                  <Box className="mt-auto">
-                    <Chip
-                      label={fair.status}
-                      color="success"
-                      variant="outlined"
-                      className="mb-4"
-                    />
-
-                    <Button variant="outlined" fullWidth color="primary">
-                      View Details
-                    </Button>
-                  </Box>
-                </Box>
-              </Card>
-            </div>
-          ))}
-        </Box>
-
-        {attendedFairs.length === 0 && (
-          <Card className="p-8 text-center">
-            <Typography variant="h6" className="text-gray-600">
-              You haven't attended any career fairs yet.
-            </Typography>
-            <Typography className="text-gray-500 mt-2">
-              Check available career fairs to participate.
-            </Typography>
-          </Card>
-        )}
-      </Container>
-    </div>
+  const ProfileField = ({ label, value }: { label: string; value: string | undefined }) => (
+    <Box className="mb-6 text-center">
+      <Typography variant="h6" className="text-gray-600 font-medium mb-2">
+        {label}
+      </Typography>
+      <Typography variant="h5" className="text-gray-800">
+        {value || "Not provided"}
+      </Typography>
+    </Box>
   );
-}
+
+  const handleAttendanceHistory = async () => {
+    try {
+      if (!profile?.faculty_id) return;
+      const data = await facultyAPI.getDashboard(profile.faculty_id);
+      localStorage.setItem('attendedFairs', JSON.stringify(data));
+      router.push(`/faculty/${profile.faculty_id}/attend`);
+    } catch (error) {
+      console.error("Error fetching attendance history:", error);
+    }
+  };
+
+  const handleRegisteredFairs = async () => {
+    try {
+      const storedUserId = localStorage.getItem('user_id');
+      if (!storedUserId) return;
+      
+      const data = await facultyAPI.getDashboard(storedUserId);
+      localStorage.setItem('registeredFairs', JSON.stringify(data.registered_fairs));
+      router.push(`/faculty/${storedUserId}/register`);
+    } catch (error) {
+      console.error("Error fetching registered fairs:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Layout>
+        <Container maxWidth="lg" className="py-12">
+          <Skeleton variant="rectangular" height={200} className="mb-4" />
+          <Skeleton variant="rectangular" height={400} />
+        </Container>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout>
+      <Container maxWidth="lg" className="py-12">
+        <Card className="p-8 shadow-lg">
+          {/* Header */}
+          <Box className="mb-8 text-center">
+            <Typography
+              variant="h3"
+              className="mb-2 font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
+            >
+              Faculty Profile
+            </Typography>
+            <Typography variant="subtitle1" className="text-gray-600">
+              {profile?.department}
+            </Typography>
+          </Box>
+
+          <Divider className="mb-8" />
+
+          {/* Two-Column Layout */}
+          <Grid container spacing={4}>
+            {/* Left Column - Profile Information */}
+            <Grid item xs={12} md={6}>
+              <Box className="space-y-6 pr-4">
+                <ProfileField label="Faculty ID" value={profile?.faculty_id.toString()} />
+                <ProfileField label="Name" value={profile?.name} />
+                <ProfileField label="Email" value={profile?.email} />
+                <ProfileField label="Department" value={profile?.department} />
+            
+              </Box>
+            </Grid>
+
+            {/* Right Column - Image */}
+            <Grid item xs={12} md={6}>
+              <Box 
+                component="img"
+                src="https://picsum.photos/800/600"
+                alt="Faculty Image"
+                className="w-full h-[400px] object-cover rounded-lg shadow-md"
+              />
+            </Grid>
+
+            {/* Action Buttons */}
+            <Grid item xs={12}>
+              <Box className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-200">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<EditIcon />}
+                  onClick={() => router.push('/faculty/edit-profile')}
+                  className="bg-blue-600 hover:bg-blue-700 normal-case"
+                >
+                  Edit Profile
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<RegisterIcon />}
+                  onClick={handleRegisteredFairs}
+                  className="bg-purple-600 hover:bg-purple-700 normal-case"
+                >
+                  Registered Fairs
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<HistoryIcon />}
+                  onClick={handleAttendanceHistory}
+                  className="bg-indigo-600 hover:bg-indigo-700 normal-case"
+                >
+                  Attendance History
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Card>
+      </Container>
+    </Layout>
+  );
+};
+
+export default FacultyProfilePage;
