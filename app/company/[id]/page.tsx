@@ -1,26 +1,18 @@
-
+'use client';
+import { useParams } from 'next/navigation';
 import CompanyDashboard from '@/components/company/company';
-import { sampleCompanies } from '@/data/company';
-import { notFound } from 'next/navigation';
 
-interface PageProps {
-  params: {
-    id: string;
-  }
-}
+export default function CompanyPage() {
+  const params = useParams();
+  const companyId = params.id;
 
-export default function CompanyPage({ params }: PageProps) {
-  const companyId = parseInt(params.id);
-  const company = sampleCompanies.find(c => c.id === companyId);
-  
-  if (!company) {
-    notFound();
+  if (!companyId) {
+    return <div>Company ID not found</div>;
   }
 
   return (
-    <main>
-      <CompanyDashboard companyId={companyId} />
-
+    <main className="container mx-auto p-4">
+      <CompanyDashboard id={Number(companyId)} />
     </main>
   );
 }

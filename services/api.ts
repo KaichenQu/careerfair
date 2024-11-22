@@ -239,6 +239,20 @@ interface FacultyProfile {
   position: string;
 }
 
+interface FacultyCareerFair {
+  fair_id: number;
+  fair_name: string;
+  careerfair_date: string;
+  location: string;
+  description: string;
+  admin_id: number;
+}
+
+interface FacultyDashboardData {
+  registered_fairs: FacultyCareerFair[];
+  attended_fairs: FacultyCareerFair[];
+}
+
 const facultyAPI = {
   // Get profile of currently logged-in faculty
   getProfile: async (): Promise<FacultyProfile> => {
@@ -290,8 +304,21 @@ const facultyAPI = {
       console.error("Error updating faculty profile:", error);
       throw error;
     }
-  }
+  },
+
+  // Get dashboard data
+  getDashboard: async (facultyId: string | number): Promise<FacultyDashboardData> => {
+    try {
+      console.log("Fetching dashboard data for faculty ID:", facultyId);
+      const response = await axios.get(`${API_BASE_URL}/faculty/${facultyId}/dashboard`);
+      console.log("Dashboard data received:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching faculty dashboard:", error);
+      throw error;
+    }
+  },
 };
 
 // Export everything at once
-export { loginUser, registerUser, companyAPI, studentAPI, facultyAPI, type StudentProfile, type FacultyProfile };
+export { loginUser, registerUser, companyAPI, studentAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData };

@@ -1,5 +1,5 @@
-import FacultyDashbord from "@/components/facultyComp/facultyProfile";
+import FacultyDashboard from "@/components/facultyComp/facultyDashbord";
 
-export default function facultyDashboard() {
-  return <FacultyDashbord />;
+export default function FacultyDashboardPage() {
+  return <FacultyDashboard />;
 }
