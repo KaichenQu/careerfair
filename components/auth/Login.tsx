@@ -68,7 +68,9 @@ const LoginPage = () => {
         userType: formData.userType,
       });
 
+
       const loginData = await loginUser({
+
         email: formData.email,
         password: formData.password,
         userType: formData.userType,

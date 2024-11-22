@@ -15,6 +15,7 @@ interface PageProps {
 export default function EditCompanyProfile({ params }: PageProps) {
   const router = useRouter();
   const companyId = params.id;
+
   const company = sampleCompanies.find(c => c.id === companyId);
 
   const [formData, setFormData] = useState({
@@ -46,6 +47,7 @@ export default function EditCompanyProfile({ params }: PageProps) {
       <div className="max-w-2xl mx-auto p-6">
         <h1 className="text-2xl font-bold mb-6">Edit Company Profile</h1>
         
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           {/* Contact Name */}
@@ -118,3 +120,4 @@ export default function EditCompanyProfile({ params }: PageProps) {
     </Layout>
   );
 }
+

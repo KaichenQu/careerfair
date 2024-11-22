@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import Layout from '@/app/../components/common/Layout';
+
+import { useState, useEffect } from "react";
+import Layout from "@/components/common/Layout";
+
 import {
   BarChart,
   Bar,
@@ -10,39 +12,70 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
-} from 'recharts';
-import { ReportContent } from '@/app/../data/reports';
+
+  ResponsiveContainer,
+} from "recharts";
+import { ReportContent } from "@/app/../data/reports";
+
+import { getCareerFairReport } from "@/services/careerFairService";
+import { toast } from "react-hot-toast";
+
 
 interface Props {
   careerFairId: string;
-  reportContent: ReportContent;
+  adminId: string;
 }
 
-const DataAnalysis = ({ careerFairId, reportContent }: Props) => {
+const DataAnalysis = ({ careerFairId, adminId }: Props) => {
+  const [reportData, setReportData] = useState<ReportContent | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReportData = async () => {
+      try {
+        const data = await getCareerFairReport(adminId, careerFairId);
+        setReportData(data);
+      } catch (error) {
+        toast.error("Failed to fetch report data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReportData();
+  }, [careerFairId, adminId]);
+
   // Prepare data for the charts
   const attendanceData = [
     {
-      name: 'Students',
-      registered: reportContent.total_registered_students,
-      attended: reportContent.total_attended_students,
+      name: "Students",
+
+      registered: reportData?.total_registered_students || 0,
+      attended: reportData?.total_attended_students || 0,
     },
     {
-      name: 'Companies',
-      registered: reportContent.total_registered_companies,
-      attended: reportContent.total_attended_companies,
+      name: "Companies",
+      registered: reportData?.total_registered_companies || 0,
+      attended: reportData?.total_attended_companies || 0,
+
     },
   ];
 
   const calculateAttendanceRate = (attended: number, registered: number) => {
-    return registered ? ((attended / registered) * 100).toFixed(1) : '0';
+
+    return registered ? ((attended / registered) * 100).toFixed(1) : "0";
+
   };
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white shadow rounded-lg p-6">
-          <h1 className="text-2xl font-bold mb-6">Career Fair Analysis Report</h1>
+
+          <h1 className="text-2xl font-bold mb-6">
+            Career Fair Analysis Report
+          </h1>
+
           <p className="text-gray-600 mb-6">Career Fair ID: {careerFairId}</p>
 
           {/* Summary Cards */}
@@ -51,14 +84,17 @@ const DataAnalysis = ({ careerFairId, reportContent }: Props) => {
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Students</h3>
               <div className="space-y-2">
-                <p>Registered: {reportContent.total_registered_students}</p>
-                <p>Attended: {reportContent.total_attended_students}</p>
+
+                <p>Registered: {reportData?.total_registered_students || 0}</p>
+                <p>Attended: {reportData?.total_attended_students || 0}</p>
                 <p className="text-blue-600">
-                  Attendance Rate: 
+                  Attendance Rate:
                   {calculateAttendanceRate(
-                    reportContent.total_attended_students,
-                    reportContent.total_registered_students
-                  )}%
+                    reportData?.total_attended_students || 0,
+                    reportData?.total_registered_students || 0
+
+                  )}
+                  %
                 </p>
               </div>
             </div>
@@ -67,14 +103,17 @@ const DataAnalysis = ({ careerFairId, reportContent }: Props) => {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Companies</h3>
               <div className="space-y-2">
-                <p>Registered: {reportContent.total_registered_companies}</p>
-                <p>Attended: {reportContent.total_attended_companies}</p>
+
+                <p>Registered: {reportData?.total_registered_companies || 0}</p>
+                <p>Attended: {reportData?.total_attended_companies || 0}</p>
                 <p className="text-green-600">
-                  Attendance Rate: 
+                  Attendance Rate:
                   {calculateAttendanceRate(
-                    reportContent.total_attended_companies,
-                    reportContent.total_registered_companies
-                  )}%
+                    reportData?.total_attended_companies || 0,
+                    reportData?.total_registered_companies || 0
+
+                  )}
+                  %
                 </p>
               </div>
             </div>
@@ -83,9 +122,15 @@ const DataAnalysis = ({ careerFairId, reportContent }: Props) => {
             <div className="bg-purple-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Positions</h3>
               <div className="space-y-2">
-                <p>Total Positions: {reportContent.total_positions}</p>
-                <p>Average Positions per Company: 
-                  {(reportContent.total_positions / reportContent.total_registered_companies).toFixed(1)}
+                <p>Total Positions: {reportData?.total_positions || 0}</p>
+                <p>
+                  Average Positions per Company:
+                  {(
+                    (reportData?.total_positions || 0) /
+                    (reportData?.total_registered_companies || 0)
+
+                  ).toFixed(1)}
+
                 </p>
               </div>
             </div>
@@ -93,7 +138,10 @@ const DataAnalysis = ({ careerFairId, reportContent }: Props) => {
 
           {/* Attendance Chart */}
           <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Attendance Comparison</h2>
+
+            <h2 className="text-xl font-semibold mb-4">
+              Attendance Comparison
+            </h2>
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
@@ -122,21 +170,28 @@ const DataAnalysis = ({ careerFairId, reportContent }: Props) => {
             <h2 className="text-xl font-semibold mb-4">Key Insights</h2>
             <ul className="list-disc list-inside space-y-2 text-gray-600">
               <li>
-                Student attendance rate: {calculateAttendanceRate(
-                  reportContent.total_attended_students,
-                  reportContent.total_registered_students
-                )}%
+                Student attendance rate:{" "}
+                {calculateAttendanceRate(
+                  reportData?.total_attended_students || 0,
+                  reportData?.total_registered_students || 0
+
+                )}
+                %
               </li>
               <li>
-                Company attendance rate: {calculateAttendanceRate(
-                  reportContent.total_attended_companies,
-                  reportContent.total_registered_companies
-                )}%
+                Company attendance rate:{" "}
+                {calculateAttendanceRate(
+                  reportData?.total_attended_companies || 0,
+                  reportData?.total_registered_companies || 0
+                )}
+                %
               </li>
               <li>
-                Average positions per company: {
-                  (reportContent.total_positions / reportContent.total_registered_companies).toFixed(1)
-                }
+                Average positions per company:{" "}
+                {(
+                  (reportData?.total_positions || 0) /
+                  (reportData?.total_registered_companies || 1)
+                ).toFixed(1)}
               </li>
             </ul>
           </div>
@@ -146,4 +201,6 @@ const DataAnalysis = ({ careerFairId, reportContent }: Props) => {
   );
 };
 
-export default DataAnalysis; 
+
+export default DataAnalysis;
+

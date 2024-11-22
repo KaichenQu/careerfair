@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Layout from '@/app/../components/common/Layout';
-import { toast } from 'react-hot-toast';
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Layout from "@/components/common/Layout";
+import { toast } from "react-hot-toast";
+
 
 interface CareerFair {
   fair_id: string;
@@ -23,42 +25,46 @@ const CreateCareerFair = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<CareerFair>({
-    fair_id: '',
-    name: '',
-    date: '',
-    location: '',
-    description: ''
+
+    fair_id: "",
+    name: "",
+    date: "",
+    location: "",
+    description: "",
+
   });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const validateForm = (): boolean => {
     if (!formData.fair_id.trim()) {
-      toast.error('Fair ID is required');
+
+      toast.error("Fair ID is required");
       return false;
     }
     if (!formData.name.trim()) {
-      toast.error('Fair name is required');
+      toast.error("Fair name is required");
       return false;
     }
     if (!formData.date) {
-      toast.error('Date is required');
+      toast.error("Date is required");
       return false;
     }
     if (!formData.location.trim()) {
-      toast.error('Location is required');
+      toast.error("Location is required");
       return false;
     }
     if (!formData.description.trim()) {
-      toast.error('Description is required');
+      toast.error("Description is required");
       return false;
     }
     return true;
@@ -66,12 +72,12 @@ const CreateCareerFair = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
       setIsSubmitting(true);
-      
+
       // Here's how you would structure the API call to create and return the career fair data
       // const response = await fetch('/api/career-fairs', {
       //   method: 'POST',
@@ -79,10 +85,11 @@ const CreateCareerFair = () => {
       //   body: JSON.stringify(formData)
       // });
       // const result: CareerFairResponse = await response.json();
-      
+
+
       // Simulating API call with response
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Simulate API response
       const result: CareerFairResponse = {
         success: true,
@@ -91,30 +98,37 @@ const CreateCareerFair = () => {
           fair_id: formData.fair_id.trim(),
           name: formData.name.trim(),
           location: formData.location.trim(),
-          description: formData.description.trim()
-        }
+
+          description: formData.description.trim(),
+        },
+
       };
 
       if (result.success && result.data) {
         // Log the created career fair data
-        console.log('Created Career Fair:', result.data);
-        
+
+        console.log("Created Career Fair:", result.data);
+
         // You can also store it in localStorage or state management if needed
-        localStorage.setItem('lastCreatedCareerFair', JSON.stringify(result.data));
-        
-        toast.success('Career fair created successfully');
-        
+        localStorage.setItem(
+          "lastCreatedCareerFair",
+          JSON.stringify(result.data)
+        );
+
+        toast.success("Career fair created successfully");
+
         // Pass the created data as query params or state when redirecting
         router.push({
-          pathname: '/admin/career-fairs',
-          query: { newFairId: result.data.fair_id }
+          pathname: "/admin/career-fairs",
+          query: { newFairId: result.data.fair_id },
         });
       } else {
-        throw new Error(result.error || 'Failed to create career fair');
+        throw new Error(result.error || "Failed to create career fair");
       }
     } catch (error) {
-      toast.error('Failed to create career fair');
-      console.error('Error creating career fair:', error);
+      toast.error("Failed to create career fair");
+      console.error("Error creating career fair:", error);
+
     } finally {
       setIsSubmitting(false);
     }
@@ -122,19 +136,35 @@ const CreateCareerFair = () => {
 
   // Preview section to show the data being created
   const renderPreview = () => {
-    const hasData = Object.values(formData).some(value => value.trim() !== '');
-    
+
+    const hasData = Object.values(formData).some(
+      (value) => value.trim() !== ""
+    );
+
     if (!hasData) return null;
 
     return (
       <div className="mt-8 p-4 bg-gray-50 rounded-md">
         <h2 className="text-lg font-semibold mb-4">Career Fair Preview</h2>
         <div className="space-y-2 text-sm">
-          <p><span className="font-medium">Fair ID:</span> {formData.fair_id}</p>
-          <p><span className="font-medium">Name:</span> {formData.name}</p>
-          <p><span className="font-medium">Date:</span> {formData.date}</p>
-          <p><span className="font-medium">Location:</span> {formData.location}</p>
-          <p><span className="font-medium">Description:</span> {formData.description}</p>
+
+          <p>
+            <span className="font-medium">Fair ID:</span> {formData.fair_id}
+          </p>
+          <p>
+            <span className="font-medium">Name:</span> {formData.name}
+          </p>
+          <p>
+            <span className="font-medium">Date:</span> {formData.date}
+          </p>
+          <p>
+            <span className="font-medium">Location:</span> {formData.location}
+          </p>
+          <p>
+            <span className="font-medium">Description:</span>{" "}
+            {formData.description}
+          </p>
+
         </div>
       </div>
     );
@@ -241,9 +271,13 @@ const CreateCareerFair = () => {
                 disabled={isSubmitting}
                 className={`flex-1 bg-blue-500 text-white py-2 px-4 rounded-md 
                          hover:bg-blue-600 transition-colors duration-200
-                         ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+
+                         ${
+                           isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                         }`}
               >
-                {isSubmitting ? 'Creating...' : 'Create Career Fair'}
+                {isSubmitting ? "Creating..." : "Create Career Fair"}
+
               </button>
               <button
                 type="button"

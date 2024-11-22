@@ -1,5 +1,6 @@
 'use client';
 
+
 import Layout from '@/components/common/Layout';
 import { useEffect, useState } from 'react';
 import { companyAPI, CompanyProfile } from '@/services/api';
@@ -180,6 +181,7 @@ const CompanyDashboard = ({id}: {id: number}) => {
           </Grid>
         </Container>
       </Box>
+
     </Layout>
   );
 };
