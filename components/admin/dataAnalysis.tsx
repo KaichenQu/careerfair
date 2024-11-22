@@ -13,8 +13,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { ReportContent } from "@/app/../data/reports";
+
 import { getCareerFairReport } from "@/services/careerFairService";
 import { toast } from "react-hot-toast";
+
 
 interface Props {
   careerFairId: string;
@@ -44,6 +46,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
   const attendanceData = [
     {
       name: "Students",
+
       registered: reportData?.total_registered_students || 0,
       attended: reportData?.total_attended_students || 0,
     },
@@ -51,6 +54,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
       name: "Companies",
       registered: reportData?.total_registered_companies || 0,
       attended: reportData?.total_attended_companies || 0,
+
     },
   ];
 
@@ -80,6 +84,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
                   {calculateAttendanceRate(
                     reportData?.total_attended_students || 0,
                     reportData?.total_registered_students || 0
+
                   )}
                   %
                 </p>
@@ -97,6 +102,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
                   {calculateAttendanceRate(
                     reportData?.total_attended_companies || 0,
                     reportData?.total_registered_companies || 0
+
                   )}
                   %
                 </p>
@@ -113,6 +119,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
                   {(
                     (reportData?.total_positions || 0) /
                     (reportData?.total_registered_companies || 0)
+
                   ).toFixed(1)}
                 </p>
               </div>
@@ -156,6 +163,7 @@ const DataAnalysis = ({ careerFairId, adminId }: Props) => {
                 {calculateAttendanceRate(
                   reportData?.total_attended_students || 0,
                   reportData?.total_registered_students || 0
+
                 )}
                 %
               </li>

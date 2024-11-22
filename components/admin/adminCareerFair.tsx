@@ -1,11 +1,15 @@
 "use client";
 
+
 import { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
 import Layout from "@/components/common/Layout";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
+
 import { getCareerFairs, deleteCareerFair } from "@/services/careerFairService";
+
 
 interface CareerFair {
   fair_id: string;
@@ -36,6 +40,7 @@ const AdminCareerFair = () => {
     fetchCareerFairs();
   }, []);
 
+
   const filteredFairs = careerFairs.filter(
     (fair) =>
       fair.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -44,7 +49,9 @@ const AdminCareerFair = () => {
 
   const handleDelete = async (fairId: string) => {
     try {
+
       await deleteCareerFair(fairId);
+
       setCareerFairs((prevFairs) =>
         prevFairs.filter((fair) => fair.fair_id !== fairId)
       );
