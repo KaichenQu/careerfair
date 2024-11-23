@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { companyAPI, CompanyProfile } from '@/services/api';
-import { Container, TextField, Button, Box, Typography } from '@mui/material';
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { companyAPI, CompanyProfile } from "@/services/api";
+import { Container, TextField, Button, Box, Typography } from "@mui/material";
 
 const CompanyEdit = () => {
   const router = useRouter();
@@ -11,19 +11,19 @@ const CompanyEdit = () => {
   const companyId = parseInt(params.id as string, 10);
 
   if (isNaN(companyId)) {
-    router.push('/error');
+    router.push("/error");
     return null;
   }
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    industry: '',
-    contact_name: '',
-    contact_phone: '',
-    contact_email: '',
-    location: '',
-    profile: ''
+    name: "",
+    email: "",
+    industry: "",
+    contact_name: "",
+    contact_phone: "",
+    contact_email: "",
+    location: "",
+    profile: "",
   });
 
   useEffect(() => {
@@ -31,17 +31,17 @@ const CompanyEdit = () => {
       try {
         const data = await companyAPI.getCompanyById(companyId);
         setFormData({
-          name: data.name || '',
-          email: data.email || '',
-          industry: data.industry || '',
-          contact_name: data.contact_name || '',
-          contact_phone: data.contact_phone || '',
-          contact_email: data.contact_email || '',
-          location: data.location || '',
-          profile: data.profile || ''
+          name: data.name || "",
+          email: data.email || "",
+          industry: data.industry || "",
+          contact_name: data.contact_name || "",
+          contact_phone: data.contact_phone || "",
+          contact_email: data.contact_email || "",
+          location: data.location || "",
+          profile: data.profile || "",
         });
       } catch (error) {
-        console.error('Failed to load profile:', error);
+        console.error("Failed to load profile:", error);
       }
     };
     loadProfile();
@@ -53,61 +53,79 @@ const CompanyEdit = () => {
       await companyAPI.updateProfile(companyId, formData);
       router.push(`/company/${companyId}`);
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error("Failed to update profile:", error);
     }
   };
 
   return (
     <Container maxWidth="md" className="py-8">
-      <Typography variant="h4" className="mb-6">Edit Company Profile</Typography>
+      <Typography variant="h4" className="mb-6">
+        Edit Company Profile
+      </Typography>
       <Box component="form" onSubmit={handleSubmit} className="space-y-4">
         <TextField
           fullWidth
           label="Company Name"
           value={formData.name}
-          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, name: e.target.value }))
+          }
         />
         <TextField
           fullWidth
           label="Email"
           value={formData.email}
-          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, email: e.target.value }))
+          }
         />
         <TextField
           fullWidth
           label="Industry"
           value={formData.industry}
-          onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, industry: e.target.value }))
+          }
         />
         <TextField
           fullWidth
           label="Contact Name"
           value={formData.contact_name}
-          onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, contact_name: e.target.value }))
+          }
         />
         <TextField
           fullWidth
           label="Contact Phone"
           value={formData.contact_phone}
-          onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, contact_phone: e.target.value }))
+          }
         />
         <TextField
           fullWidth
           label="Contact Email"
           value={formData.contact_email}
-          onChange={(e) => setFormData(prev => ({ ...prev, contact_email: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, contact_email: e.target.value }))
+          }
         />
         <TextField
           fullWidth
           label="Location"
           value={formData.location}
-          onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, location: e.target.value }))
+          }
         />
         <TextField
           fullWidth
           label="Company Profile"
           value={formData.profile}
-          onChange={(e) => setFormData(prev => ({ ...prev, profile: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, profile: e.target.value }))
+          }
           multiline
           rows={4}
         />
@@ -122,4 +140,3 @@ const CompanyEdit = () => {
 };
 
 export default CompanyEdit;
-
