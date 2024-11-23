@@ -1,28 +1,31 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { 
-  Container, 
-  Typography, 
-  Card, 
-  Box, 
+import {
+  Container,
+  Typography,
+  Card,
+  Box,
   Button,
   Grid,
   Divider,
-  Skeleton
+  Skeleton,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { facultyAPI, type FacultyProfile, type FacultyCareerFair } from "@/services/api";
+import {
+  facultyAPI,
+  type FacultyProfile,
+  type FacultyCareerFair,
+} from "@/services/api";
 import Layout from "../common/Layout";
-import { 
+import {
   Dashboard as DashboardIcon,
   Edit as EditIcon,
   EventAvailable as RegisterIcon,
-  History as HistoryIcon
+  History as HistoryIcon,
 } from "@mui/icons-material";
 import Image from "next/image";
-
-
+import Loading from "@/components/common/Loading";
 
 const FacultyProfilePage = () => {
   const router = useRouter();
@@ -44,7 +47,13 @@ const FacultyProfilePage = () => {
     fetchProfile();
   }, []);
 
-  const ProfileField = ({ label, value }: { label: string; value: string | undefined }) => (
+  const ProfileField = ({
+    label,
+    value,
+  }: {
+    label: string;
+    value: string | undefined;
+  }) => (
     <Box className="mb-6 text-center">
       <Typography variant="h6" className="text-gray-600 font-medium mb-2">
         {label}
@@ -59,7 +68,7 @@ const FacultyProfilePage = () => {
     try {
       if (!profile?.faculty_id) return;
       const data = await facultyAPI.getDashboard(profile.faculty_id);
-      localStorage.setItem('attendedFairs', JSON.stringify(data));
+      localStorage.setItem("attendedFairs", JSON.stringify(data));
       router.push(`/faculty/${profile.faculty_id}/attend`);
     } catch (error) {
       console.error("Error fetching attendance history:", error);
@@ -68,11 +77,14 @@ const FacultyProfilePage = () => {
 
   const handleRegisteredFairs = async () => {
     try {
-      const storedUserId = localStorage.getItem('user_id');
+      const storedUserId = localStorage.getItem("user_id");
       if (!storedUserId) return;
-      
+
       const data = await facultyAPI.getDashboard(storedUserId);
-      localStorage.setItem('registeredFairs', JSON.stringify(data.registered_fairs));
+      localStorage.setItem(
+        "registeredFairs",
+        JSON.stringify(data.registered_fairs)
+      );
       router.push(`/faculty/${storedUserId}/register`);
     } catch (error) {
       console.error("Error fetching registered fairs:", error);
@@ -80,17 +92,17 @@ const FacultyProfilePage = () => {
   };
 
   const handleEditProfile = () => {
-    const userId = localStorage.getItem('user_id');
+    const userId = localStorage.getItem("user_id");
     if (!userId) {
       console.error("No user ID found");
       return;
     }
-    
+
     router.push(`/faculty/${userId}/edit`);
   };
 
   const handleAttendClick = () => {
-    const userId = localStorage.getItem('user_id');
+    const userId = localStorage.getItem("user_id");
     if (!userId) {
       console.error("No user ID found");
       return;
@@ -99,14 +111,7 @@ const FacultyProfilePage = () => {
   };
 
   if (loading) {
-    return (
-      <Layout>
-        <Container maxWidth="lg" className="py-12">
-          <Skeleton variant="rectangular" height={200} className="mb-4" />
-          <Skeleton variant="rectangular" height={400} />
-        </Container>
-      </Layout>
-    );
+    return <Loading />;
   }
 
   return (
@@ -133,17 +138,19 @@ const FacultyProfilePage = () => {
             {/* Left Column - Profile Information */}
             <Grid item xs={12} md={6}>
               <Box className="space-y-6 pr-4">
-                <ProfileField label="Faculty ID" value={profile?.faculty_id.toString()} />
+                <ProfileField
+                  label="Faculty ID"
+                  value={profile?.faculty_id.toString()}
+                />
                 <ProfileField label="Name" value={profile?.name} />
                 <ProfileField label="Email" value={profile?.email} />
                 <ProfileField label="Department" value={profile?.department} />
-            
               </Box>
             </Grid>
 
             {/* Right Column - Image */}
             <Grid item xs={12} md={6}>
-              <Box 
+              <Box
                 component="img"
                 src="https://picsum.photos/800/600"
                 alt="Faculty Image"

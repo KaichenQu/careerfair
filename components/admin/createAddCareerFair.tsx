@@ -1,11 +1,9 @@
 "use client";
 
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Layout from "@/components/common/Layout";
 import { toast } from "react-hot-toast";
-
 
 interface CareerFair {
   fair_id: string;
@@ -21,17 +19,21 @@ interface CareerFairResponse {
   error?: string;
 }
 
-const CreateCareerFair = () => {
+interface CreateCareerFairProps {
+  onCareerFairCreated: (careerFairData: CareerFair) => void;
+}
+
+export default function CreateCareerFair({
+  onCareerFairCreated,
+}: CreateCareerFairProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<CareerFair>({
-
     fair_id: "",
     name: "",
     date: "",
     location: "",
     description: "",
-
   });
 
   const handleChange = (
@@ -47,7 +49,6 @@ const CreateCareerFair = () => {
 
   const validateForm = (): boolean => {
     if (!formData.fair_id.trim()) {
-
       toast.error("Fair ID is required");
       return false;
     }
@@ -86,7 +87,6 @@ const CreateCareerFair = () => {
       // });
       // const result: CareerFairResponse = await response.json();
 
-
       // Simulating API call with response
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -101,7 +101,6 @@ const CreateCareerFair = () => {
 
           description: formData.description.trim(),
         },
-
       };
 
       if (result.success && result.data) {
@@ -118,17 +117,13 @@ const CreateCareerFair = () => {
         toast.success("Career fair created successfully");
 
         // Pass the created data as query params or state when redirecting
-        router.push({
-          pathname: "/admin/career-fairs",
-          query: { newFairId: result.data.fair_id },
-        });
+        router.push(`/admin/career-fairs?newFairId=${result.data.fair_id}`);
       } else {
         throw new Error(result.error || "Failed to create career fair");
       }
     } catch (error) {
       toast.error("Failed to create career fair");
       console.error("Error creating career fair:", error);
-
     } finally {
       setIsSubmitting(false);
     }
@@ -136,7 +131,6 @@ const CreateCareerFair = () => {
 
   // Preview section to show the data being created
   const renderPreview = () => {
-
     const hasData = Object.values(formData).some(
       (value) => value.trim() !== ""
     );
@@ -147,7 +141,6 @@ const CreateCareerFair = () => {
       <div className="mt-8 p-4 bg-gray-50 rounded-md">
         <h2 className="text-lg font-semibold mb-4">Career Fair Preview</h2>
         <div className="space-y-2 text-sm">
-
           <p>
             <span className="font-medium">Fair ID:</span> {formData.fair_id}
           </p>
@@ -164,7 +157,6 @@ const CreateCareerFair = () => {
             <span className="font-medium">Description:</span>{" "}
             {formData.description}
           </p>
-
         </div>
       </div>
     );
@@ -277,7 +269,6 @@ const CreateCareerFair = () => {
                          }`}
               >
                 {isSubmitting ? "Creating..." : "Create Career Fair"}
-
               </button>
               <button
                 type="button"
@@ -293,6 +284,4 @@ const CreateCareerFair = () => {
       </div>
     </Layout>
   );
-};
-
-export default CreateCareerFair;
+}

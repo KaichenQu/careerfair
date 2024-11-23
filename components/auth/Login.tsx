@@ -1,30 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
 import {
-  Container,
-  Paper,
-  Typography,
-  TextField,
-  Button,
+  Business as BusinessIcon,
+  Lock,
+  Person,
+  Person as PersonIcon,
+  School as SchoolIcon,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
+import {
   Box,
-  InputAdornment,
-  IconButton,
+  Button,
+  Container,
   FormControl,
-  FormLabel,
   FormControlLabel,
+  FormLabel,
+  IconButton,
+  InputAdornment,
+  Paper,
   Radio,
   RadioGroup,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Visibility, VisibilityOff, Person, Lock } from "@mui/icons-material";
-import Layout from "../common/Layout";
+import React, { useState } from "react";
 import { loginUser } from "../../services/api";
-import {
-  School as SchoolIcon,
-  Business as BusinessIcon,
-  Person as PersonIcon,
-  AdminPanelSettings as AdminIcon,
-} from "@mui/icons-material";
+import Layout from "../common/Layout";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -206,23 +208,26 @@ const LoginPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, userType: e.target.value })
                   }
-                  className="grid grid-cols-2 gap-4"
+                  className="flex flex-col gap-3"
                 >
                   <Paper
                     elevation={formData.userType === "student" ? 8 : 1}
                     className={`relative cursor-pointer transition-all duration-200 ${
                       formData.userType === "student"
-                        ? "bg-blue-50 border-blue-500"
-                        : "hover:bg-gray-50"
+                        ? "bg-blue-50 border border-blue-500 shadow-sm"
+                        : "hover:bg-gray-50 border border-transparent"
                     }`}
                   >
                     <FormControlLabel
                       value="student"
-                      control={<Radio />}
+                      control={<Radio size="small" sx={{ color: "#3b82f6" }} />}
                       label={
                         <Box className="flex items-center p-2">
-                          <SchoolIcon className="text-blue-500 mr-2" />
-                          <Typography>Student</Typography>
+                          <SchoolIcon
+                            className="text-blue-500 mr-2"
+                            fontSize="small"
+                          />
+                          <Typography variant="body2">Student</Typography>
                         </Box>
                       }
                       className="m-0 w-full"
@@ -233,17 +238,20 @@ const LoginPage = () => {
                     elevation={formData.userType === "company" ? 8 : 1}
                     className={`relative cursor-pointer transition-all duration-200 ${
                       formData.userType === "company"
-                        ? "bg-purple-50 border-purple-500"
-                        : "hover:bg-gray-50"
+                        ? "bg-purple-50 border border-purple-500 shadow-sm"
+                        : "hover:bg-gray-50 border border-transparent"
                     }`}
                   >
                     <FormControlLabel
                       value="company"
-                      control={<Radio />}
+                      control={<Radio size="small" sx={{ color: "#9333ea" }} />}
                       label={
                         <Box className="flex items-center p-2">
-                          <BusinessIcon className="text-purple-500 mr-2" />
-                          <Typography>Company</Typography>
+                          <BusinessIcon
+                            className="text-purple-500 mr-2"
+                            fontSize="small"
+                          />
+                          <Typography variant="body2">Company</Typography>
                         </Box>
                       }
                       className="m-0 w-full"
@@ -254,38 +262,20 @@ const LoginPage = () => {
                     elevation={formData.userType === "faculty" ? 8 : 1}
                     className={`relative cursor-pointer transition-all duration-200 ${
                       formData.userType === "faculty"
-                        ? "bg-green-50 border-green-500"
-                        : "hover:bg-gray-50"
+                        ? "bg-green-50 border border-green-500 shadow-sm"
+                        : "hover:bg-gray-50 border border-transparent"
                     }`}
                   >
                     <FormControlLabel
                       value="faculty"
-                      control={<Radio />}
+                      control={<Radio size="small" sx={{ color: "#22c55e" }} />}
                       label={
                         <Box className="flex items-center p-2">
-                          <PersonIcon className="text-green-500 mr-2" />
-                          <Typography>Faculty</Typography>
-                        </Box>
-                      }
-                      className="m-0 w-full"
-                    />
-                  </Paper>
-
-                  <Paper
-                    elevation={formData.userType === "admin" ? 8 : 1}
-                    className={`relative cursor-pointer transition-all duration-200 ${
-                      formData.userType === "admin"
-                        ? "bg-red-50 border-red-500"
-                        : "hover:bg-gray-50"
-                    }`}
-                  >
-                    <FormControlLabel
-                      value="admin"
-                      control={<Radio />}
-                      label={
-                        <Box className="flex items-center p-2">
-                          <AdminIcon className="text-red-500 mr-2" />
-                          <Typography>Admin</Typography>
+                          <PersonIcon
+                            className="text-green-500 mr-2"
+                            fontSize="small"
+                          />
+                          <Typography variant="body2">Faculty</Typography>
                         </Box>
                       }
                       className="m-0 w-full"

@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { facultyAPI } from '@/services/api';
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { facultyAPI } from "@/services/api";
+import Loading from "@/components/common/Loading";
 
 interface FacultyEditForm {
   email: string;
@@ -31,7 +32,9 @@ const FacultyEdit = () => {
           department: data.department,
         });
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch faculty data');
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch faculty data"
+        );
       } finally {
         setLoading(false);
       }
@@ -49,34 +52,32 @@ const FacultyEdit = () => {
 
     const formData = new FormData(e.currentTarget);
     const data: FacultyEditForm = {
-      email: formData.get('email') as string,
-      name: formData.get('name') as string,
-      department: formData.get('department') as string,
+      email: formData.get("email") as string,
+      name: formData.get("name") as string,
+      department: formData.get("department") as string,
     };
 
     try {
       await facultyAPI.updateProfile(userId as string, data);
-      alert('Profile updated successfully');
+      alert("Profile updated successfully");
       router.push(`/faculty/${userId}/`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update profile');
+      setError(err instanceof Error ? err.message : "Failed to update profile");
     } finally {
       setLoading(false);
     }
   };
 
   if (!facultyData) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded shadow">
       <h1 className="text-2xl font-bold mb-6">Edit Profile</h1>
-      
+
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
       )}
 
       <form onSubmit={handleSubmit}>
@@ -109,7 +110,7 @@ const FacultyEdit = () => {
         </div>
 
         <div className="mb-6">
-        <label htmlFor="email" className="block mb-2">
+          <label htmlFor="email" className="block mb-2">
             Email
           </label>
           <input
@@ -126,10 +127,10 @@ const FacultyEdit = () => {
           type="submit"
           disabled={loading}
           className={`w-full p-2 text-white rounded ${
-            loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
+            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
           }`}
         >
-          {loading ? 'Updating...' : 'Update Profile'}
+          {loading ? "Updating..." : "Update Profile"}
         </button>
       </form>
     </div>

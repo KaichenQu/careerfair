@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Layout from '@/components/common/Layout';
-import { useEffect, useState } from 'react';
-import { companyAPI, type CompanyProfile } from '@/services/api';
-import { useRouter } from 'next/navigation';
+import Layout from "@/components/common/Layout";
+import { useEffect, useState } from "react";
+import { companyAPI, type CompanyProfile } from "@/services/api";
+import { useRouter } from "next/navigation";
 import {
   Container,
   Typography,
@@ -13,7 +13,7 @@ import {
   Skeleton,
   Card,
   Button,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Business as BusinessIcon,
   LocationOn as LocationIcon,
@@ -24,9 +24,10 @@ import {
   Edit as EditIcon,
   Dashboard as DashboardIcon,
   WorkOutline as PublishIcon,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
+import Loading from "@/components/common/Loading";
 
-const CompanyDashboard = ({id}: {id: number}) => {
+const CompanyDashboard = ({ id }: { id: number }) => {
   const router = useRouter();
   const [profile, setProfile] = useState<CompanyProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,10 +36,10 @@ const CompanyDashboard = ({id}: {id: number}) => {
     const loadProfile = async () => {
       try {
         const data = await companyAPI.getCompanyById(id);
-        console.log('Received profile data:', data);
+        console.log("Received profile data:", data);
         setProfile(data);
       } catch (err) {
-        console.error('Failed to load company profile');
+        console.error("Failed to load company profile");
       } finally {
         setLoading(false);
       }
@@ -47,16 +48,16 @@ const CompanyDashboard = ({id}: {id: number}) => {
   }, [id]);
 
   const handleCareerFairClick = () => {
-    console.log('Current profile state:', profile);
-    
+    console.log("Current profile state:", profile);
+
     const storedUserId = id;
-    console.log('Stored user ID:', storedUserId);
+    console.log("Stored user ID:", storedUserId);
 
     if (storedUserId) {
-      console.log('Using stored user ID:', storedUserId);
+      console.log("Using stored user ID:", storedUserId);
       router.push(`/company/${storedUserId}/careerfair`);
     } else {
-      console.error('No company ID available');
+      console.error("No company ID available");
     }
   };
 
@@ -68,14 +69,7 @@ const CompanyDashboard = ({id}: {id: number}) => {
   };
 
   if (loading) {
-    return (
-      <Layout>
-        <Container maxWidth="lg" className="py-8">
-          <Skeleton variant="rectangular" height={200} className="mb-4 rounded-lg" />
-          <Skeleton variant="rectangular" height={400} className="rounded-lg" />
-        </Container>
-      </Layout>
-    );
+    return <Loading />;
   }
 
   if (!profile) return <div>No profile found</div>;
@@ -109,7 +103,7 @@ const CompanyDashboard = ({id}: {id: number}) => {
 
           {/* Action Buttons */}
           <Grid container spacing={3} className="mb-8">
-          <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={4}>
               <Button
                 fullWidth
                 variant="contained"
@@ -142,7 +136,6 @@ const CompanyDashboard = ({id}: {id: number}) => {
                 Edit Profile
               </Button>
             </Grid>
-            
           </Grid>
 
           {/* Main Content */}
@@ -150,29 +143,44 @@ const CompanyDashboard = ({id}: {id: number}) => {
             {/* Left Column - Contact Information */}
             <Grid item xs={12} md={4}>
               <Card className="p-6 h-full">
-                <Typography variant="h6" className="font-bold mb-4 flex items-center">
+                <Typography
+                  variant="h6"
+                  className="font-bold mb-4 flex items-center"
+                >
                   <PersonIcon className="mr-2 text-blue-500" />
                   Contact Information
                 </Typography>
-                
+
                 <Box className="space-y-4">
                   <Box className="p-4 bg-gray-50 rounded-lg">
-                    <Typography variant="subtitle2" className="text-gray-600">Contact Name</Typography>
+                    <Typography variant="subtitle2" className="text-gray-600">
+                      Contact Name
+                    </Typography>
                     <Typography variant="h6">{profile.contact_name}</Typography>
-                  </Box>
-                  
-                  <Box className="p-4 bg-gray-50 rounded-lg">
-                    <Typography variant="subtitle2" className="text-gray-600">Contact Phone</Typography>
-                    <Typography variant="h6">{profile.contact_phone}</Typography>
-                  </Box>
-                  
-                  <Box className="p-4 bg-gray-50 rounded-lg">
-                    <Typography variant="subtitle2" className="text-gray-600">Contact Email</Typography>
-                    <Typography variant="h6">{profile.contact_email || 'Not provided'}</Typography>
                   </Box>
 
                   <Box className="p-4 bg-gray-50 rounded-lg">
-                    <Typography variant="subtitle2" className="text-gray-600">Company Email</Typography>
+                    <Typography variant="subtitle2" className="text-gray-600">
+                      Contact Phone
+                    </Typography>
+                    <Typography variant="h6">
+                      {profile.contact_phone}
+                    </Typography>
+                  </Box>
+
+                  <Box className="p-4 bg-gray-50 rounded-lg">
+                    <Typography variant="subtitle2" className="text-gray-600">
+                      Contact Email
+                    </Typography>
+                    <Typography variant="h6">
+                      {profile.contact_email || "Not provided"}
+                    </Typography>
+                  </Box>
+
+                  <Box className="p-4 bg-gray-50 rounded-lg">
+                    <Typography variant="subtitle2" className="text-gray-600">
+                      Company Email
+                    </Typography>
                     <Typography variant="h6">{profile.email}</Typography>
                   </Box>
                 </Box>
@@ -182,13 +190,16 @@ const CompanyDashboard = ({id}: {id: number}) => {
             {/* Right Column - Company Info */}
             <Grid item xs={12} md={8}>
               <Card className="p-6 h-full">
-                <Typography variant="h6" className="font-bold mb-4 flex items-center">
+                <Typography
+                  variant="h6"
+                  className="font-bold mb-4 flex items-center"
+                >
                   <DescriptionIcon className="mr-2 text-blue-500" />
                   Company Information
                 </Typography>
-                
+
                 <Box className="mb-6">
-                  <Box 
+                  <Box
                     component="img"
                     src="https://picsum.photos/800/400"
                     alt="Company Image"
@@ -203,9 +214,8 @@ const CompanyDashboard = ({id}: {id: number}) => {
           </Grid>
         </Container>
       </Box>
-
     </Layout>
   );
 };
 
-export default CompanyDashboard; 
+export default CompanyDashboard;
