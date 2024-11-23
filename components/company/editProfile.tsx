@@ -50,7 +50,7 @@ const CompanyEdit = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await companyAPI.updateProfile(companyId, formData);
+      await companyAPI.updateProfile(companyId, { ...formData, id: companyId });
       router.push(`/company/${companyId}`);
     } catch (error) {
       console.error("Failed to update profile:", error);

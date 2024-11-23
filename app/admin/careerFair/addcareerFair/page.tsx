@@ -1,9 +1,7 @@
 "use client";
 
-
 import CreateCareerFair from "@/components/admin/createAddCareerFair";
 import { useRouter } from "next/navigation";
-
 
 interface CareerFairData {
   fair_id: string;
@@ -11,6 +9,10 @@ interface CareerFairData {
   date: string;
   location: string;
   description: string;
+}
+
+interface CreateCareerFairProps {
+  onCareerFairCreated: (careerFairData: CareerFairData) => void;
 }
 
 export default function CreateCareerFairPage() {
@@ -27,13 +29,9 @@ export default function CreateCareerFairPage() {
     );
 
     // Redirect to the career fairs list with the new data
-    router.push({
-      pathname: "/admin/career-fairs",
-      query: {
-        newFairId: careerFairData.fair_id,
-        created: "true",
-      },
-    });
+    router.push(
+      `/admin/career-fairs?newFairId=${careerFairData.fair_id}&created=true`
+    );
   };
 
   return <CreateCareerFair onCareerFairCreated={handleCareerFairCreated} />;

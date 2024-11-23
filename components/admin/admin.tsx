@@ -1,10 +1,9 @@
 "use client";
 
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Layout from "@/components/common/Layout";
-import { Container, Typography, Box, Button, Card, Grid } from "@mui/material";
+import { Container, Typography, Box, Card, Grid, Button } from "@mui/material";
 import {
   Person as PersonIcon,
   Analytics as AnalyticsIcon,
@@ -12,15 +11,89 @@ import {
 } from "@mui/icons-material";
 
 const AdminPage = () => {
+  const [adminData, setAdminData] = useState({
+    admin_id: "",
+    admin_name: "",
+    email: "",
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const initializeAdmin = async () => {
+      try {
+        const admin_id = localStorage.getItem("admin_id");
+        const admin_token = localStorage.getItem("admin_token");
+        const admin_name = localStorage.getItem("admin_name");
+        const admin_email = localStorage.getItem("admin_email");
+
+        if (!admin_id || !admin_token) {
+          throw new Error("No credentials found");
+        }
+
+        const response = await fetch("http://127.0.0.1:8000/admin/verify", {
+          headers: {
+            Authorization: `Bearer ${admin_token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Invalid token");
+        }
+
+        const data = await response.json();
+
+        setAdminData({
+          admin_id,
+          admin_name: admin_name || "",
+          email: admin_email || "",
+        });
+        setIsAuthenticated(true);
+      } catch (err) {
+        console.error("Verification error:", err);
+        localStorage.removeItem("admin_token");
+        localStorage.removeItem("admin_id");
+        localStorage.removeItem("admin_name");
+        localStorage.removeItem("admin_email");
+        window.location.href = "/admin/login";
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeAdmin();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // 不渲染任何内容，等待重定向完成
+  }
+
   return (
     <Layout>
       <Container maxWidth="lg" className="py-12">
         <Typography
           variant="h3"
           component="h1"
-          className="text-center font-bold mb-12 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
+          className="text-center font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
         >
-          Admin Dashboard
+          Welcome, {adminData.admin_name}
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          className="text-center text-gray-600 mb-12"
+        >
+          {adminData.email}
         </Typography>
 
         <Grid container spacing={4}>

@@ -1,18 +1,26 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Box, Button, Paper, Grid, CircularProgress } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Paper,
+  Grid,
+  CircularProgress,
+} from "@mui/material";
 import Layout from "../common/Layout";
 import { Person, WorkHistory, Edit, Event } from "@mui/icons-material";
 import { studentAPI, type StudentProfile } from "@/services/api";
 import { useRouter } from "next/navigation";
 import EditProfile from "./editProfile";
-import Link from 'next/link';
+import Link from "next/link";
 
 const StudentProfile = ({ id }: { id: number }) => {
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -22,8 +30,8 @@ const StudentProfile = ({ id }: { id: number }) => {
         setProfile(data);
         setLoading(false);
       } catch (err) {
-        console.error('Error loading profile:', err);
-        setError('Failed to load student profile');
+        console.error("Error loading profile:", err);
+        setError("Failed to load student profile");
         setLoading(false);
       }
     };
@@ -31,7 +39,7 @@ const StudentProfile = ({ id }: { id: number }) => {
     loadProfile();
   }, [id]);
 
-  if (loading) return <CircularProgress />;
+  if (loading) return <Loading />;
   if (error) return <div>Error: {error}</div>;
   if (!profile) return <div>No profile found</div>;
 
@@ -53,26 +61,48 @@ const StudentProfile = ({ id }: { id: number }) => {
             {/* Student Details */}
             <Grid item xs={12} md={6}>
               <Box className="space-y-4">
-                <Typography variant="h6" className="font-semibold text-gray-800">
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
                   Student ID: {profile.student_id}
                 </Typography>
-                <Typography variant="h6" className="font-semibold text-gray-800">
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
                   Name: {profile.name}
                 </Typography>
-                <Typography variant="h6" className="font-semibold text-gray-800">
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
                   Email: {profile.email}
                 </Typography>
-                <Typography variant="h6" className="font-semibold text-gray-800">
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
                   Major: {profile.major}
                 </Typography>
-                <Typography variant="h6" className="font-semibold text-gray-800">
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
                   Academic Year: {profile.academic_year}
                 </Typography>
-                <Typography variant="h6" className="font-semibold text-gray-800">
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
                   GPA: {profile.gpa}
                 </Typography>
-                <Typography variant="h6" className="font-semibold text-gray-800">
-                  Resume: {profile.resume_uploaded ? "Uploaded" : "Not Uploaded"}
+                <Typography
+                  variant="h6"
+                  className="font-semibold text-gray-800"
+                >
+                  Resume:{" "}
+                  {profile.resume_uploaded ? "Uploaded" : "Not Uploaded"}
                 </Typography>
               </Box>
             </Grid>
@@ -102,7 +132,9 @@ const StudentProfile = ({ id }: { id: number }) => {
                   variant="contained"
                   startIcon={<WorkHistory />}
                   className="bg-blue-500 hover:bg-blue-600 px-6 py-2"
-                  onClick={() => window.location.href = `/student/${id}/applications`}
+                  onClick={() =>
+                    (window.location.href = `/student/${id}/applications`)
+                  }
                 >
                   Applied Positions
                 </Button>
@@ -110,11 +142,12 @@ const StudentProfile = ({ id }: { id: number }) => {
                   variant="contained"
                   startIcon={<Event />}
                   className="bg-yellow-500 hover:bg-yellow-600 px-6 py-2"
-                  onClick={() => window.location.href = `/student/${id}/dashboard`}
+                  onClick={() =>
+                    (window.location.href = `/student/${id}/dashboard`)
+                  }
                 >
                   Career Fairs
                 </Button>
-                
               </Box>
             </Grid>
           </Grid>

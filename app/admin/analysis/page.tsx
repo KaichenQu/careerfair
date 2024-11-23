@@ -1,6 +1,4 @@
-
 import DataAnalysis from "@/components/admin/dataAnalysis";
-
 
 // Example data - replace with your actual data fetching logic
 const sampleReportContent = {
@@ -11,18 +9,13 @@ const sampleReportContent = {
   total_attended_companies: 48,
 
   total_positions: 200,
-
 };
 
 export default function DataAnalysisPage() {
   return (
-
     <DataAnalysis
-
       careerFairId={sampleReportContent.career_fair_id}
       reportContent={sampleReportContent}
     />
   );
-
 }
-
