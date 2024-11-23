@@ -10,45 +10,46 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import { getCareerFairs } from "../../services/careerFairService";
 import Layout from "../common/Layout";
-import Loading from "../common/Loading";
 
-interface CareerFair {
-  id: number;
-  name: string;
-  date: string;
-  location: string;
-  description: string;
-  attendees: number;
-}
+// Define the static career fair data array
+const staticCareerFairs = [
+  {
+    fair_id: 1,
+    fair_name: "Summer Career Fair",
+    careerfair_date: "2024-11-15",
+    location: "Main Hall",
+    description: "Annual career fair.",
+    attendees: 0,
+  },
+  {
+    fair_id: 2,
+    fair_name: "Fall Tech Expo",
+    careerfair_date: "2024-09-20",
+    location: "Engineering Building",
+    description: "Technology focused career fair.",
+    attendees: 0,
+  },
+  {
+    fair_id: 3,
+    fair_name: "Spring Job Fair",
+    careerfair_date: "2025-03-15",
+    location: "Student Center",
+    description: "Multi-industry career fair.",
+    attendees: 0,
+  },
+];
 
-const careerFairPage = () => {
-  const [loading, setLoading] = useState(true);
-  const [careerFairs, setCareerFairs] = useState<CareerFair[]>([]);
+const CareerFairPage = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchCareerFairs = async () => {
-      try {
-        setLoading(true);
-        const data = await getCareerFairs();
-        setCareerFairs(data);
-      } catch (error) {
-        console.error("Error fetching career fairs:", error);
-        toast.error("Failed to fetch career fairs. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCareerFairs();
-  }, []);
-
   const handleCardClick = (fairId: number) => {
-    router.push(`/careerFair/${fairId}/positions`);
+    if (fairId === 1) {
+      router.push(`/careerFair/${fairId}/positions`);
+    } else {
+      // Show "Not Shown" message for other fairs
+      alert("Details not available for this career fair.");
+    }
   };
 
   return (
@@ -67,75 +68,68 @@ const careerFairPage = () => {
               variant="h6"
               className="text-gray-600 font-normal max-w-2xl mx-auto"
             >
-              Discover upcoming career fairs and connect with your dream
+              Discover our upcoming career fairs and connect with your dream
               companies. Register early to secure your spot.
             </Typography>
           </div>
 
-          {loading ? (
-            <Loading />
-          ) : (
-            <Grid container spacing={4}>
-              {careerFairs.map((fair: CareerFair) => (
-                <Grid item xs={12} md={6} lg={4} key={fair.id}>
-                  <div
-                    onClick={() => handleCardClick(fair.id)}
-                    className="group h-full"
-                  >
-                    <Card className="h-full relative transform-gpu transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-white/80 backdrop-blur-sm border border-gray-100">
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.05] to-purple-500/[0.05] opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <CardContent className="space-y-4 p-6">
-                        <Typography
-                          variant="h5"
-                          className="font-bold text-gray-800"
-                        >
-                          {fair.name}
-                        </Typography>
+          <Grid container spacing={4}>
+            {staticCareerFairs.map((fair) => (
+              <Grid item xs={12} md={6} lg={4} key={fair.fair_id}>
+                <div
+                  onClick={() => handleCardClick(fair.fair_id)}
+                  className="group h-full"
+                >
+                  <Card className="h-full relative transform-gpu transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-white/80 backdrop-blur-sm border border-gray-100">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.05] to-purple-500/[0.05] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <CardContent className="space-y-4 p-6">
+                      <Typography
+                        variant="h5"
+                        className="font-bold text-gray-800"
+                      >
+                        {fair.fair_name}
+                      </Typography>
 
-                        <Box className="space-y-3">
-                          <Box className="flex items-center space-x-2 text-gray-600">
-                            <EventIcon className="text-blue-500" />
-                            <Typography>
-                              {new Date(fair.date).toLocaleDateString("en-US", {
+                      <Box className="space-y-3">
+                        <Box className="flex items-center space-x-2 text-gray-600">
+                          <EventIcon className="text-blue-500" />
+                          <Typography>
+                            {new Date(fair.careerfair_date).toLocaleDateString(
+                              "en-US",
+                              {
                                 weekday: "long",
                                 year: "numeric",
                                 month: "long",
                                 day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </Typography>
-                          </Box>
-
-                          <Box className="flex items-center space-x-2 text-gray-600">
-                            <LocationOn className="text-blue-500" />
-                            <Typography>{fair.location}</Typography>
-                          </Box>
-
-                          <Box className="flex items-center space-x-2 text-gray-600">
-                            <People className="text-blue-500" />
-                            <Typography>
-                              {fair.attendees > 0
-                                ? `${fair.attendees}+ Registered`
-                                : "Registration Open"}
-                            </Typography>
-                          </Box>
-
-                          <Typography variant="body2" color="textSecondary">
-                            {fair.description}
+                              }
+                            )}
                           </Typography>
                         </Box>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </Grid>
-              ))}
-            </Grid>
-          )}
+
+                        <Box className="flex items-center space-x-2 text-gray-600">
+                          <LocationOn className="text-blue-500" />
+                          <Typography>{fair.location}</Typography>
+                        </Box>
+
+                        <Box className="flex items-center space-x-2 text-gray-600">
+                          <People className="text-blue-500" />
+                          <Typography>Registration Open</Typography>
+                        </Box>
+
+                        <Typography variant="body2" color="textSecondary">
+                          {fair.description}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </div>
+              </Grid>
+            ))}
+          </Grid>
         </Container>
       </div>
     </Layout>
   );
 };
 
-export default careerFairPage;
+export default CareerFairPage;
