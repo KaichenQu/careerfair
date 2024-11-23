@@ -283,24 +283,44 @@ interface StudentProfile {
   gpa: number;
 }
 
-const studentAPI = {
-  // Get profile of currently logged-in student
-  getProfile: async (): Promise<StudentProfile> => {
-    try {
-      const storedUserId = localStorage.getItem('user_id');
-      console.log("Getting profile for logged-in student:", storedUserId);
-      
-      if (!storedUserId) {
-        throw new Error('User ID is not set. Please login first.');
-      }
+export interface AppliedPosition {
+  position_id: number;
+  submission_time: string;
+  company_name: string;
+  position_name: string;
+  position_description: string;
+}
 
-      const response = await axios.get(`${API_BASE_URL}/student/${storedUserId}/profile`);
-      console.log("Student profile data received:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching student profile:", error);
-      throw error;
-    }
+export interface DashboardData {
+  applied_positions: AppliedPosition[];
+}
+
+// First, define the type for the API response
+interface AppliedPositionsResponse {
+  applied_positions: AppliedPosition[];
+}
+
+interface StudentCareerFair {
+  fair_id: number;
+  fair_name: string;
+  careerfair_date: string;
+  location: string;
+  description: string;
+  admin: number;  // Changed from admin_id to admin
+}
+
+interface CareerFair_Student {
+  registered_fairs: StudentCareerFair[];
+  attended_fairs: StudentCareerFair[];
+}
+
+export const studentAPI = {
+  getProfile: async (userId: number) => {
+    const url = `${API_BASE_URL}/student/${userId}/profile`;
+    console.log('Calling API URL:', url);
+    console.log('With userId:', userId);
+    const response = await axios.get(url);
+    return response.data;
   },
   
   // Get profile of any student by ID
@@ -317,26 +337,49 @@ const studentAPI = {
   },
 
   // Update student profile
-  updateProfile: async (profileData: Partial<StudentProfile>): Promise<StudentProfile> => {
-    try {
-      const storedUserId = localStorage.getItem('user_id');
-      if (!storedUserId) {
-        throw new Error('User ID is not set. Please login first.');
-      }
+  updateProfile: async (studentId: number, updates: Partial<StudentProfile>) => {
+    const response = await fetch(`${API_BASE_URL}/student/${studentId}/profile`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+    
+    if (!response.ok) throw new Error('Failed to update profile');
+    const data = await response.json();
+    window.location.reload();
+    return data;
+  },
 
-      const response = await axios.put(
-        `${API_BASE_URL}/student/${storedUserId}/profile`,
-        profileData
-      );
-      console.log("Profile updated:", response.data);
+  getDashboard: async (studentId: number): Promise<DashboardData> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/student/${studentId}/dashboard`);
       return response.data;
     } catch (error) {
-      console.error("Error updating student profile:", error);
-      throw error;
+      console.error('Error fetching dashboard:', error);
+      throw new Error('Failed to fetch student dashboard');
     }
+  },
+
+  getCareerFair: async (studentId: number): Promise<CareerFair_Student> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/student/${studentId}/dashboard`);
+      console.log('Student dashboard data:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching dashboard:', error);
+      throw new Error('Failed to fetch student dashboard');
+    }
+  },
+
+  getAppliedPositions: async (studentId: number): Promise<AppliedPosition[]> => {
+    const response = await fetch(`${API_BASE_URL}/student/${studentId}/dashboard/appliedPositions`);
+    if (!response.ok) throw new Error('Failed to fetch applied positions');
+    const data: AppliedPositionsResponse = await response.json();
+    return data.applied_positions;
   }
 };
-
 interface FacultyProfile {
   faculty_id: number;
   name: string;
@@ -428,4 +471,5 @@ const facultyAPI = {
 };
 
 // Export everything at once
-export { loginUser, registerUser, companyAPI, studentAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData, type CompanyDashboardData };
+export { loginUser, registerUser, companyAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData, type CompanyDashboardData };
+

@@ -3,13 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Box, Button, Paper, Grid, CircularProgress } from "@mui/material";
 import Layout from "../common/Layout";
-import { Person, WorkHistory, Edit } from "@mui/icons-material";
+import { Person, WorkHistory, Edit, Event } from "@mui/icons-material";
 import { studentAPI, type StudentProfile } from "@/services/api";
+import { useRouter } from "next/navigation";
+import EditProfile from "./editProfile";
+import Link from 'next/link';
 
 const StudentProfile = ({ id }: { id: number }) => {
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const router = useRouter();
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -90,24 +94,27 @@ const StudentProfile = ({ id }: { id: number }) => {
                   variant="contained"
                   startIcon={<Edit />}
                   className="bg-green-500 hover:bg-green-600 px-6 py-2"
-                  onClick={() => window.location.href = `/student/${profile.student_id}/edit`}
+                  onClick={() => router.push(`/student/${id}/edit`)}
                 >
                   Edit Profile
                 </Button>
                 <Button
                   variant="contained"
-                  startIcon={<Person />}
-                  className="bg-blue-500 hover:bg-blue-600 px-6 py-2"
-                >
-                  Profile
-                </Button>
-                <Button
-                  variant="contained"
                   startIcon={<WorkHistory />}
-                  className="bg-purple-500 hover:bg-purple-600 px-6 py-2"
+                  className="bg-blue-500 hover:bg-blue-600 px-6 py-2"
+                  onClick={() => window.location.href = `/student/${id}/applications`}
                 >
                   Applied Positions
                 </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<Event />}
+                  className="bg-yellow-500 hover:bg-yellow-600 px-6 py-2"
+                  onClick={() => window.location.href = `/student/${id}/dashboard`}
+                >
+                  Career Fairs
+                </Button>
+                
               </Box>
             </Grid>
           </Grid>
