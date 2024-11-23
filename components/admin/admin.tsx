@@ -8,9 +8,10 @@ import {
   Person as PersonIcon,
   Analytics as AnalyticsIcon,
   Settings as SettingsIcon,
+  Campaign as CampaignIcon,
 } from "@mui/icons-material";
 
-const AdminPage = () => {
+const AdminPage = ({ adminId }: { adminId: string }) => {
   const [adminData, setAdminData] = useState({
     admin_id: "",
     admin_name: "",
@@ -21,49 +22,43 @@ const AdminPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const initializeAdmin = async () => {
+    const fetchAdminProfile = async () => {
       try {
-        const admin_id = localStorage.getItem("admin_id");
-        const admin_token = localStorage.getItem("admin_token");
-        const admin_name = localStorage.getItem("admin_name");
-        const admin_email = localStorage.getItem("admin_email");
-
-        if (!admin_id || !admin_token) {
-          throw new Error("No credentials found");
+        const stored_admin_id = localStorage.getItem("admin_id");
+        if (!stored_admin_id || stored_admin_id !== adminId) {
+          router.push("/admin/login");
+          return;
         }
 
-        const response = await fetch("http://127.0.0.1:8000/admin/verify", {
-          headers: {
-            Authorization: `Bearer ${admin_token}`,
-          },
-        });
+        const response = await fetch(
+          `http://127.0.0.1:8000/admin/${stored_admin_id}/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            credentials: "include",
+          }
+        );
 
-        if (!response.ok) {
-          throw new Error("Invalid token");
-        }
-
+        if (!response.ok) throw new Error("Failed to fetch profile");
         const data = await response.json();
 
         setAdminData({
-          admin_id,
-          admin_name: admin_name || "",
-          email: admin_email || "",
+          admin_id: data.admin_id.toString(),
+          admin_name: data.admin_name,
+          email: data.email,
         });
         setIsAuthenticated(true);
       } catch (err) {
-        console.error("Verification error:", err);
-        localStorage.removeItem("admin_token");
-        localStorage.removeItem("admin_id");
-        localStorage.removeItem("admin_name");
-        localStorage.removeItem("admin_email");
-        window.location.href = "/admin/login";
+        console.error("Error fetching admin data:", err);
+        router.push("/admin/login");
       } finally {
         setIsLoading(false);
       }
     };
 
-    initializeAdmin();
-  }, []);
+    fetchAdminProfile();
+  }, [adminId, router]);
 
   if (isLoading) {
     return (
@@ -76,144 +71,209 @@ const AdminPage = () => {
   }
 
   if (!isAuthenticated) {
-    return null; // 不渲染任何内容，等待重定向完成
+    return null;
   }
 
   return (
     <Layout>
-      <Container maxWidth="lg" className="py-12">
-        <Typography
-          variant="h3"
-          component="h1"
-          className="text-center font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
-        >
-          Welcome, {adminData.admin_name}
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          className="text-center text-gray-600 mb-12"
-        >
-          {adminData.email}
-        </Typography>
+      <Box
+        className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50"
+        sx={{ paddingY: 8 }}
+      >
+        <Container maxWidth="lg">
+          <Box className="text-center mb-16">
+            <Typography
+              variant="h2"
+              component="h1"
+              className="font-black mb-4"
+              sx={{
+                background: "linear-gradient(135deg, #1a365d 0%, #3b82f6 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+                textShadow: "0 2px 10px rgba(59, 130, 246, 0.1)",
+              }}
+            >
+              Welcome Back, {adminData.admin_name}
+            </Typography>
+            <Typography
+              variant="h6"
+              className="text-slate-600 font-light"
+              sx={{ letterSpacing: 1 }}
+            >
+              {adminData.email}
+            </Typography>
+          </Box>
 
-        <Grid container spacing={4}>
-          {/* Profile Card */}
-          <Grid item xs={12} md={4}>
-            <div className="cursor-pointer group">
-              <Card className="h-full p-6 relative transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                {/* Folded corner effect */}
-                <div className="absolute top-0 right-0 w-24 h-24 transition-transform duration-300 origin-top-right group-hover:scale-110">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/20 to-transparent transform rotate-45" />
-                  <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-[141%] h-[141%] bg-white transform origin-top-right -rotate-45 translate-x-2 -translate-y-2 shadow-lg" />
-                  </div>
-                </div>
-
-                <Box className="flex flex-col h-full">
-                  <PersonIcon
-                    className="text-blue-500 mb-4"
-                    sx={{ fontSize: 40 }}
-                  />
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={4}>
+              <Card
+                className="h-full transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                }}
+              >
+                <Box className="p-8">
+                  <Box className="mb-6">
+                    <PersonIcon sx={{ fontSize: 48, color: "#3b82f6" }} />
+                  </Box>
                   <Typography
                     variant="h5"
-                    className="font-bold text-gray-800 mb-4"
+                    className="font-bold mb-4 text-slate-800"
                   >
                     Profile Management
                   </Typography>
-                  <Typography className="text-gray-600 mb-4">
-                    Manage your admin profile and account settings
+                  <Typography className="text-slate-600 mb-8">
+                    Manage your admin profile and security settings
                   </Typography>
                   <Button
                     variant="contained"
-                    className="mt-auto bg-blue-500 hover:bg-blue-600"
-                    onClick={() => (window.location.href = "/admin/profile")}
+                    fullWidth
+                    onClick={() => router.push("/admin/profile")}
+                    sx={{
+                      background:
+                        "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                      textTransform: "none",
+                      py: 1.5,
+                      fontSize: "1rem",
+                    }}
                   >
                     View Profile
                   </Button>
                 </Box>
               </Card>
-            </div>
-          </Grid>
+            </Grid>
 
-          {/* Data Analysis Card */}
-          <Grid item xs={12} md={4}>
-            <div className="cursor-pointer group">
-              <Card className="h-full p-6 relative transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                {/* Folded corner effect */}
-                <div className="absolute top-0 right-0 w-24 h-24 transition-transform duration-300 origin-top-right group-hover:scale-110">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/20 to-transparent transform rotate-45" />
-                  <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-[141%] h-[141%] bg-white transform origin-top-right -rotate-45 translate-x-2 -translate-y-2 shadow-lg" />
-                  </div>
-                </div>
-
-                <Box className="flex flex-col h-full">
-                  <AnalyticsIcon
-                    className="text-purple-500 mb-4"
-                    sx={{ fontSize: 40 }}
-                  />
+            <Grid item xs={12} md={4}>
+              <Card
+                className="h-full transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #faf5ff 100%)",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                }}
+              >
+                <Box className="p-8">
+                  <Box className="mb-6">
+                    <AnalyticsIcon sx={{ fontSize: 48, color: "#8b5cf6" }} />
+                  </Box>
                   <Typography
                     variant="h5"
-                    className="font-bold text-gray-800 mb-4"
+                    className="font-bold mb-4 text-slate-800"
                   >
                     Data Analysis
                   </Typography>
-                  <Typography className="text-gray-600 mb-4">
-                    View and analyze system data and statistics
+                  <Typography className="text-slate-600 mb-8">
+                    View comprehensive system analytics and reports
                   </Typography>
                   <Button
                     variant="contained"
-                    className="mt-auto bg-purple-500 hover:bg-purple-600"
-                    onClick={() => (window.location.href = "/admin/analysis")}
+                    fullWidth
+                    onClick={() => router.push(`/admin/analysis`)}
+                    sx={{
+                      background:
+                        "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                      textTransform: "none",
+                      py: 1.5,
+                      fontSize: "1rem",
+                    }}
                   >
                     View Analysis
                   </Button>
                 </Box>
               </Card>
-            </div>
-          </Grid>
+            </Grid>
 
-          {/* System Management Card */}
-          <Grid item xs={12} md={4}>
-            <div className="cursor-pointer group">
-              <Card className="h-full p-6 relative transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                {/* Folded corner effect */}
-                <div className="absolute top-0 right-0 w-24 h-24 transition-transform duration-300 origin-top-right group-hover:scale-110">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/20 to-transparent transform rotate-45" />
-                  <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-[141%] h-[141%] bg-white transform origin-top-right -rotate-45 translate-x-2 -translate-y-2 shadow-lg" />
-                  </div>
-                </div>
-
-                <Box className="flex flex-col h-full">
-                  <SettingsIcon
-                    className="text-green-500 mb-4"
-                    sx={{ fontSize: 40 }}
-                  />
+            <Grid item xs={12} md={4}>
+              <Card
+                className="h-full transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                }}
+              >
+                <Box className="p-8">
+                  <Box className="mb-6">
+                    <SettingsIcon sx={{ fontSize: 48, color: "#22c55e" }} />
+                  </Box>
                   <Typography
                     variant="h5"
-                    className="font-bold text-gray-800 mb-4"
+                    className="font-bold mb-4 text-slate-800"
                   >
                     System Management
                   </Typography>
-                  <Typography className="text-gray-600 mb-4">
-                    Configure and manage system settings and permissions
+                  <Typography className="text-slate-600 mb-8">
+                    Configure system settings and manage permissions
                   </Typography>
                   <Button
                     variant="contained"
-                    className="mt-auto bg-green-500 hover:bg-green-600"
-                    onClick={() =>
-                      (window.location.href = "/adminPage/careerFair")
-                    }
+                    fullWidth
+                    onClick={() => router.push("/adminPage/careerFair")}
+                    sx={{
+                      background:
+                        "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+                      textTransform: "none",
+                      py: 1.5,
+                      fontSize: "1rem",
+                    }}
                   >
                     Manage System
                   </Button>
                 </Box>
               </Card>
-            </div>
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <Card
+                className="h-full transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #fff1f2 100%)",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                }}
+              >
+                <Box className="p-8">
+                  <Box className="mb-6">
+                    <CampaignIcon sx={{ fontSize: 48, color: "#e11d48" }} />
+                  </Box>
+                  <Typography
+                    variant="h5"
+                    className="font-bold mb-4 text-slate-800"
+                  >
+                    Announcement Management
+                  </Typography>
+                  <Typography className="text-slate-600 mb-8">
+                    Create and manage system announcements
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() =>
+                      router.push(`/admin/${adminId}/announcements`)
+                    }
+                    sx={{
+                      background:
+                        "linear-gradient(135deg, #e11d48 0%, #be123c 100%)",
+                      textTransform: "none",
+                      py: 1.5,
+                      fontSize: "1rem",
+                    }}
+                  >
+                    Manage Announcements
+                  </Button>
+                </Box>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </Box>
     </Layout>
   );
 };

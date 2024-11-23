@@ -4,6 +4,23 @@ import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Layout from "@/components/common/Layout";
 import { useRouter } from "next/navigation";
+import {
+  Container,
+  Paper,
+  Typography,
+  Box,
+  Avatar,
+  Divider,
+  Button,
+  TextField,
+  IconButton,
+} from "@mui/material";
+import {
+  Person as PersonIcon,
+  Edit as EditIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+} from "@mui/icons-material";
 
 interface AdminProfileData {
   id: string;
@@ -22,11 +39,20 @@ const AdminProfile = () => {
   const [profile, setProfile] = useState<AdminProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPasswordEdit, setShowPasswordEdit] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
   const [passwords, setPasswords] = useState<PasswordForm>({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProfile, setEditedProfile] = useState<AdminProfileData | null>(
+    null
+  );
 
   useEffect(() => {
     fetchProfile();
@@ -41,15 +67,23 @@ const AdminProfile = () => {
         return;
       }
 
-      const response = await fetch(`/api/admin/${admin_id}/profile`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `http://127.0.0.1:8000/admin/${admin_id}/profile`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to fetch profile");
-      setProfile(await response.json());
+      const data = await response.json();
+      setProfile({
+        id: data.admin_id.toString(),
+        name: data.admin_name,
+        email: data.email,
+      });
     } catch (error) {
       console.error("Failed to fetch profile:", error);
       toast.error("Failed to load profile");
@@ -106,101 +140,241 @@ const AdminProfile = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  const handleUpdateProfile = async () => {
+    if (!editedProfile) return;
+
+    try {
+      const admin_id = localStorage.getItem("admin_id");
+      const response = await fetch(
+        `http://127.0.0.1:8000/admin/${admin_id}/profile`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            admin_name: editedProfile.name,
+            email: editedProfile.email,
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update profile");
+
+      const updatedData = await response.json();
+      setProfile({
+        id: updatedData.admin_id.toString(),
+        name: updatedData.admin_name,
+        email: updatedData.email,
+      });
+      setIsEditing(false);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      toast.error("Failed to update profile");
+    }
+  };
+
+  if (loading) {
+    return (
+      <Layout>
+        <Box className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500" />
+        </Box>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Admin Profile</h1>
-
-        {profile && (
-          <div className="bg-white shadow rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
-            <div className="space-y-4">
-              <p>
-                <span className="font-medium">Name:</span> {profile.name}
-              </p>
-              <p>
-                <span className="font-medium">Email:</span> {profile.email}
-              </p>
-            </div>
-          </div>
-        )}
-
-        <div className="bg-white shadow rounded-lg p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Password</h2>
-            <button
-              onClick={() => setShowPasswordEdit(!showPasswordEdit)}
-              className="text-blue-600 hover:text-blue-800"
+      <Container maxWidth="md" className="py-8">
+        <Paper elevation={3} className="p-8">
+          <Box className="flex flex-col items-center mb-8">
+            <Avatar
+              sx={{
+                width: 120,
+                height: 120,
+                bgcolor: "primary.main",
+                mb: 3,
+              }}
             >
-              {showPasswordEdit ? "Cancel" : "Change Password"}
-            </button>
-          </div>
+              <PersonIcon sx={{ fontSize: 64 }} />
+            </Avatar>
+            <Typography variant="h4" className="font-bold mb-2">
+              {profile?.name}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              System Administrator
+            </Typography>
+          </Box>
 
-          {showPasswordEdit && (
-            <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Current Password
-                </label>
-                <input
-                  type="password"
-                  value={passwords.currentPassword}
-                  onChange={(e) =>
-                    setPasswords((prev) => ({
-                      ...prev,
-                      currentPassword: e.target.value,
-                    }))
-                  }
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  value={passwords.newPassword}
-                  onChange={(e) =>
-                    setPasswords((prev) => ({
-                      ...prev,
-                      newPassword: e.target.value,
-                    }))
-                  }
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Confirm New Password
-                </label>
-                <input
-                  type="password"
-                  value={passwords.confirmPassword}
-                  onChange={(e) =>
-                    setPasswords((prev) => ({
-                      ...prev,
-                      confirmPassword: e.target.value,
-                    }))
-                  }
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              >
-                Update Password
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
+          <Divider className="my-6" />
+
+          <Box className="space-y-6">
+            <Box className="bg-gray-50 p-6 rounded-lg">
+              <Box className="flex justify-between items-center mb-4">
+                <Typography variant="h6" className="font-semibold">
+                  Profile Information
+                </Typography>
+                <Button
+                  startIcon={<EditIcon />}
+                  onClick={() => {
+                    if (isEditing) {
+                      handleUpdateProfile();
+                    } else {
+                      setEditedProfile(profile);
+                      setIsEditing(true);
+                    }
+                  }}
+                  color="primary"
+                >
+                  {isEditing ? "Save Changes" : "Edit Profile"}
+                </Button>
+              </Box>
+              <Box className="space-y-3">
+                <Box className="flex items-center">
+                  <Typography variant="body1" className="font-medium w-24">
+                    Admin ID:
+                  </Typography>
+                  <Typography>{profile?.id}</Typography>
+                </Box>
+                {isEditing ? (
+                  <>
+                    <TextField
+                      fullWidth
+                      label="Name"
+                      value={editedProfile?.name || ""}
+                      onChange={(e) =>
+                        setEditedProfile((prev) =>
+                          prev ? { ...prev, name: e.target.value } : null
+                        )
+                      }
+                      className="mb-4"
+                    />
+                    <TextField
+                      fullWidth
+                      label="Email"
+                      value={editedProfile?.email || ""}
+                      onChange={(e) =>
+                        setEditedProfile((prev) =>
+                          prev ? { ...prev, email: e.target.value } : null
+                        )
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Box className="flex items-center">
+                      <Typography variant="body1" className="font-medium w-24">
+                        Name:
+                      </Typography>
+                      <Typography>{profile?.name}</Typography>
+                    </Box>
+                    <Box className="flex items-center">
+                      <Typography variant="body1" className="font-medium w-24">
+                        Email:
+                      </Typography>
+                      <Typography>{profile?.email}</Typography>
+                    </Box>
+                  </>
+                )}
+              </Box>
+            </Box>
+
+            <Box className="bg-gray-50 p-6 rounded-lg">
+              <Box className="flex justify-between items-center mb-4">
+                <Typography variant="h6" className="font-semibold">
+                  Password Settings
+                </Typography>
+                <Button
+                  startIcon={<EditIcon />}
+                  onClick={() => setShowPasswordEdit(!showPasswordEdit)}
+                  color="primary"
+                >
+                  {showPasswordEdit ? "Cancel" : "Change Password"}
+                </Button>
+              </Box>
+
+              {showPasswordEdit && (
+                <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                  {Object.entries({
+                    current: "Current Password",
+                    new: "New Password",
+                    confirm: "Confirm New Password",
+                  }).map(([key, label]) => (
+                    <Box key={key}>
+                      <TextField
+                        fullWidth
+                        label={label}
+                        type={
+                          showPassword[key as keyof typeof showPassword]
+                            ? "text"
+                            : "password"
+                        }
+                        value={
+                          passwords[
+                            `${
+                              key === "current"
+                                ? "current"
+                                : key === "new"
+                                ? "new"
+                                : "confirm"
+                            }Password` as keyof PasswordForm
+                          ]
+                        }
+                        onChange={(e) =>
+                          setPasswords((prev) => ({
+                            ...prev,
+                            [`${
+                              key === "current"
+                                ? "current"
+                                : key === "new"
+                                ? "new"
+                                : "confirm"
+                            }Password`]: e.target.value,
+                          }))
+                        }
+                        InputProps={{
+                          endAdornment: (
+                            <IconButton
+                              onClick={() =>
+                                setShowPassword((prev) => ({
+                                  ...prev,
+                                  [key]:
+                                    !prev[key as keyof typeof showPassword],
+                                }))
+                              }
+                            >
+                              {showPassword[
+                                key as keyof typeof showPassword
+                              ] ? (
+                                <VisibilityOffIcon />
+                              ) : (
+                                <VisibilityIcon />
+                              )}
+                            </IconButton>
+                          ),
+                        }}
+                      />
+                    </Box>
+                  ))}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    size="large"
+                  >
+                    Update Password
+                  </Button>
+                </form>
+              )}
+            </Box>
+          </Box>
+        </Paper>
+      </Container>
     </Layout>
   );
 };

@@ -81,9 +81,9 @@ const AdminLogin = () => {
       localStorage.setItem("admin_name", data.admin.admin_name);
       localStorage.setItem("admin_email", data.admin.email);
 
-      toast.success("Login successful");
+      toast.success(data.message);
 
-      window.location.href = "/admin";
+      window.location.href = data.redirect_url;
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
