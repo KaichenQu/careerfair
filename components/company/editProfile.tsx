@@ -1,123 +1,125 @@
 'use client';
 
-import { useState } from 'react';
-import { Company } from '@/data/company';
-import { useRouter } from 'next/navigation';
-import { sampleCompanies } from '@/data/company';
-import Layout from '@/components/common/Layout';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { companyAPI, CompanyProfile } from '@/services/api';
+import { Container, TextField, Button, Box, Typography } from '@mui/material';
 
-interface PageProps {
-  params: {
-    id: number;
-  }
-}
-
-export default function EditCompanyProfile({ params }: PageProps) {
+const CompanyEdit = () => {
   const router = useRouter();
-  const companyId = params.id;
+  const params = useParams();
+  const companyId = parseInt(params.id as string, 10);
 
-  const company = sampleCompanies.find(c => c.id === companyId);
+  if (isNaN(companyId)) {
+    router.push('/error');
+    return null;
+  }
 
   const [formData, setFormData] = useState({
-    contact_name: company?.contact.name || '',
-    contact_phone: company?.contact.phone || '',
-    contact_email: company?.contact.email || '',
+    name: '',
+    email: '',
+    industry: '',
+    contact_name: '',
+    contact_phone: '',
+    contact_email: '',
+    location: '',
+    profile: ''
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const data = await companyAPI.getCompanyById(companyId);
+        setFormData({
+          name: data.name || '',
+          email: data.email || '',
+          industry: data.industry || '',
+          contact_name: data.contact_name || '',
+          contact_phone: data.contact_phone || '',
+          contact_email: data.contact_email || '',
+          location: data.location || '',
+          profile: data.profile || ''
+        });
+      } catch (error) {
+        console.error('Failed to load profile:', error);
+      }
+    };
+    loadProfile();
+  }, [companyId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Here you would typically make an API call to update the company
-    console.log('Updating company with data:', formData);
-    
-    // Navigate back to company profile
-    router.push(`/company/${companyId}`);
+    try {
+      await companyAPI.updateProfile(companyId, formData);
+      router.push(`/company/${companyId}`);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
   };
 
   return (
-    <Layout>
-      <div className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Edit Company Profile</h1>
-        
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4">
-          {/* Contact Name */}
-          <div>
-            <label htmlFor="contact_name" className="block text-sm font-medium text-gray-700">
-              Contact Name
-            </label>
-            <input
-              type="text"
-              id="contact_name"
-              name="contact_name"
-              value={formData.contact_name}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          {/* Contact Phone */}
-          <div>
-            <label htmlFor="contact_phone" className="block text-sm font-medium text-gray-700">
-              Contact Phone
-            </label>
-            <input
-              type="tel"
-              id="contact_phone"
-              name="contact_phone"
-              value={formData.contact_phone}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          {/* Contact Email */}
-          <div>
-            <label htmlFor="contact_email" className="block text-sm font-medium text-gray-700">
-              Contact Email
-            </label>
-            <input
-              type="email"
-              id="contact_email"
-              name="contact_email"
-              value={formData.contact_email}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-              required
-            />
-          </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-          >
+    <Container maxWidth="md" className="py-8">
+      <Typography variant="h4" className="mb-6">Edit Company Profile</Typography>
+      <Box component="form" onSubmit={handleSubmit} className="space-y-4">
+        <TextField
+          fullWidth
+          label="Company Name"
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+        />
+        <TextField
+          fullWidth
+          label="Email"
+          value={formData.email}
+          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+        />
+        <TextField
+          fullWidth
+          label="Industry"
+          value={formData.industry}
+          onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
+        />
+        <TextField
+          fullWidth
+          label="Contact Name"
+          value={formData.contact_name}
+          onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
+        />
+        <TextField
+          fullWidth
+          label="Contact Phone"
+          value={formData.contact_phone}
+          onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
+        />
+        <TextField
+          fullWidth
+          label="Contact Email"
+          value={formData.contact_email}
+          onChange={(e) => setFormData(prev => ({ ...prev, contact_email: e.target.value }))}
+        />
+        <TextField
+          fullWidth
+          label="Location"
+          value={formData.location}
+          onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+        />
+        <TextField
+          fullWidth
+          label="Company Profile"
+          value={formData.profile}
+          onChange={(e) => setFormData(prev => ({ ...prev, profile: e.target.value }))}
+          multiline
+          rows={4}
+        />
+        <Box className="pt-4">
+          <Button type="submit" variant="contained" color="primary">
             Save Changes
-          </button>
-        </div>
-      </form>
-      </div>
-    </Layout>
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
-}
+};
+
+export default CompanyEdit;
 
