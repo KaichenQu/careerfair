@@ -1,6 +1,4 @@
-
 "use client";
-
 
 import React, { useState, useRef, useEffect } from "react";
 import {
@@ -47,37 +45,40 @@ const ChatBox = () => {
       );
       const data = await response.json();
 
+      // Extract only the results from the response
+      const results = data.results;
       let formattedResponse = "";
 
-      if (Array.isArray(data)) {
-        // Format array data as a bulleted list
-        formattedResponse = data
-          .map((item) => {
-            if (typeof item === "object") {
-              // Format object properties
-              const properties = Object.entries(item)
-                .map(
-                  ([key, value]) =>
-                    `  • ${
-                      key.charAt(0).toUpperCase() + key.slice(1)
-                    }: ${value}`
-                )
-                .join("\n");
-              return `Record:\n${properties}`;
-            }
-            return `• ${String(item)}`;
+      if (Array.isArray(results)) {
+        // Format array of results
+        formattedResponse = results
+          .map((item, index) => {
+            const formattedFields = Object.entries(item)
+              .map(([key, value]) => {
+                // Format key to be more readable
+                const formattedKey = key
+                  .split("_")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ");
+                return `  ${formattedKey}: ${value}`;
+              })
+              .join("\n");
+            return `Company ${index + 1}:\n${formattedFields}`;
           })
           .join("\n\n");
-      } else if (typeof data === "object") {
-        // Format single object
-        formattedResponse = Object.entries(data)
-          .map(
-            ([key, value]) =>
-              `• ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`
-          )
+      } else if (results && typeof results === "object") {
+        // Format single result object
+        formattedResponse = Object.entries(results)
+          .map(([key, value]) => {
+            const formattedKey = key
+              .split("_")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ");
+            return `${formattedKey}: ${value}`;
+          })
           .join("\n");
       } else {
-        formattedResponse = String(data);
+        formattedResponse = "No results found.";
       }
 
       setMessages((prev) => [

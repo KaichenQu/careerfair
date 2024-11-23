@@ -4,24 +4,29 @@ A Next.js-based platform for managing career fairs, connecting students with emp
 
 ## 🚀 Getting Started
 
-1. Clone the repository
-2. Install dependencies:
+1. **Clone the repository:**
 
-```bash
-npm install
-# or
-yarn install
-```
+   ```bash
+   git clone https://github.com/KaichenQu/frontend.git
+   ```
 
-3. Run the development server:
+2. **Install dependencies:**
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+3. **Run the development server:**
+
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 🛠 Tech Stack
 
@@ -88,11 +93,11 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 🔧 Configuration Files
 
-- TypeScript configuration (tsconfig.json)
-- Tailwind CSS setup (tailwind.config.ts)
-- Next.js configuration (next.config.ts)
-- ESLint rules (.eslintrc.json)
-- Environment variables (.env.example)
+- TypeScript configuration (`tsconfig.json`)
+- Tailwind CSS setup (`tailwind.config.ts`)
+- Next.js configuration (`next.config.ts`)
+- ESLint rules (`.eslintrc.json`)
+- Environment variables (`.env.example`)
 
 ## 🤝 Contributing
 

@@ -56,22 +56,25 @@ const CareerFairPage = () => {
     <Layout>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <Container maxWidth="lg" className="py-16">
-          <div className="text-center mb-16">
+          <Box className="text-center mb-16">
             <Typography
               variant="h3"
               component="h1"
-              className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
+              className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text mx-auto"
+              align="center"
             >
               Upcoming Career Fairs
             </Typography>
             <Typography
               variant="h6"
               className="text-gray-600 font-normal max-w-2xl mx-auto"
+              align="center"
+              paragraph
             >
               Discover our upcoming career fairs and connect with your dream
               companies. Register early to secure your spot.
             </Typography>
-          </div>
+          </Box>
 
           <Grid container spacing={4}>
             {staticCareerFairs.map((fair) => (
