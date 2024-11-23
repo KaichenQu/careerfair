@@ -1,9 +1,8 @@
 'use client';
 
-
 import Layout from '@/components/common/Layout';
 import { useEffect, useState } from 'react';
-import { companyAPI, CompanyProfile } from '@/services/api';
+import { companyAPI, type CompanyProfile } from '@/services/api';
 import { useRouter } from 'next/navigation';
 import {
   Container,
@@ -36,6 +35,7 @@ const CompanyDashboard = ({id}: {id: number}) => {
     const loadProfile = async () => {
       try {
         const data = await companyAPI.getCompanyById(id);
+        console.log('Received profile data:', data);
         setProfile(data);
       } catch (err) {
         console.error('Failed to load company profile');
@@ -45,6 +45,27 @@ const CompanyDashboard = ({id}: {id: number}) => {
     };
     loadProfile();
   }, [id]);
+
+  const handleCareerFairClick = () => {
+    console.log('Current profile state:', profile);
+    
+    const storedUserId = id;
+    console.log('Stored user ID:', storedUserId);
+
+    if (storedUserId) {
+      console.log('Using stored user ID:', storedUserId);
+      router.push(`/company/${storedUserId}/careerfair`);
+    } else {
+      console.error('No company ID available');
+    }
+  };
+
+  const handlePositionsClick = () => {
+    const storedUserId = id;
+    if (storedUserId) {
+      router.push(`/company/${storedUserId}/positions`);
+    }
+  };
 
   if (loading) {
     return (
@@ -88,15 +109,26 @@ const CompanyDashboard = ({id}: {id: number}) => {
 
           {/* Action Buttons */}
           <Grid container spacing={3} className="mb-8">
+          <Grid item xs={12} md={4}>
+              <Button
+                fullWidth
+                variant="contained"
+                startIcon={<PublishIcon />}
+                onClick={handlePositionsClick}
+                className="bg-indigo-600 hover:bg-indigo-700 py-3 text-lg normal-case"
+              >
+                Publish Position
+              </Button>
+            </Grid>
             <Grid item xs={12} md={4}>
               <Button
                 fullWidth
                 variant="contained"
                 startIcon={<DashboardIcon />}
-                onClick={() => router.push('/company/dashboard')}
+                onClick={handleCareerFairClick}
                 className="bg-blue-600 hover:bg-blue-700 py-3 text-lg normal-case"
               >
-                Dashboard
+                Career Fair
               </Button>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -104,23 +136,13 @@ const CompanyDashboard = ({id}: {id: number}) => {
                 fullWidth
                 variant="contained"
                 startIcon={<EditIcon />}
-                onClick={() => router.push('/company/edit-profile')}
+                onClick={() => router.push(`/company/${id}/edit`)}
                 className="bg-purple-600 hover:bg-purple-700 py-3 text-lg normal-case"
               >
                 Edit Profile
               </Button>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<PublishIcon />}
-                onClick={() => router.push('/company/publish-position')}
-                className="bg-indigo-600 hover:bg-indigo-700 py-3 text-lg normal-case"
-              >
-                Publish Position
-              </Button>
-            </Grid>
+            
           </Grid>
 
           {/* Main Content */}

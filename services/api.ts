@@ -103,6 +103,7 @@ const loginUser = async (credentials: {
 };
 
 export interface CompanyProfile {
+  id: number;
   name: string;
   email: string;
   industry: string;
@@ -113,22 +114,63 @@ export interface CompanyProfile {
   profile: string;
 }
 
+export type Position = {
+  position_id: string;
+  position_name: string;
+  salary: number;
+  location: string;
+  description: string;
+  company_id: string;
+  ng_flag: boolean;
+  intern_flag: boolean;
+  sponsor_flag: boolean;
+};
+
+interface CareerFair {
+  fair_id: number;
+  fair_name: string;
+  careerfair_date: string;
+  location: string;
+  description: string;
+  admin_id: number;
+}
+
+interface CompanyDashboardData {
+  published_positions: Position[];
+  registered_fairs: CareerFair[];
+  attended_fairs: CareerFair[];
+}
+
+interface EditPositionData {
+  position_name?: string;
+  salary?: number;
+  location?: string;
+  description?: string;
+  ng_flag?: boolean;
+  intern_flag?: boolean;
+  sponsor_flag?: boolean;
+}
+
+interface CreatePositionData {
+  position_name: string;
+  salary: number;
+  location: string;
+  description: string;
+  ng_flag: number;
+  intern_flag: number;
+  sponsor_flag: number;
+}
+
 const companyAPI = {
   // Get profile of currently logged-in company
   getProfile: async (): Promise<CompanyProfile> => {
     try {
-      const storedUserId = localStorage.getItem('user_id');
-      console.log("Getting profile for logged-in user:", storedUserId);
-      
-      if (!storedUserId) {
-        throw new Error('User ID is not set. Please login first.');
-      }
-
-      const response = await axios.get(`${API_BASE_URL}/company/${storedUserId}/profile`);
-      console.log("Profile data received:", response.data);
+      console.log('Fetching company profile...'); // Debug log
+      const response = await axios.get(`${API_BASE_URL}/company/profile`);
+      console.log('Profile API response:', response.data); // Debug log
       return response.data;
     } catch (error) {
-      console.error("Error fetching company profile:", error);
+      console.error('Error in getProfile:', error);
       throw error;
     }
   },
@@ -147,24 +189,88 @@ const companyAPI = {
   },
 
   // Update company profile
-  updateProfile: async (profileData: Partial<CompanyProfile>): Promise<CompanyProfile> => {
-    try {
-      const storedUserId = localStorage.getItem('user_id');
-      if (!storedUserId) {
-        throw new Error('User ID is not set. Please login first.');
-      }
+  updateProfile: async (companyId: number, data: CompanyProfile) => {
+    const response = await fetch(`${API_BASE_URL}/company/${companyId}/profile`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    });
 
-      const response = await axios.put(
-        `${API_BASE_URL}/company/${storedUserId}/profile`,
-        profileData
-      );
-      console.log("Profile updated:", response.data);
+    if (!response.ok) {
+      throw new Error('Failed to update profile');
+    }
+
+    return await response.json();
+  },
+
+  // Get dashboard data
+  getDashboard: async (userId: string | number): Promise<CompanyDashboardData> => {
+    try {
+      console.log('Fetching dashboard for user ID:', userId);
+      const response = await axios.get(`${API_BASE_URL}/company/${userId}/dashboard`);
+      console.log('Dashboard data received:', response.data);
       return response.data;
     } catch (error) {
-      console.error("Error updating company profile:", error);
+      console.error('Error fetching dashboard:', error);
       throw error;
     }
-  }
+  },
+
+  updatePosition: async (companyId: number, positionId: number, positionData: EditPositionData) => {
+    try {
+      const response = await axios.patch(
+        `${API_BASE_URL}/company/${companyId}/position/${positionId}`,
+        positionData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      return response.data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw new Error('Failed to update position');
+    }
+  },
+
+  createPosition: async (companyId: number, positionData: CreatePositionData) => {
+    try {
+      console.log('Making request to:', `${API_BASE_URL}/company/${companyId}/position`);
+      console.log('Request payload:', {
+        ...positionData,
+        company_id: companyId
+      });
+
+      const response = await axios.post(
+        `${API_BASE_URL}/company/${companyId}/position`,
+        {
+          ...positionData,
+          company_id: companyId
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('API Error Details:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message
+        });
+        throw new Error(`API Error: ${error.response?.status} - ${error.message}`);
+      }
+      throw error;
+    }
+  },
 };
 
 interface StudentProfile {
@@ -322,4 +428,4 @@ const facultyAPI = {
 };
 
 // Export everything at once
-export { loginUser, registerUser, companyAPI, studentAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData };
+export { loginUser, registerUser, companyAPI, studentAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData, type CompanyDashboardData };
