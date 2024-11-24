@@ -39,7 +39,11 @@ const StudentProfile = ({ id }: { id: number }) => {
     loadProfile();
   }, [id]);
 
-  if (loading) return <Loading />;
+  if (loading) return (
+    <Box display="flex" justifyContent="center" padding={4}>
+      <CircularProgress />
+    </Box>
+  );
   if (error) return <div>Error: {error}</div>;
   if (!profile) return <div>No profile found</div>;
 
