@@ -32,27 +32,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     try {
       const savedUser = localStorage.getItem('user');
-      const savedIsAuth = localStorage.getItem('isAuthenticated');
-      const userId = localStorage.getItem('user_id');
       
-      // If we have a userId but no user object, reconstruct it
-      if (userId && !savedUser) {
-        const reconstructedUser = {
-          id: parseInt(userId),
-          email: localStorage.getItem('email') || '',
-          userType: localStorage.getItem('userType') || ''
-        };
-        localStorage.setItem('user', JSON.stringify(reconstructedUser));
+      // If we have a saved user, they should be authenticated
+      if (savedUser) {
+        console.log('Found saved user, setting authenticated state');
+        // Set isAuthenticated to true if we have a valid user
+        localStorage.setItem('isAuthenticated', 'true');
         return {
-          user: reconstructedUser,
+          user: JSON.parse(savedUser),
           isAuthenticated: true
         };
       }
       
+      console.log('No saved user found');
       return {
-        user: savedUser ? JSON.parse(savedUser) : null,
-        isAuthenticated: savedIsAuth === 'true'
+        user: null,
+        isAuthenticated: false
       };
+      
     } catch (error) {
       console.error('Error reading from localStorage:', error);
       return { user: null, isAuthenticated: false };
@@ -108,18 +105,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const checkPersistence = () => {
       const savedUser = localStorage.getItem('user');
-      const savedIsAuth = localStorage.getItem('isAuthenticated');
       
-      console.log('Checking persistence:', {
-        savedUser: savedUser ? JSON.parse(savedUser) : null,
-        isAuthenticated: savedIsAuth === 'true'
-      });
+      console.log('Checking persistence - saved user:', savedUser);
       
-      if (savedIsAuth === 'true' && savedUser) {
+      if (savedUser) {
+        const userData = JSON.parse(savedUser);
+        // If we have a valid user, ensure they're marked as authenticated
         setAuthState({
-          user: JSON.parse(savedUser),
+          user: userData,
           isAuthenticated: true
         });
+        localStorage.setItem('isAuthenticated', 'true');
+        console.log('Restored authenticated session for user:', userData);
       }
     };
     
