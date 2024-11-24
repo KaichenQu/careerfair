@@ -94,6 +94,7 @@ const loginUser = async (credentials: {
     
     
     localStorage.setItem('user_id', response.data.user_id);
+    localStorage.setItem('userType', credentials.userType);
     user_getID = response.data.user_id;
     console.log(user_getID);
 
