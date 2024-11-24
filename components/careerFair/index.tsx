@@ -119,7 +119,7 @@ const CareerFairPage = () => {
         {!isLoading && (
           <>
             {auth.isAuthenticated ? (
-              <div>Welcome!</div>
+              null
             ) : (
               <div>Please log in</div>
             )}

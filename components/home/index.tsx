@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Typography, Container, Button, Grid } from "@mui/material";
 import Layout from "../common/Layout";
 import BusinessCategories from "./BusinessCategories";
@@ -21,10 +21,17 @@ const HomePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
   const secondPageRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    console.log('Home Page Auth State:', { user, isAuthenticated });
-  }, [user, isAuthenticated]);
+    setMounted(true);
+  }, []);
+
+  const welcomeMessage = mounted && isAuthenticated && user?.email ? (
+    <Typography variant="h6" className="mb-4 text-blue-600">
+      Welcome, {user.email}!
+    </Typography>
+  ) : null;
 
   const scrollToNextSection = () => {
     secondPageRef.current?.scrollIntoView({
@@ -68,11 +75,7 @@ const HomePage: React.FC = () => {
 
           <Container maxWidth="lg" className="relative z-10">
             <div className="text-center">
-              {isAuthenticated && user && (
-                <Typography variant="h6" className="mb-4 text-blue-600">
-                  Welcome, {user.email}!
-                </Typography>
-              )}
+              {/* Removed welcomeMessage */}
 
               <Typography
                 variant="h4"
@@ -108,14 +111,16 @@ const HomePage: React.FC = () => {
                 >
                   Browse Fairs
                 </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={() => router.push("/login")}
-                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium transition-all duration-300"
-                >
-                  Sign In
-                </Button>
+                {!isAuthenticated && (
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    onClick={() => router.push("/login")}
+                    className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium transition-all duration-300"
+                  >
+                    Sign In
+                  </Button>
+                )}
               </div>
 
               <div className="mt-12">
