@@ -57,8 +57,23 @@ const CareerFairPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(false);
-  }, []);
+    // Check authentication on mount
+    const checkAuth = () => {
+      console.log('CareerFair - Current auth state:', {
+        isAuthenticated: auth.isAuthenticated,
+        user: auth.user
+      });
+
+      if (!auth.isAuthenticated) {
+        console.log('CareerFair - User not authenticated, redirecting to login');
+        router.push('/login');
+        return;
+      }
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, [auth.isAuthenticated, router]);
 
   // Add state for snackbar
   const [snackbar, setSnackbar] = useState({
@@ -68,7 +83,10 @@ const CareerFairPage = () => {
   });
 
   const handleRegister = async (fairId: number) => {
+    console.log('Attempting to register with user:', auth.user);
+    
     if (!auth.isAuthenticated || !auth.user?.id) {
+      console.log('Registration failed - User not authenticated');
       router.push('/login');
       return;
     }
@@ -79,8 +97,10 @@ const CareerFairPage = () => {
         user_id: auth.user.id,
         career_fair_id: fairId
       };
+      console.log('Sending registration payload:', payload);
 
       const response = await axios.post(url, payload);
+      console.log('Registration response:', response.data);
       setSnackbar({
         open: true,
         message: response.data.message,
@@ -91,6 +111,7 @@ const CareerFairPage = () => {
       console.log('Message:', response.data.message);
       console.log('Data:', response.data.data);
     } catch (error) {
+      console.error('Registration error:', error);
       if (axios.isAxiosError(error)) {
         console.log('Error details:', {
           message: error.message,
@@ -113,106 +134,105 @@ const CareerFairPage = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!auth.isAuthenticated) {
+    return <div>Please log in to view career fairs</div>;
+  }
+
   return (
     <AuthLayout>
       <Layout>
-        {!isLoading && (
-          <>
-            {auth.isAuthenticated ? (
-              null
-            ) : (
-              <div>Please log in</div>
-            )}
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-              <Container maxWidth="lg" className="py-16">
-                <Box className="text-center mb-16">
-                  <Typography
-                    variant="h3"
-                    component="h1"
-                    className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text mx-auto"
-                    align="center"
-                  >
-                    Upcoming Career Fairs
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    className="text-gray-600 font-normal max-w-2xl mx-auto"
-                    align="center"
-                    paragraph
-                  >
-                    Discover our upcoming career fairs and connect with your dream
-                    companies. Register early to secure your spot.
-                  </Typography>
-                </Box>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+          <Container maxWidth="lg" className="py-16">
+            <Box className="text-center mb-16">
+              <Typography
+                variant="h3"
+                component="h1"
+                className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text mx-auto"
+                align="center"
+              >
+                Upcoming Career Fairs
+              </Typography>
+              <Typography
+                variant="h6"
+                className="text-gray-600 font-normal max-w-2xl mx-auto"
+                align="center"
+                paragraph
+              >
+                Discover our upcoming career fairs and connect with your dream
+                companies. Register early to secure your spot.
+              </Typography>
+            </Box>
 
-                <Grid container spacing={4}>
-                  {staticCareerFairs.map((fair) => (
-                    <Grid item xs={12} md={6} lg={4} key={fair.fair_id}>
-                      <div
-                        className="group h-full"
-                      >
-                        <Card className="h-full relative transform-gpu transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-white/80 backdrop-blur-sm border border-gray-100">
-                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.05] to-purple-500/[0.05] opacity-0 group-hover:opacity-100 transition-opacity" />
-                          <CardContent className="space-y-4 p-6">
-                            <Typography
-                              variant="h5"
-                              className="font-bold text-gray-800"
-                            >
-                              {fair.fair_name}
+            <Grid container spacing={4}>
+              {staticCareerFairs.map((fair) => (
+                <Grid item xs={12} md={6} lg={4} key={fair.fair_id}>
+                  <div
+                    className="group h-full"
+                  >
+                    <Card className="h-full relative transform-gpu transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-white/80 backdrop-blur-sm border border-gray-100">
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.05] to-purple-500/[0.05] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <CardContent className="space-y-4 p-6">
+                        <Typography
+                          variant="h5"
+                          className="font-bold text-gray-800"
+                        >
+                          {fair.fair_name}
+                        </Typography>
+
+                        <Box className="space-y-3">
+                          <Box className="flex items-center space-x-2 text-gray-600">
+                            <EventIcon className="text-blue-500" />
+                            <Typography>
+                              {new Date(fair.careerfair_date).toLocaleDateString(
+                                "en-US",
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}
                             </Typography>
+                          </Box>
 
-                            <Box className="space-y-3">
-                              <Box className="flex items-center space-x-2 text-gray-600">
-                                <EventIcon className="text-blue-500" />
-                                <Typography>
-                                  {new Date(fair.careerfair_date).toLocaleDateString(
-                                    "en-US",
-                                    {
-                                      weekday: "long",
-                                      year: "numeric",
-                                      month: "long",
-                                      day: "numeric",
-                                    }
-                                  )}
-                                </Typography>
-                              </Box>
+                          <Box className="flex items-center space-x-2 text-gray-600">
+                            <LocationOn className="text-blue-500" />
+                            <Typography>{fair.location}</Typography>
+                          </Box>
 
-                              <Box className="flex items-center space-x-2 text-gray-600">
-                                <LocationOn className="text-blue-500" />
-                                <Typography>{fair.location}</Typography>
-                              </Box>
+                          <Box className="flex items-center space-x-2 text-gray-600">
+                            <People className="text-blue-500" />
+                            <Typography>Registration Open</Typography>
+                          </Box>
 
-                              <Box className="flex items-center space-x-2 text-gray-600">
-                                <People className="text-blue-500" />
-                                <Typography>Registration Open</Typography>
-                              </Box>
+                          <Typography variant="body2" color="textSecondary">
+                            {fair.description}
+                          </Typography>
 
-                              <Typography variant="body2" color="textSecondary">
-                                {fair.description}
-                              </Typography>
-
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={(e) => {
-                                  e.stopPropagation(); // Prevent card click when clicking button
-                                  handleRegister(fair.fair_id);
-                                }}
-                                className="mt-4 w-full"
-                              >
-                                Register
-                              </Button>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </Grid>
-                  ))}
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent card click when clicking button
+                              handleRegister(fair.fair_id);
+                            }}
+                            className="mt-4 w-full"
+                          >
+                            Register
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </Grid>
-              </Container>
-            </div>
-          </>
-        )}
+              ))}
+            </Grid>
+          </Container>
+        </div>
       </Layout>
       
       {/* Add Snackbar at the bottom of the return statement */}
