@@ -57,7 +57,6 @@ const CareerFairPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication on mount
     const checkAuth = () => {
       console.log('CareerFair - Current auth state:', {
         isAuthenticated: auth.isAuthenticated,
@@ -65,7 +64,6 @@ const CareerFairPage = () => {
       });
 
       if (!auth.isAuthenticated) {
-        console.log('CareerFair - User not authenticated, redirecting to login');
         router.push('/login');
         return;
       }
@@ -83,10 +81,7 @@ const CareerFairPage = () => {
   });
 
   const handleRegister = async (fairId: number) => {
-    console.log('Attempting to register with user:', auth.user);
-    
     if (!auth.isAuthenticated || !auth.user?.id) {
-      console.log('Registration failed - User not authenticated');
       router.push('/login');
       return;
     }
@@ -97,7 +92,8 @@ const CareerFairPage = () => {
         user_id: auth.user.id,
         career_fair_id: fairId
       };
-      console.log('Sending registration payload:', payload);
+      console.log('Registering user:', auth.user);
+      console.log('Registration payload:', payload);
 
       const response = await axios.post(url, payload);
       console.log('Registration response:', response.data);
