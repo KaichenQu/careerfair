@@ -405,7 +405,23 @@ export const studentAPI = {
     if (!response.ok) throw new Error('Failed to fetch applied positions');
     const data: AppliedPositionsResponse = await response.json();
     return data.applied_positions;
-  }
+  },
+
+  cancelRegisterCareerFair: async (fairId: number, userId: number) => {
+    const response = await fetch(`http://127.0.0.1:8000/careerFair/${fairId}/cancelRegister/`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_id: userId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to withdraw from career fair');
+    }
+    
+    return await response.json();
+  },
 };
 interface FacultyProfile {
   faculty_id: number;
