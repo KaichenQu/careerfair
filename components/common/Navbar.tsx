@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import {
   AppBar,
@@ -36,6 +35,7 @@ import { useAuth } from "@/components/contexts/AuthContext";
  * - Automatic mobile/desktop view switching
  */
 const Navbar = () => {
+  const { handleLogout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const auth = useAuth();
@@ -84,7 +84,10 @@ const Navbar = () => {
     { text: "Admin", icon: <AdminPanelSettings />, href: "/admin/login" },
     auth.isAuthenticated 
       ? { text: "User", icon: <PersonIcon />, onClick: handleUserProfile }
-      : { text: "Login", icon: <Login />, href: "/login" }
+      : { text: "Login", icon: <Login />, href: "/login" },
+    ...(auth.isAuthenticated 
+      ? [{ text: "Logout", icon: <Login />, onClick: handleLogout }]
+      : [])
   ];
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
@@ -180,6 +183,7 @@ const Navbar = () => {
           </Drawer>
         </div>
       </Toolbar>
+      
     </AppBar>
   );
 };
