@@ -1,95 +1,87 @@
-import { createContext, useContext, ReactNode, useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import axios from 'axios';
-import { loginUser } from '@/services/api';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { loginUser } from '@/services/api';
 
-let BaseURL = "http://127.0.0.1:8000";
-
-interface User {
-  id?: number;
-  email: string;
-  userType: string;
-  // Add other user properties as needed
-}
-
-interface AuthContextType {
-  user: any;
+interface AuthState {
+  user: {
+    id: number;
+    email: string;
+    userType: string;
+  } | null;
   isAuthenticated: boolean;
-  login: (credentials: { email: string; password: string; userType: string }) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<{
+  user: AuthState['user'];
+  isAuthenticated: boolean;
+  handleLogin: (credentials: { email: string; password: string; userType: string }) => Promise<{ success: boolean; error?: string }>;
+  handleLogout: () => void;
+}>({
   user: null,
   isAuthenticated: false,
-  login: async () => ({ success: false }),
-  logout: () => {}
+  handleLogin: async () => ({ success: false }),
+  handleLogout: () => {},
 });
-// export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const initialized = useRef(false);
-
-  // Initialize state with a more robust check
-  const initializeAuthState = () => {
+  
+  // Initialize state from localStorage
+  const [authState, setAuthState] = useState<AuthState>(() => {
     if (typeof window === 'undefined') return { user: null, isAuthenticated: false };
     
     try {
-      const storedUser = localStorage.getItem('user');
-      const storedAuth = localStorage.getItem('isAuthenticated');
+      const savedUser = localStorage.getItem('user');
+      const savedIsAuth = localStorage.getItem('isAuthenticated');
+      const userId = localStorage.getItem('user_id');
       
-      if (storedUser && storedAuth === 'true') {
-        const parsedUser = JSON.parse(storedUser);
+      // If we have a userId but no user object, reconstruct it
+      if (userId && !savedUser) {
+        const reconstructedUser = {
+          id: parseInt(userId),
+          email: localStorage.getItem('email') || '',
+          userType: localStorage.getItem('userType') || ''
+        };
+        localStorage.setItem('user', JSON.stringify(reconstructedUser));
         return {
-          user: parsedUser,
+          user: reconstructedUser,
           isAuthenticated: true
         };
       }
+      
+      return {
+        user: savedUser ? JSON.parse(savedUser) : null,
+        isAuthenticated: savedIsAuth === 'true'
+      };
     } catch (error) {
-      console.error('Error initializing auth state:', error);
-      localStorage.removeItem('user');
-      localStorage.removeItem('isAuthenticated');
+      console.error('Error reading from localStorage:', error);
+      return { user: null, isAuthenticated: false };
     }
-    
-    return { user: null, isAuthenticated: false };
-  };
-
-  const [authState, setAuthState] = useState(initializeAuthState);
-
-  // Modify the useEffect to be more robust
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      const state = initializeAuthState();
-      if (state.isAuthenticated && state.user) {
-        setAuthState(state);
-        console.log('Auth state initialized with:', state);
-      }
-    }
-  }, []);
+  });
 
   const handleLogin = async (credentials: { email: string; password: string; userType: string }) => {
     try {
       const authResponse = await loginUser(credentials);
+      console.log('Login response:', authResponse);
+      
       const userData = {
         id: parseInt(authResponse.user_id),
         email: credentials.email,
         userType: credentials.userType
       };
       
-      // Update state and localStorage atomically
-      const newState = { user: userData, isAuthenticated: true };
-      setAuthState(newState);
+      // Store all necessary data in localStorage
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('user_id', authResponse.user_id.toString());
+      localStorage.setItem('email', credentials.email);
+      localStorage.setItem('userType', credentials.userType);
+      
+      // Update state
+      const newState = { user: userData, isAuthenticated: true };
+      setAuthState(newState);
       
       console.log('Login successful, new auth state:', newState);
-      
-      if (authResponse.redirect_url) {
-        const path = `/student/${authResponse.user_id}`;
-        router.push(path);
-      }
-      
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
@@ -97,24 +89,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleLogout = useCallback(() => {
-    setAuthState({ user: null, isAuthenticated: false });
+  const handleLogout = () => {
+    // Clear all auth-related items from localStorage
     localStorage.removeItem('user');
     localStorage.removeItem('isAuthenticated');
-    router.push('/');
-  }, [router]);
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userType');
+    
+    // Reset state
+    setAuthState({ user: null, isAuthenticated: false });
+    
+    console.log('Logged out, auth state cleared');
+    router.push('/login');
+  };
 
-  // Add a loading state check
-  const value = useMemo(() => ({
-    user: authState.user,
-    isAuthenticated: authState.isAuthenticated,
-    login: handleLogin,
-    logout: handleLogout,
-    initialized: initialized.current
-  }), [authState, handleLogout]);
+  // Add persistence check on mount
+  useEffect(() => {
+    const checkPersistence = () => {
+      const savedUser = localStorage.getItem('user');
+      const savedIsAuth = localStorage.getItem('isAuthenticated');
+      
+      console.log('Checking persistence:', {
+        savedUser: savedUser ? JSON.parse(savedUser) : null,
+        isAuthenticated: savedIsAuth === 'true'
+      });
+      
+      if (savedIsAuth === 'true' && savedUser) {
+        setAuthState({
+          user: JSON.parse(savedUser),
+          isAuthenticated: true
+        });
+      }
+    };
+    
+    checkPersistence();
+  }, []);
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      user: authState.user,
+      isAuthenticated: authState.isAuthenticated,
+      handleLogin,
+      handleLogout
+    }}>
       {children}
     </AuthContext.Provider>
   );
