@@ -15,10 +15,6 @@ const BusinessCategories = () => {
     }, 500);
   };
 
-  const handleUserProfile = () => {
-    router.push("/userProfile");
-  };
-
   return (
     <section className="py-12 overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -39,93 +35,78 @@ const BusinessCategories = () => {
 
           {/* Main content */}
           <div className="relative flex h-[400px] items-center justify-center">
-            {/* Center logo and user profile group */}
-            <div className="relative flex items-center gap-6 z-20">
+            {/* Center logo */}
+            <div className="relative">
+              <motion.div
+                className="absolute inset-0"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.5, 0.8, 0.5],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <div className="w-28 h-28 rounded-full border-2 border-indigo-500/30" />
+              </motion.div>
+              <motion.div
+                className="absolute inset-0"
+                animate={{
+                  scale: [1.1, 1, 1.1],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.3,
+                }}
+              >
+                <div className="w-28 h-28 rounded-full border-2 border-violet-500/20" />
+              </motion.div>
+
               {/* Center logo */}
-              <div className="relative">
+              <div
+                className="relative w-28 h-28 rounded-full bg-gradient-to-br from-white to-gray-50 shadow-xl flex items-center justify-center overflow-hidden group cursor-pointer"
+                onClick={handleClick}
+              >
+                {/* Blue background overlay */}
+                <motion.div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                 <motion.div
-                  className="absolute inset-0"
+                  className="relative z-10 flex items-center justify-center w-full h-full"
+                  initial={false}
                   animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.5, 0.8, 0.5],
+                    rotateY: isOpen ? 720 : 0,
                   }}
                   transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
+                    duration: 0.8,
+                    ease: [0.3, 0, 0.2, 1],
                   }}
                 >
-                  <div className="w-28 h-28 rounded-full border-2 border-indigo-500/30" />
-                </motion.div>
-                <motion.div
-                  className="absolute inset-0"
-                  animate={{
-                    scale: [1.1, 1, 1.1],
-                    opacity: [0.3, 0.6, 0.3],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.3,
-                  }}
-                >
-                  <div className="w-28 h-28 rounded-full border-2 border-violet-500/20" />
-                </motion.div>
-
-                {/* Center logo */}
-                <div
-                  className="relative w-28 h-28 rounded-full bg-gradient-to-br from-white to-gray-50 shadow-xl flex items-center justify-center overflow-hidden group cursor-pointer"
-                  onClick={handleClick}
-                >
-                  {/* Blue background overlay */}
-                  <motion.div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                  <motion.div
-                    className="relative z-10 flex items-center justify-center w-full h-full"
-                    initial={false}
-                    animate={{
-                      rotateY: isOpen ? 720 : 0,
+                  {/* Front side */}
+                  <motion.img
+                    src="https://cdn-icons-png.flaticon.com/512/6427/6427283.png"
+                    alt="Career Fair Logo"
+                    className="h-14 w-14 absolute group-hover:opacity-0 transition-opacity duration-300"
+                    style={{
+                      backfaceVisibility: "hidden",
                     }}
-                    transition={{
-                      duration: 0.8,
-                      ease: [0.3, 0, 0.2, 1],
+                  />
+
+                  {/* Back side */}
+                  <motion.div
+                    className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{
+                      backfaceVisibility: "hidden",
                     }}
                   >
-                    {/* Front side */}
-                    <motion.img
-                      src="https://cdn-icons-png.flaticon.com/512/6427/6427283.png"
-                      alt="Career Fair Logo"
-                      className="h-14 w-14 absolute group-hover:opacity-0 transition-opacity duration-300"
-                      style={{
-                        backfaceVisibility: "hidden",
-                      }}
-                    />
-
-                    {/* Back side */}
-                    <motion.div
-                      className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{
-                        backfaceVisibility: "hidden",
-                      }}
-                    >
-                      <span className="text-white font-bold text-2xl">GO</span>
-                    </motion.div>
+                    <span className="text-white font-bold text-2xl">GO</span>
                   </motion.div>
-                </div>
+                </motion.div>
               </div>
-
-              {/* User Profile Button */}
-              <button
-                onClick={handleUserProfile}
-                className="relative flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 z-20"
-              >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
-                  alt="User Profile"
-                  className="w-6 h-6"
-                />
-              </button>
             </div>
 
             {/* Surrounding icons */}
@@ -172,17 +153,18 @@ const BusinessCategories = () => {
 
 const getPosition = (index: number) => {
   const positions = [
-    // Top row (3 positions)
-    "top-[20%] left-[20%] -translate-y-1/2",
-    "top-[10%] left-[50%] -translate-x-1/2 -translate-y-1/2",
-    "top-[20%] right-[20%] -translate-y-1/2",
-    // Middle row (2 positions)
-    "top-[50%] left-[10%] -translate-y-1/2",
-    "top-[50%] right-[10%] -translate-y-1/2",
-    // Bottom row (3 positions)
-    "top-[80%] left-[20%] -translate-y-1/2",
-    "top-[80%] left-[50%] -translate-x-1/2 -translate-y-1/2",
-    "top-[80%] right-[20%] -translate-y-1/2",
+    // Left side (4 positions) - Top row
+    "top-[25%] left-[15%] -translate-y-1/2",
+    "top-[25%] left-[30%] -translate-y-1/2",
+    // Left side (4 positions) - Bottom row
+    "top-[75%] left-[15%] -translate-y-1/2",
+    "top-[75%] left-[30%] -translate-y-1/2",
+    // Right side (4 positions) - Top row
+    "top-[25%] right-[15%] -translate-y-1/2",
+    "top-[25%] right-[30%] -translate-y-1/2",
+    // Right side (4 positions) - Bottom row
+    "top-[75%] right-[15%] -translate-y-1/2",
+    "top-[75%] right-[30%] -translate-y-1/2",
   ];
   return positions[index];
 };

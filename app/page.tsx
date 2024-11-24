@@ -1,5 +1,12 @@
-import HomePage from "../components/home/index";
+'use client';
 
-export default function Home() {
-  return <HomePage />;
+import AuthLayout from '@/components/layouts/AuthLayout';
+import Home from '@/components/home';
+
+export default function HomePage() {
+  return (
+    <AuthLayout>
+      <Home />
+    </AuthLayout>
+  );
 }

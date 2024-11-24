@@ -81,10 +81,10 @@ const Navbar = () => {
   const menuItems = [
     { text: "Home", icon: <Home />, href: "/" },
     { text: "Career Fairs", icon: <Event />, href: "/careerFair" },
-    ...(auth.isAuthenticated 
-      ? [{ text: "User", icon: <PersonIcon />, onClick: handleUserProfile }]
-      : [{ text: "Login", icon: <Login />, href: "/login" }]),
     { text: "Admin", icon: <AdminPanelSettings />, href: "/admin/login" },
+    auth.isAuthenticated 
+      ? { text: "User", icon: <PersonIcon />, onClick: handleUserProfile }
+      : { text: "Login", icon: <Login />, href: "/login" }
   ];
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
