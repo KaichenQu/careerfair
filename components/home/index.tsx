@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Typography, Container, Button, Grid } from "@mui/material";
 import Layout from "../common/Layout";
 import BusinessCategories from "./BusinessCategories";
 import { useRouter } from "next/navigation";
 import { KeyboardArrowDown } from "@mui/icons-material";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * HomePage Component
@@ -17,8 +18,13 @@ import { KeyboardArrowDown } from "@mui/icons-material";
  * - Gradient text effects
  */
 const HomePage: React.FC = () => {
+  const { user, isAuthenticated } = useAuth();
   const router = useRouter();
   const secondPageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log('Home Page Auth State:', { user, isAuthenticated });
+  }, [user, isAuthenticated]);
 
   const scrollToNextSection = () => {
     secondPageRef.current?.scrollIntoView({
@@ -62,6 +68,12 @@ const HomePage: React.FC = () => {
 
           <Container maxWidth="lg" className="relative z-10">
             <div className="text-center">
+              {isAuthenticated && user && (
+                <Typography variant="h6" className="mb-4 text-blue-600">
+                  Welcome, {user.email}!
+                </Typography>
+              )}
+
               <Typography
                 variant="h4"
                 component="h1"

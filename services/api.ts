@@ -40,6 +40,13 @@ const registerUser = async (userData: {
   }
 };
 
+export interface AuthResponse {
+  user_id: string;
+  redirect_url?: string;
+  isAuthenticated: boolean;
+  userType: string;
+}
+
 const loginUser = async (credentials: {
   email: string;
   password: string;
@@ -62,10 +69,29 @@ const loginUser = async (credentials: {
     console.log("Login response status:", response.status);
     console.log("Login response data:", response.data);
     console.log("Login response:", response.data); // Debug log
+    // if (response.data.user_id) {
+    //   const userData = {
+    //     id: parseInt(response.data.user_id),
+    //     email: credentials.email,
+    //     userType: credentials.userType
+    //   };
+      
+    //   // Store auth data
+    //   storeUserAuth(userData);
+    //   console.log('Storing user data:', userData);
+    // }
     
     if (!response.data.user_id) {
       throw new Error('No user_id received from server');
     }
+
+    // const authResponse: AuthResponse = {
+    //   user_id: response.data.user_id,
+    //   redirect_url: response.data.redirect_url,
+    //   isAuthenticated: true,
+    //   userType: credentials.userType
+    // };
+    
     
     localStorage.setItem('user_id', response.data.user_id);
     user_getID = response.data.user_id;
@@ -470,6 +496,21 @@ const facultyAPI = {
   },
 };
 
+// Add this new utility function
+const storeUserAuth = (userData: { id: number; email: string; userType: string }) => {
+  console.log('Storing user data:', userData);
+  localStorage.setItem('user', JSON.stringify(userData));
+  localStorage.setItem('isAuthenticated', 'true');
+  
+  // Dispatch a custom event when auth state changes
+  window.dispatchEvent(new Event('auth-state-changed'));
+  
+  console.log('LocalStorage after storage:', {
+    user: window.localStorage.getItem('user'),
+    isAuthenticated: window.localStorage.getItem('isAuthenticated')
+  });
+};
+
 // Export everything at once
-export { loginUser, registerUser, companyAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData, type CompanyDashboardData };
+export { loginUser, registerUser, companyAPI, facultyAPI, type StudentProfile, type FacultyProfile, type FacultyCareerFair, type FacultyDashboardData, type CompanyDashboardData, storeUserAuth };
 

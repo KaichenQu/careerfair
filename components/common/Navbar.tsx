@@ -20,9 +20,11 @@ import {
   Login,
   Menu as MenuIcon,
   AdminPanelSettings,
+  Person as PersonIcon,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/contexts/AuthContext";
 
 /**
  * Navbar Component
@@ -36,6 +38,7 @@ import { useRouter } from "next/navigation";
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
+  const auth = useAuth();
 
   const handleNavigation = (href: string) => {
     if (href === "/" && window.location.pathname === "/") {
@@ -48,11 +51,40 @@ const Navbar = () => {
     }
   };
 
+  const handleUserProfile = () => {
+    console.log(auth.isAuthenticated, auth.user?.id);
+    if (!auth.isAuthenticated || !auth.user?.id) {
+      router.push('/login');
+      return;
+    }
+
+    const userType = auth.user.userType;
+    console.log(userType);
+    switch(userType) {
+      case 'student':
+        const studentId = auth.user.id;
+        router.push(`/student/${studentId}`);
+        break;
+      case 'company':
+        const companyId = auth.user.id;
+        router.push(`/company/${companyId}`);
+        break;
+      case 'faculty':
+        const facultyId = auth.user.id;
+        router.push(`/faculty/${facultyId}`);
+        break;
+      default:
+        router.push('/login');
+    }
+  };
+
   const menuItems = [
     { text: "Home", icon: <Home />, href: "/" },
     { text: "Career Fairs", icon: <Event />, href: "/careerFair" },
+    ...(auth.isAuthenticated 
+      ? [{ text: "User", icon: <PersonIcon />, onClick: handleUserProfile }]
+      : [{ text: "Login", icon: <Login />, href: "/login" }]),
     { text: "Admin", icon: <AdminPanelSettings />, href: "/admin/login" },
-    { text: "Login", icon: <Login />, href: "/login" },
   ];
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
@@ -62,7 +94,7 @@ const Navbar = () => {
       {menuItems.map((item) => (
         <ListItem
           key={item.text}
-          onClick={() => handleNavigation(item.href)}
+          onClick={() => item.onClick ? item.onClick() : handleNavigation(item.href!)}
           className="transition-colors duration-200 hover:bg-blue-50"
           sx={{
             cursor: "pointer",
@@ -123,7 +155,7 @@ const Navbar = () => {
               key={item.text}
               color="inherit"
               startIcon={item.icon}
-              onClick={() => handleNavigation(item.href)}
+              onClick={item.onClick || (() => handleNavigation(item.href))}
             >
               {item.text}
             </Button>
