@@ -31,6 +31,8 @@ import {
 import Layout from "../common/Layout";
 import { registerUser } from "../../services/api";
 
+let API_BASE_URL = "http://127.0.0.1:8000";
+
 /**
  * RegisterPage Component
  * Provides user registration interface
@@ -113,20 +115,60 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await registerUser(formData);
+      // Format the data according to the API requirements
+      const registrationData = {
+        user_type: formData.userType,
+        full_name: formData.fullName,
+        email: formData.email,
+        password: formData.password
+      };
 
-      // Handle successful registration
-      if (response.user_id) {
-        // Redirect to login page or dashboard
-        window.location.href = "/login";
+      console.log('Submitting registration data:', registrationData);
+      
+      const response = await fetch(`${API_BASE_URL}/register/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
       }
+
+      const data = await response.json();
+      console.log('Registration successful:', data);
+
+      // Store the user_id in localStorage
+      localStorage.setItem('userId', data.user_id.toString());
+
+      // Show success message (you might want to add a Snackbar for this)
+      alert(data.message || 'Registration successful');
+
+      // Redirect based on user type
+      switch(formData.userType) {
+        case 'student':
+          window.location.href = `/student/${data.user_id}`;
+          break;
+        case 'company':
+          window.location.href = `/company/${data.user_id}`;
+          break;
+        case 'faculty':
+          window.location.href = `/faculty/${data.user_id}`;
+          break;
+        case 'admin':
+          window.location.href = `/admin/${data.user_id}`;
+          break;
+        default:
+          window.location.href = '/login';
+      }
+
     } catch (error) {
-      // Handle registration error
-      console.error("Registration failed:", error);
-      // You could set an error state here to display to the user
+      console.error('Registration failed:', error);
       setErrors({
         ...errors,
-        general: error instanceof Error ? error.message : "Registration failed",
+        general: error instanceof Error ? error.message : 'Registration failed'
       });
     }
   };

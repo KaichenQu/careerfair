@@ -9,37 +9,6 @@ if (typeof window !== 'undefined') {
   user_getID = localStorage.getItem('user_id') || '';
 }
 
-const registerUser = async (userData: {
-  fullName: string;
-  email: string;
-  password: string;
-  userType: string;
-}) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/api/register/`, {
-      full_name: userData.fullName,
-      email: userData.email,
-      password: userData.password,
-      user_type: userData.userType,
-    });
-    return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      const errorData = error.response?.data as {
-        message?: string;
-        error?: string;
-      };
-      throw new Error(
-        errorData?.message || errorData?.error || "Registration failed"
-      );
-    }
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error("An unexpected error occurred");
-  }
-};
-
 export interface AuthResponse {
   user_id: string;
   redirect_url?: string;
@@ -526,6 +495,42 @@ const storeUserAuth = (userData: { id: number; email: string; userType: string }
     user: window.localStorage.getItem('user'),
     isAuthenticated: window.localStorage.getItem('isAuthenticated')
   });
+};
+
+// Add this interface for the registration data
+interface RegisterData {
+  user_type: string;
+  full_name: string;
+  email: string;
+  password: string;
+}
+
+interface RegisterResponse {
+  user_id: number;
+  message: string;
+}
+
+// Add this to your API service
+const registerUser = async (userData: RegisterData): Promise<RegisterResponse> => {
+  console.log('Registering user with data:', userData);
+  
+  const response = await fetch('http://127.0.0.1:8000/register/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    console.error('Registration failed:', errorData);
+    throw new Error(errorData.message || 'Registration failed');
+  }
+
+  const data = await response.json();
+  console.log('Registration successful:', data);
+  return data;
 };
 
 // Export everything at once
