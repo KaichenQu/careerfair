@@ -19,7 +19,6 @@ import {
   Alert,
   AlertColor,
 } from "@mui/material";
-import Layout from "@/components/common/Layout";
 import {
   AttachMoney,
   LocationOn,
@@ -30,6 +29,7 @@ import Loading from "@/components/common/Loading";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from '@/components/contexts/AuthContext';
+import Layout from '@/components/common/Layout';
 
 interface Position {
   position_id: number;
@@ -110,12 +110,7 @@ export default function PositionsPage() {
       fullAuth: auth
     });
 
-    // Get user ID from localStorage as fallback
-    const storedUserId = localStorage.getItem('user_id');
-    console.log('Stored User ID:', storedUserId);
-
     if (!auth.isAuthenticated || !auth.user) {
-      console.log('Auth check failed:', { auth });
       setSnackbar({
         open: true,
         message: 'Please login to apply for positions',
@@ -124,8 +119,18 @@ export default function PositionsPage() {
       return;
     }
 
+    // Add user type check
+    if (auth.user.userType !== 'student') {
+      setSnackbar({
+        open: true,
+        message: 'Only students can apply for positions',
+        severity: 'error'
+      });
+      return;
+    }
+
     try {
-      const userId = auth.user.id || storedUserId;
+      const userId = auth.user.id;
       console.log('Applying with data:', {
         userId,
         positionId,
@@ -154,7 +159,7 @@ export default function PositionsPage() {
       
       setSnackbar({
         open: true,
-        message: error.response?.data?.message || 'Failed to apply for the position',
+        message: error.response?.data?.error || 'Failed to apply for the position',
         severity: 'error'
       });
     }
@@ -168,130 +173,129 @@ export default function PositionsPage() {
 
   return (
     <Layout>
-      <Container maxWidth="lg" className="py-12">
-        <Typography
-          variant="h3"
-          component="h1"
-          className="mb-8 text-center font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
-        >
-          Available Positions
-        </Typography>
+    <Container maxWidth="lg" className="py-12">
+      <Typography
+        variant="h3"
+        component="h1"
+        className="mb-8 text-center font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
+      >
+        Available Positions
+      </Typography>
 
-        <Box className="mb-6 space-y-4">
-          <TextField
-            fullWidth
-            label="Search positions or companies"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <Box className="mb-6 space-y-4">
+        <TextField
+          fullWidth
+          label="Search positions or companies"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
 
-          <Box className="flex gap-4">
-            <FormControl fullWidth>
-              <InputLabel>Company</InputLabel>
-              <Select
-                value={companyFilter}
-                label="Company"
-                onChange={(e) => setCompanyFilter(e.target.value)}
-              >
-                <MenuItem value="all">All Companies</MenuItem>
-                {uniqueCompanies.map((company) => (
-                  <MenuItem key={company} value={company}>
-                    {company}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+        <Box className="flex gap-4">
+          <FormControl fullWidth>
+            <InputLabel>Company</InputLabel>
+            <Select
+              value={companyFilter}
+              label="Company"
+              onChange={(e) => setCompanyFilter(e.target.value)}
+            >
+              <MenuItem value="all">All Companies</MenuItem>
+              {uniqueCompanies.map((company) => (
+                <MenuItem key={company} value={company}>
+                  {company}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-            <FormControl fullWidth>
-              <InputLabel>Location</InputLabel>
-              <Select
-                value={locationFilter}
-                label="Location"
-                onChange={(e) => setLocationFilter(e.target.value)}
-              >
-                <MenuItem value="all">All Locations</MenuItem>
-                {uniqueLocations.map((location) => (
-                  <MenuItem key={location} value={location}>
-                    {location}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
+          <FormControl fullWidth>
+            <InputLabel>Location</InputLabel>
+            <Select
+              value={locationFilter}
+              label="Location"
+              onChange={(e) => setLocationFilter(e.target.value)}
+            >
+              <MenuItem value="all">All Locations</MenuItem>
+              {uniqueLocations.map((location) => (
+                <MenuItem key={location} value={location}>
+                  {location}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
+      </Box>
 
-        <Grid container spacing={4}>
-          {filteredPositions.map((position) => (
-            <Grid item xs={12} md={6} lg={4} key={position.position_id}>
-              <Card className="h-full hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="space-y-4">
-                  <Typography variant="h5" className="font-bold text-gray-800">
-                    {position.position_name}
-                  </Typography>
+      <Grid container spacing={4}>
+        {filteredPositions.map((position) => (
+          <Grid item xs={12} md={6} lg={4} key={position.position_id}>
+            <Card className="h-full hover:shadow-xl transition-shadow duration-300">
+              <CardContent className="space-y-4">
+                <Typography variant="h5" className="font-bold text-gray-800">
+                  {position.position_name}
+                </Typography>
 
-                  <Box className="space-y-2">
-                    <Box className="flex items-center space-x-2 text-gray-600">
-                      <AttachMoney className="text-green-500" />
-                      <Typography>{formatSalary(position.salary)}</Typography>
-                    </Box>
-
-                    <Box className="flex items-center space-x-2 text-gray-600">
-                      <LocationOn className="text-blue-500" />
-                      <Typography>{position.location}</Typography>
-                    </Box>
-
-                    <Box className="flex items-center space-x-2 text-gray-600">
-                      <Business className="text-purple-500" />
-                      <Typography>{position.company_name}</Typography>
-                    </Box>
-
-                    <Box className="flex items-center space-x-2 text-gray-600">
-                      <Description className="text-orange-500" />
-                      <Typography noWrap>{position.description}</Typography>
-                    </Box>
+                <Box className="space-y-2">
+                  <Box className="flex items-center space-x-2 text-gray-600">
+                    <AttachMoney className="text-green-500" />
+                    <Typography>{formatSalary(position.salary)}</Typography>
                   </Box>
 
-                  <Box className="flex flex-wrap gap-2 pt-2">
-                    {position.ng_flag === 1 && (
-                      <Chip
-                        label="New Grad"
-                        size="small"
-                        className="bg-blue-100 text-blue-700"
-                      />
-                    )}
-                    {position.intern_flag === 1 && (
-                      <Chip
-                        label="Internship"
-                        size="small"
-                        className="bg-green-100 text-green-700"
-                      />
-                    )}
-                    {position.sponsor_flag === 1 && (
-                      <Chip
-                        label="Visa Sponsor"
-                        size="small"
-                        className="bg-purple-100 text-purple-700"
-                      />
-                    )}
+                  <Box className="flex items-center space-x-2 text-gray-600">
+                    <LocationOn className="text-blue-500" />
+                    <Typography>{position.location}</Typography>
                   </Box>
 
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() => handleApply(position.position_id)}
-                    className="mt-4"
-                  >
-                    Apply Now
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-      
+                  <Box className="flex items-center space-x-2 text-gray-600">
+                    <Business className="text-purple-500" />
+                    <Typography>{position.company_name}</Typography>
+                  </Box>
+
+                  <Box className="flex items-center space-x-2 text-gray-600">
+                    <Description className="text-orange-500" />
+                    <Typography noWrap>{position.description}</Typography>
+                  </Box>
+                </Box>
+
+                <Box className="flex flex-wrap gap-2 pt-2">
+                  {position.ng_flag === 1 && (
+                    <Chip
+                      label="New Grad"
+                      size="small"
+                      className="bg-blue-100 text-blue-700"
+                    />
+                  )}
+                  {position.intern_flag === 1 && (
+                    <Chip
+                      label="Internship"
+                      size="small"
+                      className="bg-green-100 text-green-700"
+                    />
+                  )}
+                  {position.sponsor_flag === 1 && (
+                    <Chip
+                      label="Visa Sponsor"
+                      size="small"
+                      className="bg-purple-100 text-purple-700"
+                    />
+                  )}
+                </Box>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => handleApply(position.position_id)}
+                  className="mt-4"
+                >
+                  Apply Now
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
       <Snackbar 
         open={snackbar.open} 
         autoHideDuration={6000} 
@@ -306,6 +310,7 @@ export default function PositionsPage() {
           {snackbar.message}
         </Alert>
       </Snackbar>
+    </Container>
     </Layout>
   );
 }
