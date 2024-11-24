@@ -125,6 +125,18 @@ const CareerFairPage = () => {
     }
   };
 
+  const handleViewPositions = (fairId: number) => {
+    if (fairId !== 1) {
+      setSnackbar({
+        open: true,
+        message: 'Positions for this career fair will be available soon!',
+        severity: 'info'
+      });
+      return;
+    }
+    router.push(`/careerFair/${fairId}/positions`);
+  };
+
   // Add snackbar close handler
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
@@ -209,17 +221,43 @@ const CareerFairPage = () => {
                             {fair.description}
                           </Typography>
 
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent card click when clicking button
-                              handleRegister(fair.fair_id);
-                            }}
-                            className="mt-4 w-full"
-                          >
-                            Register
-                          </Button>
+                          <Box className="flex gap-2">
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRegister(fair.fair_id);
+                              }}
+                              className="mt-4 w-full"
+                            >
+                              Register
+                            </Button>
+                            
+                            {fair.fair_id === 1 ? (
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => router.push(`/careerFair/${fair.fair_id}/positions`)}
+                                className="mt-4 w-full"
+                              >
+                                View Positions
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => setSnackbar({
+                                  open: true,
+                                  message: 'Positions for this career fair will be available soon!',
+                                  severity: 'info'
+                                })}
+                                className="mt-4 w-full"
+                              >
+                                View Positions
+                              </Button>
+                            )}
+                          </Box>
                         </Box>
                       </CardContent>
                     </Card>
