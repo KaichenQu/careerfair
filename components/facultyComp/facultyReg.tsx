@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Card, Box, Button, Chip } from "@mui/material";
+import { Container, Typography, Card, Box, Button, Chip, Snackbar, Alert } from "@mui/material";
 import {
   Event as EventIcon,
   LocationOn as LocationIcon,
@@ -14,6 +14,11 @@ import Loading from "@/components/common/Loading";
 export default function RegisteredCareerFairPage() {
   const [loading, setLoading] = React.useState(true);
   const [registeredFairs, setRegisteredFairs] = useState<FacultyCareerFair[]>([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error'
+  });
 
   useEffect(() => {
     const loadRegisteredFairs = () => {
@@ -31,6 +36,62 @@ export default function RegisteredCareerFairPage() {
 
     loadRegisteredFairs();
   }, []);
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
+  const handleWithdrawal = async (fairId: number) => {
+    try {
+      console.log('All localStorage items:', { ...localStorage });
+      const userId = localStorage.getItem('user_id');
+      console.log('Retrieved userId:', userId);
+      
+      if (!userId) {
+        throw new Error('User ID not found in localStorage');
+      }
+
+      console.log('Making API call with:', {
+        fairId,
+        userId,
+        url: `http://127.0.0.1:8000/careerFair/${fairId}/cancelRegister/`
+      });
+
+      const response = await fetch(`http://127.0.0.1:8000/careerFair/${fairId}/cancelRegister/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          user_id: userId
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to withdraw');
+      }
+
+      const data = await response.json();
+      console.log('Withdrawal successful:', data);
+
+      const updatedFairs = registeredFairs.filter(fair => fair.fair_id !== fairId);
+      setRegisteredFairs(updatedFairs);
+      localStorage.setItem('registeredFairs', JSON.stringify(updatedFairs));
+
+      setSnackbar({
+        open: true,
+        message: data.message || 'Successfully withdrawn from career fair',
+        severity: 'success'
+      });
+    } catch (err) {
+      console.error('Withdrawal failed:', err);
+      setSnackbar({
+        open: true,
+        message: err instanceof Error ? err.message : 'Failed to withdraw from career fair',
+        severity: 'error'
+      });
+    }
+  };
 
   if (loading) {
     return <Loading />;
@@ -81,15 +142,9 @@ export default function RegisteredCareerFairPage() {
                           fullWidth
                           color="error"
                           className="hover:bg-red-700"
+                          onClick={() => handleWithdrawal(fair.fair_id)}
                         >
                           Withdraw
-                        </Button>
-                        <Button 
-                          variant="outlined" 
-                          fullWidth 
-                          color="primary"
-                        >
-                          Details
                         </Button>
                       </Box>
                     </Box>
@@ -109,6 +164,21 @@ export default function RegisteredCareerFairPage() {
               </Typography>
             </Card>
           )}
+
+          <Snackbar 
+            open={snackbar.open} 
+            autoHideDuration={6000} 
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <Alert 
+              onClose={handleCloseSnackbar} 
+              severity={snackbar.severity}
+              sx={{ width: '100%' }}
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
         </Container>
         <BackToTop />
       </div>
