@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Layout from '@/components/common/Layout';
 import { companyAPI, type CompanyDashboardData } from '@/services/api';
+import { Button, Snackbar, Alert } from '@mui/material';
 
 const CareerFair = () => {
   const router = useRouter();
@@ -15,12 +16,19 @@ const CareerFair = () => {
   const [fairs, setFairs] = useState<CompanyDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error'
+  });
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       if (!userId) return;
       
       setLoading(true);
+
+      console.log(userId);
       try {
         console.log('Fetching dashboard for user ID:', userId);
         const data = await companyAPI.getDashboard(userId);
@@ -37,6 +45,48 @@ const CareerFair = () => {
 
     fetchDashboardData();
   }, [userId]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
+  const handleWithdrawal = async (fairId: number) => {
+    try {
+      console.log(`Attempting to withdraw from fair ID: ${fairId}`);
+      const response = await fetch(`http://127.0.0.1:8000/careerFair/${fairId}/cancelRegister/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to withdraw');
+      }
+
+      const data = await response.json();
+      console.log('Withdrawal successful:', data);
+
+      setFairs(prev => prev ? {
+        ...prev,
+        registered_fairs: prev.registered_fairs.filter(fair => fair.fair_id !== fairId)
+      } : null);
+
+      setSnackbar({
+        open: true,
+        message: data.message || 'Successfully withdrawn from career fair',
+        severity: 'success'
+      });
+    } catch (err) {
+      console.error('Withdrawal failed:', err);
+      setSnackbar({
+        open: true,
+        message: 'Failed to withdraw from career fair',
+        severity: 'error'
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -69,7 +119,15 @@ const CareerFair = () => {
                   <h3 className="text-xl font-semibold mb-2">{fair.fair_name}</h3>
                   <p className="text-gray-600 mb-1">Date: {fair.careerfair_date}</p>
                   <p className="text-gray-600 mb-1">Location: {fair.location}</p>
-                  <p className="text-gray-600">{fair.description}</p>
+                  <p className="text-gray-600 mb-3">{fair.description}</p>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleWithdrawal(fair.fair_id)}
+                    className="mt-2"
+                  >
+                    Withdraw Registration
+                  </Button>
                 </div>
               ))
             ) : (
@@ -94,6 +152,21 @@ const CareerFair = () => {
             )}
           </div>
         </div>
+
+        <Snackbar 
+          open={snackbar.open} 
+          autoHideDuration={6000} 
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={handleCloseSnackbar} 
+            severity={snackbar.severity}
+            sx={{ width: '100%' }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </div>
     </Layout>
   );
