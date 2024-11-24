@@ -1,12 +1,14 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '@/services/api';
+import axios from 'axios';
+
+const BaseURL = "http://127.0.0.1:8000";
 
 interface AuthState {
   user: {
     id: number;
-    email: string;
-    userType: string;
+    userType?: string;
   } | null;
   isAuthenticated: boolean;
 }
@@ -31,51 +33,118 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (typeof window === 'undefined') return { user: null, isAuthenticated: false };
     
     try {
-      const savedUser = localStorage.getItem('user');
+      const userId = localStorage.getItem('user_id');
+      const userType = localStorage.getItem('userType');
+      console.log('Initializing auth state:', { userId, userType });
       
-      // If we have a saved user, they should be authenticated
-      if (savedUser) {
-        console.log('Found saved user, setting authenticated state');
-        // Set isAuthenticated to true if we have a valid user
-        localStorage.setItem('isAuthenticated', 'true');
+      if (userId) {
         return {
-          user: JSON.parse(savedUser),
+          user: { 
+            id: parseInt(userId),
+            userType: userType || undefined 
+          },
           isAuthenticated: true
         };
       }
       
-      console.log('No saved user found');
-      return {
-        user: null,
-        isAuthenticated: false
-      };
-      
+      return { user: null, isAuthenticated: false };
     } catch (error) {
       console.error('Error reading from localStorage:', error);
       return { user: null, isAuthenticated: false };
     }
   });
 
+  // Add useEffect to fetch user profile when we have a user_id
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const userId = localStorage.getItem('user_id');
+      const userType = localStorage.getItem('userType');
+      
+      console.log('Fetching user profile:', { userId, userType });
+      
+      if (!userId || !authState.isAuthenticated || !userType) {
+        console.log('Missing required data for profile fetch');
+        return;
+      }
+
+      try {
+        let response;
+        // Use switch for better error handling
+        switch(userType) {
+          case 'student':
+            console.log('Fetching student profile...');
+            response = await axios.get(`${BaseURL}/student/${userId}/profile`);
+            break;
+          case 'company':
+            console.log('Fetching company profile...');
+            response = await axios.get(`${BaseURL}/company/${userId}/profile`);
+            break;
+          case 'faculty':
+            console.log('Fetching faculty profile...');
+            response = await axios.get(`${BaseURL}/faculty/${userId}/profile`);
+            break;
+          default:
+            console.error('Unknown user type:', userType);
+            return;
+        }
+
+        if (response && response.data) {
+          console.log('Profile data received:', response.data);
+          setAuthState(prev => ({
+            ...prev,
+            user: {
+              ...prev.user,
+              ...response.data
+            }
+          }));
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error('Profile fetch error:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            url: error.config?.url,
+            method: error.config?.method
+          });
+          
+          // If unauthorized or not found, clear auth state
+          if (error.response?.status === 401 || error.response?.status === 404) {
+            console.log('Invalid session, clearing auth state');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('userType');
+            setAuthState({ user: null, isAuthenticated: false });
+            router.push('/login');
+          }
+        } else {
+          console.error('Non-Axios error fetching profile:', error);
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [authState.isAuthenticated, router]);
+
   const handleLogin = async (credentials: { email: string; password: string; userType: string }) => {
     try {
       const authResponse = await loginUser(credentials);
       console.log('Login response:', authResponse);
       
-      const userData = {
-        id: parseInt(authResponse.user_id),
-        email: credentials.email,
-        userType: credentials.userType
-      };
-      
-      // Store all necessary data in localStorage
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user_id', authResponse.user_id.toString());
-      localStorage.setItem('email', credentials.email);
+      // Store userType along with user_id
+      const userId = localStorage.getItem('user_id');
+      if (!userId) {
+        throw new Error('No user ID found after login');
+      }
+
+      // Store the userType from credentials
       localStorage.setItem('userType', credentials.userType);
       
-      // Update state
-      const newState = { user: userData, isAuthenticated: true };
+      const newState = { 
+        user: { 
+          id: parseInt(userId),
+          userType: credentials.userType  // Include userType in state
+        },
+        isAuthenticated: true 
+      };
       setAuthState(newState);
       
       console.log('Login successful, new auth state:', newState);
@@ -86,42 +155,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleLogout = () => {
-    // Clear all auth-related items from localStorage
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
+  const handleLogout = useCallback(() => {
+    // Clear only what your app sets
     localStorage.removeItem('user_id');
-    localStorage.removeItem('email');
-    localStorage.removeItem('userType');
-    
-    // Reset state
     setAuthState({ user: null, isAuthenticated: false });
-    
     console.log('Logged out, auth state cleared');
     router.push('/login');
-  };
-
-  // Add persistence check on mount
-  useEffect(() => {
-    const checkPersistence = () => {
-      const savedUser = localStorage.getItem('user');
-      
-      console.log('Checking persistence - saved user:', savedUser);
-      
-      if (savedUser) {
-        const userData = JSON.parse(savedUser);
-        // If we have a valid user, ensure they're marked as authenticated
-        setAuthState({
-          user: userData,
-          isAuthenticated: true
-        });
-        localStorage.setItem('isAuthenticated', 'true');
-        console.log('Restored authenticated session for user:', userData);
-      }
-    };
-    
-    checkPersistence();
-  }, []);
+  }, [router]);
 
   return (
     <AuthContext.Provider value={{
