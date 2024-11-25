@@ -105,7 +105,7 @@ const StudentProfile = ({ id }: { id: number }) => {
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  Resume:{" "}
+                  Profile Content:{" "}
                   {profile.profile_content}
                 </Typography>
               </Box>

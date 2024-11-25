@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Layout from "@/components/common/Layout";
 import {
   Container,
   Typography,
@@ -47,6 +48,7 @@ const InfoField = ({ label, value, icon, onEdit, isEditable = true }: InfoFieldP
   };
 
   return (
+    
     <Box className="p-6 rounded-xl bg-white hover:shadow-md transition-shadow">
       <Box className="flex items-center space-x-4">
         <Box className="text-blue-500">{icon}</Box>
@@ -98,8 +100,9 @@ const InfoField = ({ label, value, icon, onEdit, isEditable = true }: InfoFieldP
             </Typography>
           )}
         </Box>
+        </Box>
       </Box>
-    </Box>
+
   );
 };
 
@@ -153,6 +156,7 @@ export default function EditProfile({ studentId }: { studentId: number }) {
   if (!profile) return <Typography>No profile found</Typography>;
 
   return (
+    <Layout>
     <Container maxWidth="lg" className="py-12">
       <Paper elevation={3} className="p-8 rounded-xl">
         <Typography variant="h4" className="text-center font-bold mb-8">
@@ -223,5 +227,6 @@ export default function EditProfile({ studentId }: { studentId: number }) {
         </Grid>
       </Paper>
     </Container>
+    </Layout>
   );
 }
