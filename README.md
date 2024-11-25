@@ -1,32 +1,32 @@
-# Career Fair Registration System
+# Career Fair Registration System -- Frontend
 
 A Next.js-based platform for managing career fairs, connecting students with employers, and streamlining the recruitment process.
 
 ## 🚀 Getting Started
 
-1. **Clone the repository:**
+### 1. **Clone the repository:**
 
-   ```bash
-   git clone https://github.com/KaichenQu/frontend.git
-   ```
+```bash
+git clone https://github.com/KaichenQu/frontend.git
+```
 
-2. **Install dependencies:**
+### 2. **Install dependencies:**
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+```bash
+npm install
+# or
+yarn install
+```
 
-3. **Run the development server:**
+### 3. **Run the development server:**
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-   Open [http://localhost:3000](http://localhost:3000) to view the application.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 🛠 Tech Stack
 
@@ -36,7 +36,43 @@ A Next.js-based platform for managing career fairs, connecting students with emp
 - **State Management**: React Hooks
 - **API Client**: Axios
 - **TypeScript**: For type safety
-- **Authentication**: JWT (planned)
+
+## 📝 Features & Button Functionality
+
+### 🔹 **Authentication**
+
+- **Sign In**: Redirects to the login page for user authentication.
+- **Browse Fairs**: Navigates to the career fairs listing page where users can explore available fairs.
+
+### 🔹 **Career Fair Management**
+
+- **Add New Fair**: Opens a form to create a new career fair.
+- **Edit Fair**: Allows administrators to modify existing career fair details.
+- **Delete Fair**: Removes a selected career fair from the listing after confirmation.
+
+### 🔹 **User Dashboard**
+
+- **Edit Profile**: Opens the user profile editor for updating personal information.
+- **Withdraw Registration**: Allows users to unregister from a career fair.
+- **Confirm Attendance**: Confirms the user's attendance at a selected career fair.
+
+### 🔹 **Admin Dashboard**
+
+- **View Analysis**: Navigates to the analytics section for system-wide insights.
+- **Manage System**: Accesses system settings and permission management.
+- **Manage Announcements**: Opens the announcements dashboard to create or edit system announcements.
+
+### 🔹 **Announcements**
+
+- **Create Announcement**: Opens a dialog to compose a new announcement.
+- **Edit Announcement**: Allows editing of existing announcements.
+- **Delete Announcement**: Removes an announcement after user confirmation.
+
+### 🔹 **Career Fair Interaction**
+
+- **Register**: Enables students to register for a selected career fair.
+- **View Positions**: Displays available positions for a specific career fair.
+- **Attend Fair**: Confirms attendance for faculty members at a career fair.
 
 ## 📝 Development Progress
 
@@ -73,24 +109,6 @@ A Next.js-based platform for managing career fairs, connecting students with emp
 - ✅ Card layouts with hover effects
 - ✅ Custom gradient text effects
 
-### In Progress
-
-- 🔄 API integration with backend services
-- 🔄 User authentication flow
-- 🔄 Protected routes implementation
-- 🔄 Career fair data management
-- 🔄 Company registration process
-
-### Planned Features
-
-- 📋 Application tracking system
-- 📋 Resume upload and management
-- 📋 Interview scheduling
-- 📋 Admin dashboard
-- 📋 Real-time notifications
-- 📋 Analytics and reporting
-- 📋 Email notification system
-
 ## 🔧 Configuration Files
 
 - TypeScript configuration (`tsconfig.json`)
@@ -99,13 +117,9 @@ A Next.js-based platform for managing career fairs, connecting students with emp
 - ESLint rules (`.eslintrc.json`)
 - Environment variables (`.env.example`)
 
-## 🤝 Contributing
-
-Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
-
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 ## 📚 Documentation References
 
