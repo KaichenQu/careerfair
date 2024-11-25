@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { companyAPI, CompanyProfile } from "@/services/api";
+import { companyAPI, UpdateProfileData } from "@/services/api";
 import { Container, TextField, Button, Box, Typography } from "@mui/material";
 
 const CompanyEdit = () => {
@@ -23,7 +23,7 @@ const CompanyEdit = () => {
     contact_phone: "",
     contact_email: "",
     location: "",
-    profile: "",
+    profile_content: "",
   });
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const CompanyEdit = () => {
           contact_phone: data.contact_phone || "",
           contact_email: data.contact_email || "",
           location: data.location || "",
-          profile: data.profile || "",
+          profile_content: data.profile || "",
         });
       } catch (error) {
         console.error("Failed to load profile:", error);
@@ -50,10 +50,19 @@ const CompanyEdit = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await companyAPI.updateProfile(companyId, { ...formData, id: companyId });
+      console.log('Sending update:', { ...formData, id: companyId });
+      
+      const response = await companyAPI.updateProfile(companyId, { 
+        ...formData
+      });
+      console.log('Update response:', response);
+      
       router.push(`/company/${companyId}`);
     } catch (error) {
       console.error("Failed to update profile:", error);
+      if (error instanceof Error) {
+        console.error("Error details:", error.message);
+      }
     }
   };
 
@@ -122,9 +131,9 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Company Profile"
-          value={formData.profile ?? 'null'}
+          value={formData.profile_content ?? 'null'}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, profile: e.target.value }))
+            setFormData((prev) => ({ ...prev, profile_content: e.target.value }))
           }
           multiline
           rows={4}

@@ -102,12 +102,12 @@ export interface CompanyProfile {
   id: number;
   name: string;
   email: string;
-  industry: string;
-  contact_name: string;
-  contact_phone: string;
+  industry: string | null;
+  contact_name: string | null;
+  contact_phone: string | null;
   contact_email: string | null;
-  location: string;
-  profile: string;
+  location: string | null;
+  profile: string | null;
 }
 
 export type Position = {
@@ -157,6 +157,16 @@ interface CreatePositionData {
   sponsor_flag: number;
 }
 
+export interface UpdateProfileData {
+  name: string | null;
+  email: string | null;
+  industry: string | null;
+  contact_name: string | null;
+  contact_phone: string | null;
+  contact_email: string | null;
+  location: string | null;
+  profile_content: string | null;
+}
 const companyAPI = {
   // Get profile of currently logged-in company
   getProfile: async (): Promise<CompanyProfile> => {
@@ -185,7 +195,9 @@ const companyAPI = {
   },
 
   // Update company profile
-  updateProfile: async (companyId: number, data: CompanyProfile) => {
+  updateProfile: async (companyId: number, data: UpdateProfileData) => {
+    console.log('Sending update:', { ...data, id: companyId });
+
     const response = await fetch(`${API_BASE_URL}/company/${companyId}/profile`, {
       method: 'PATCH',
       headers: {
