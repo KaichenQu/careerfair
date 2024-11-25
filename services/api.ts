@@ -391,6 +391,18 @@ export const studentAPI = {
     
     return await response.json();
   },
+
+  attendCareerFair: async (fairId: number, userId: number) => {
+    console.log('Attending career fair with fairId:', fairId, 'and userId:', userId);
+    const response = await fetch(`${API_BASE_URL}/careerFair/${fairId}/attend/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_id: userId }),
+    });
+    return response.json();
+  },
 };
 interface FacultyProfile {
   faculty_id: number;

@@ -3,6 +3,7 @@ import Layout from '@/components/common/Layout';
 import { useState, useEffect } from 'react';
 import { studentAPI } from '@/services/api';
 import { Box, Typography, Card, CardContent, Grid, Container, Button, Snackbar, Alert } from '@mui/material';
+import { parseISO, isBefore, startOfDay } from 'date-fns';
 
 interface DashboardProps {
   userId: number;
@@ -74,6 +75,45 @@ export default function Dashboard({ userId }: DashboardProps) {
     }
   };
 
+  const handleConfirmAttendance = async (fairId: number) => {
+    try {
+      // First mark as attended
+      console.log('Attempting to mark attendance for fair:', fairId);
+      const attendResponse = await studentAPI.attendCareerFair(fairId, userId);
+      console.log('Attendance marked successfully:', attendResponse);
+      
+      try {
+        // Then cancel the registration
+        console.log('Attempting to cancel registration for fair:', fairId);
+        const cancelResponse = await studentAPI.cancelRegisterCareerFair(fairId, userId);
+        console.log('Registration cancelled successfully:', cancelResponse);
+      } catch (cancelErr) {
+        console.error('Failed to cancel registration, but attendance was marked:', cancelErr);
+        // Even if cancellation fails, we'll still update the UI since attendance was marked
+      }
+      
+      // Update both lists
+      const confirmedFair = registeredFairs.find(fair => fair.fair_id === fairId);
+      if (confirmedFair) {
+        setRegisteredFairs(prev => prev.filter(fair => fair.fair_id !== fairId));
+        setAttendedFairs(prev => [...prev, confirmedFair]);
+      }
+
+      setSnackbar({
+        open: true,
+        message: 'Successfully confirmed attendance',
+        severity: 'success'
+      });
+    } catch (err) {
+      console.error('Failed to mark attendance:', err);
+      setSnackbar({
+        open: true,
+        message: 'Failed to confirm attendance. Please try again or contact support.',
+        severity: 'error'
+      });
+    }
+  };
+
   const CareerFairCard = ({ fair, showWithdraw = false }: { fair: CareerFair, showWithdraw?: boolean }) => (
     <Card sx={{ mb: 2 }}>
       <CardContent>
@@ -82,18 +122,35 @@ export default function Dashboard({ userId }: DashboardProps) {
         <Typography color="textSecondary">Location: {fair.location}</Typography>
         <Typography>{fair.description}</Typography>
         {showWithdraw && (
-          <Button 
-            variant="contained" 
-            color="error" 
-            sx={{ mt: 2 }}
-            onClick={() => handleWithdrawal(fair.fair_id)}
-          >
-            Withdraw Registration
-          </Button>
+          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+            <Button 
+              variant="contained" 
+              color="error" 
+              onClick={() => handleWithdrawal(fair.fair_id)}
+            >
+              Withdraw Registration
+            </Button>
+            <Button 
+              variant="contained" 
+              color="success" 
+              onClick={() => handleConfirmAttendance(fair.fair_id)}
+            >
+              Confirm Attendance
+            </Button>
+          </Box>
         )}
       </CardContent>
     </Card>
   );
+
+  const splitAttendedFairs = (fairs: CareerFair[]) => {
+    const today = startOfDay(new Date());
+    
+    return {
+      upcoming: fairs.filter(fair => !isBefore(parseISO(fair.careerfair_date), today)),
+      history: fairs.filter(fair => isBefore(parseISO(fair.careerfair_date), today))
+    };
+  };
 
   if (error) {
     return <Typography color="error">{error}</Typography>;
@@ -107,7 +164,7 @@ export default function Dashboard({ userId }: DashboardProps) {
         
         <Grid container spacing={4}>
           {/* Registered Fairs Section */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <Typography variant="h5" sx={{ mb: 2 }}>Registered Career Fairs</Typography>
             {registeredFairs.length > 0 ? (
               registeredFairs.map((fair) => (
@@ -118,15 +175,27 @@ export default function Dashboard({ userId }: DashboardProps) {
             )}
           </Grid>
 
-          {/* Attended Fairs Section */}
+          {/* Upcoming Attended Fairs Section */}
           <Grid item xs={12} md={6}>
-            <Typography variant="h5" sx={{ mb: 2 }}>Attended Career Fairs</Typography>
-            {attendedFairs.length > 0 ? (
-              attendedFairs.map((fair) => (
+            <Typography variant="h5" sx={{ mb: 2 }}>Upcoming Attended Fairs</Typography>
+            {splitAttendedFairs(attendedFairs).upcoming.length > 0 ? (
+              splitAttendedFairs(attendedFairs).upcoming.map((fair) => (
                 <CareerFairCard key={fair.fair_id} fair={fair} />
               ))
             ) : (
-              <Typography>No attended career fairs</Typography>
+              <Typography>No upcoming attended career fairs</Typography>
+            )}
+          </Grid>
+
+          {/* Historical Attended Fairs Section */}
+          <Grid item xs={12} md={6}>
+            <Typography variant="h5" sx={{ mb: 2 }}>Past Attended Fairs</Typography>
+            {splitAttendedFairs(attendedFairs).history.length > 0 ? (
+              splitAttendedFairs(attendedFairs).history.map((fair) => (
+                <CareerFairCard key={fair.fair_id} fair={fair} />
+              ))
+            ) : (
+              <Typography>No past attended career fairs</Typography>
             )}
           </Grid>
         </Grid>
