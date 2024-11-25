@@ -30,6 +30,11 @@ interface ReportData {
   attended_students_rate: number;
   registered_companies_rate: number;
   attended_companies_rate: number;
+  total_registered_faculties: number;
+  total_attended_faculties: number;
+  total_faculties: number;
+  registered_faculties_rate: number;
+  attended_faculties_rate: number;
 }
 
 const DataAnalysis = ({
@@ -95,6 +100,12 @@ const DataAnalysis = ({
       registered: reportData.total_registered_companies,
       attended: reportData.total_attended_companies,
     },
+    {
+      name: "Faculty",
+      total: reportData.total_faculties,
+      registered: reportData.total_registered_faculties,
+      attended: reportData.total_attended_faculties,
+    },
   ];
 
   return (
@@ -111,7 +122,7 @@ const DataAnalysis = ({
             <p className="text-gray-500 mt-2">{reportData.description}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {/* Students Statistics */}
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
               <h3 className="text-xl font-semibold text-blue-800 mb-4">
@@ -163,6 +174,34 @@ const DataAnalysis = ({
                   <p className="text-green-700">
                     Attendance Rate:{" "}
                     {formatPercentage(reportData.attended_companies_rate)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Faculty Statistics */}
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
+              <h3 className="text-xl font-semibold text-purple-800 mb-4">
+                Faculty Participation
+              </h3>
+              <div className="space-y-3">
+                <p className="text-gray-700">
+                  Total Faculty: {reportData.total_faculties}
+                </p>
+                <p className="text-gray-700">
+                  Registered: {reportData.total_registered_faculties}
+                </p>
+                <p className="text-gray-700">
+                  Attended: {reportData.total_attended_faculties}
+                </p>
+                <div className="pt-2 border-t border-purple-200">
+                  <p className="text-purple-700">
+                    Registration Rate:{" "}
+                    {formatPercentage(reportData.registered_faculties_rate)}
+                  </p>
+                  <p className="text-purple-700">
+                    Attendance Rate:{" "}
+                    {formatPercentage(reportData.attended_faculties_rate)}
                   </p>
                 </div>
               </div>
