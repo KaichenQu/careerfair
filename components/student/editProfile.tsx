@@ -11,14 +11,7 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
-import {
-  School,
-  Badge,
-  Grade,
-  CalendarToday,
-  Edit as EditIcon,
-  Email,
-} from "@mui/icons-material";
+import { Grade, Book, Edit as EditIcon } from "@mui/icons-material";
 import { studentAPI } from "@/services/api";
 
 interface StudentProfile {
@@ -27,6 +20,7 @@ interface StudentProfile {
   major: string;
   academic_year: string;
   gpa: number;
+  profile_content: string;
 }
 
 interface InfoFieldProps {
@@ -34,13 +28,13 @@ interface InfoFieldProps {
   value: string;
   icon: React.ReactNode;
   onEdit: (value: string) => Promise<void>;
+  isEditable?: boolean;
 }
 
-const InfoField = ({ label, value, icon, onEdit }: InfoFieldProps) => {
+const InfoField = ({ label, value, icon, onEdit, isEditable = true }: InfoFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
   const [error, setError] = useState<string | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleEdit = async () => {
     try {
@@ -53,13 +47,7 @@ const InfoField = ({ label, value, icon, onEdit }: InfoFieldProps) => {
   };
 
   return (
-    <Box
-      className={`p-6 rounded-xl transition-all duration-300 ${
-        isHovered ? "shadow-md bg-gray-50" : "bg-white"
-      }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <Box className="p-6 rounded-xl bg-white hover:shadow-md transition-shadow">
       <Box className="flex items-center space-x-4">
         <Box className="text-blue-500">{icon}</Box>
         <Box className="flex-1">
@@ -67,11 +55,13 @@ const InfoField = ({ label, value, icon, onEdit }: InfoFieldProps) => {
             <Typography variant="caption" className="text-gray-500">
               {label}
             </Typography>
-            <EditIcon
-              className="cursor-pointer text-gray-400 hover:text-blue-500"
-              onClick={() => setIsEditing(true)}
-              sx={{ fontSize: 18 }}
-            />
+            {isEditable && (
+              <EditIcon
+                className="cursor-pointer text-gray-400 hover:text-blue-500"
+                onClick={() => setIsEditing(true)}
+                sx={{ fontSize: 18 }}
+              />
+            )}
           </Box>
           
           {isEditing ? (
@@ -104,7 +94,7 @@ const InfoField = ({ label, value, icon, onEdit }: InfoFieldProps) => {
             </Box>
           ) : (
             <Typography variant="h6" className="font-semibold text-gray-800">
-              {value}
+              {value || "Not set"}
             </Typography>
           )}
         </Box>
@@ -113,102 +103,121 @@ const InfoField = ({ label, value, icon, onEdit }: InfoFieldProps) => {
   );
 };
 
-interface EditProfileProps {
-  studentId: number;
+interface UpdateStudentProfile {
+  gpa?: number;
+  profile_content?: string;
 }
 
-export default function EditProfile({ studentId }: EditProfileProps) {
+export default function EditProfile({ studentId }: { studentId: number }) {
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Get userId from localStorage
-  const userId = localStorage.getItem('user_id');
-  console.log('userId from localStorage:', userId); 
 
   useEffect(() => {
     const loadProfile = async () => {
-      console.log('loadProfile called with userId:', userId); // Debug log
-      if (!userId) {
-        console.log('No userId found in localStorage'); // Debug log
-        setError("No user ID found");
-        setLoading(false);
-        return;
-      }
-
       try {
-        console.log('Attempting to load profile for userId:', userId, 'type:', typeof userId); // Debug log
-        const data = await studentAPI.getProfile(Number(userId));
+        const data = await studentAPI.getProfile(studentId);
         setProfile(data);
       } catch (err) {
-        console.error('Profile load error:', err); // Debug log
         setError("Failed to load profile");
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
     loadProfile();
-  }, [userId]);
+  }, [studentId]);
 
-  const handleUpdateField = async (field: keyof StudentProfile, value: string | number) => {
+  const handleUpdateField = async (field: keyof UpdateStudentProfile, value: string | number) => {
     try {
-      await studentAPI.updateProfile(Number(userId), { [field]: value });
-      // Update local state if needed
+      if (!value && value !== 0) {
+        throw new Error("Value cannot be empty");
+      }
+
+      const updates = {
+        [field]: field === 'gpa' ? Number(value) : value
+      } as UpdateStudentProfile;
+      
+      const response = await studentAPI.updateProfile(studentId, updates);
+      setProfile(prev => prev ? { ...prev, [field]: value } : null);
+      return response;
     } catch (error) {
+      console.error('Update error:', error);
       throw new Error(`Failed to update ${field}. Please try again.`);
     }
   };
 
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography color="error">{error}</Typography>;
+  if (!profile) return <Typography>No profile found</Typography>;
+
   return (
     <Container maxWidth="lg" className="py-12">
       <Paper elevation={3} className="p-8 rounded-xl">
-        <Typography
-          variant="h4"
-          className="text-center font-bold mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
-        >
-          Student Profile Details
+        <Typography variant="h4" className="text-center font-bold mb-8">
+          Edit Profile
         </Typography>
 
         <Grid container spacing={4}>
+          {/* Editable Fields */}
+          <Grid item xs={12} md={6}>
+            <InfoField
+              label="GPA"
+              value={profile.gpa.toString()}
+              icon={<Grade />}
+              onEdit={(value) => handleUpdateField('gpa', parseFloat(value))}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <InfoField
+              label="Profile Content"
+              value={profile.profile_content}
+              icon={<Book />}
+              onEdit={(value) => handleUpdateField('profile_content', value)}
+            />
+          </Grid>
+
+          {/* Read-only Fields */}
+          <Grid item xs={12}>
+            <Typography variant="h6" className="mb-4 text-gray-600">
+              Profile Information
+            </Typography>
+          </Grid>
           <Grid item xs={12} md={6}>
             <InfoField
               label="Name"
-              value={profile?.name || ""}
-              icon={<Badge />}
-              onEdit={(value) => handleUpdateField('name', value)}
+              value={profile.name}
+              icon={<Book />}
+              onEdit={() => Promise.resolve()}
+              isEditable={false}
             />
           </Grid>
           <Grid item xs={12} md={6}>
             <InfoField
               label="Email"
-              value={profile?.email || ""}
-              icon={<Email />}
-              onEdit={(value) => handleUpdateField('email', value)}
+              value={profile.email}
+              icon={<Book />}
+              onEdit={() => Promise.resolve()}
+              isEditable={false}
             />
           </Grid>
           <Grid item xs={12} md={6}>
             <InfoField
               label="Major"
-              value={profile?.major || ""}
-              icon={<School />}
-              onEdit={(value) => handleUpdateField('major', value)}
+              value={profile.major}
+              icon={<Book />}
+              onEdit={() => Promise.resolve()}
+              isEditable={false}
             />
           </Grid>
           <Grid item xs={12} md={6}>
             <InfoField
               label="Academic Year"
-              value={profile?.academic_year || ""}
-              icon={<CalendarToday />}
-              onEdit={(value) => handleUpdateField('academic_year', value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <InfoField
-              label="GPA"
-              value={profile?.gpa.toString() || ""}
-              icon={<Grade />}
-              onEdit={(value) => handleUpdateField('gpa', parseFloat(value))}
+              value={profile.academic_year}
+              icon={<Book />}
+              onEdit={() => Promise.resolve()}
+              isEditable={false}
             />
           </Grid>
         </Grid>

@@ -106,7 +106,7 @@ const StudentProfile = ({ id }: { id: number }) => {
                   className="font-semibold text-gray-800"
                 >
                   Resume:{" "}
-                  {profile.resume_uploaded ? "Uploaded" : "Not Uploaded"}
+                  {profile.profile_content}
                 </Typography>
               </Box>
             </Grid>

@@ -1,7 +1,7 @@
 import { SystemSecurityUpdate } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
 
-const API_BASE_URL = "http://localhost:8000"; // Django backend URL
+const API_BASE_URL = "http://127.0.0.1:8000"; // Django backend URL
 let user_getID: string | number = '';
 
 // Initialize user_getID if we're in the browser
@@ -284,8 +284,13 @@ interface StudentProfile {
   email: string;
   major: string;
   academic_year: string;
-  resume_uploaded: boolean;
   gpa: number;
+  profile_content: string;
+}
+
+interface UpdateStudentProfile {
+  gpa?: number;
+  profile_content?: string;
 }
 
 export interface AppliedPosition {
@@ -342,19 +347,27 @@ export const studentAPI = {
   },
 
   // Update student profile
-  updateProfile: async (studentId: number, updates: Partial<StudentProfile>) => {
-    const response = await fetch(`${API_BASE_URL}/student/${studentId}/profile`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updates),
-    });
-    
-    if (!response.ok) throw new Error('Failed to update profile');
-    const data = await response.json();
-    window.location.reload();
-    return data;
+  updateProfile: async (studentId: number, updates: Partial<UpdateStudentProfile>) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/student/${studentId}/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(updates)
+      });
+      console.log('Response:', response);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Server returned ${response.status}: ${JSON.stringify(data)}`);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw error;
+    }
   },
 
   getDashboard: async (studentId: number): Promise<DashboardData> => {
