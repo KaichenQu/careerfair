@@ -267,6 +267,15 @@ const companyAPI = {
       throw error;
     }
   },
+
+  deletePosition: (companyId: number, positionId: number): Promise<void> => {
+    return axios.delete(`${API_BASE_URL}/company/${companyId}/position/${positionId}`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+  },
 };
 
 interface StudentProfile {

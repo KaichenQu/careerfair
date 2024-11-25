@@ -40,6 +40,11 @@ const Positions = () => {
     type: 'success' | 'error' | null;
     message: string;
   } | null>(null);
+  const [snackbar, setSnackbar] = useState<{
+    type: 'success' | 'error';
+    message: string;
+    open: boolean;
+  }>({ type: 'success', message: '', open: false });
 
   const userId = typeof window !== 'undefined' 
     ? window.location.pathname.split('/')[2]
@@ -112,6 +117,29 @@ const Positions = () => {
       setSelectedPosition(null);
     } catch (error) {
       console.error('Error updating position:', error);
+    }
+  };
+
+  const handleDeletePosition = async (positionId: number) => {
+    try {
+      if (!userId) throw new Error("User ID is required");
+      
+      const numericUserId = Number(userId);
+      await companyAPI.deletePosition(numericUserId, positionId);
+
+      setPositions(positions.filter(pos => Number(pos.position_id) !== positionId));
+      setSnackbar({
+        type: 'success',
+        message: 'Position deleted successfully',
+        open: true
+      });
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error  || 'Failed to delete position';
+      setSnackbar({
+        type: 'error',
+        message: errorMessage,
+        open: true
+      });
     }
   };
 
@@ -299,24 +327,36 @@ const Positions = () => {
                 <p className="text-gray-600 mb-1">Location: {position.location}</p>
                 <p className="text-gray-600">{position.description}</p>
               </div>
-              <button
-                onClick={() => {
-                  setEditingPosition({
-                    position_name: position.position_name,
-                    salary: position.salary,
-                    location: position.location,
-                    description: position.description,
-                    ng_flag: position.ng_flag,
-                    intern_flag: position.intern_flag,
-                    sponsor_flag: position.sponsor_flag,
-                  });
-                  setSelectedPosition(position);
-                  setIsEditing(true);
-                }}
-                className="mt-3 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-              >
-                Edit
-              </button>
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={() => {
+                    setEditingPosition({
+                      position_name: position.position_name,
+                      salary: position.salary,
+                      location: position.location,
+                      description: position.description,
+                      ng_flag: position.ng_flag,
+                      intern_flag: position.intern_flag,
+                      sponsor_flag: position.sponsor_flag,
+                    });
+                    setSelectedPosition(position);
+                    setIsEditing(true);
+                  }}
+                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to delete this position?')) {
+                      handleDeletePosition(Number(position.position_id));
+                    }
+                  }}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -479,6 +519,13 @@ const Positions = () => {
           </div>
         )}
       </div>
+      {snackbar.open && (
+        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 p-4 rounded-md shadow-lg ${
+          snackbar.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white z-50`}>
+          {snackbar.message}
+        </div>
+      )}
     </Layout>
   );
 };
