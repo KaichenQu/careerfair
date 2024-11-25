@@ -149,16 +149,16 @@ const RegisterPage = () => {
       // Redirect based on user type
       switch(formData.userType) {
         case 'student':
-          window.location.href = `/student/${data.user_id}`;
+          window.location.href = `/login`;
           break;
         case 'company':
-          window.location.href = `/company/${data.user_id}`;
+          window.location.href = `/login`;
           break;
         case 'faculty':
-          window.location.href = `/faculty/${data.user_id}`;
+          window.location.href = `/login`;
           break;
         case 'admin':
-          window.location.href = `/admin/${data.user_id}`;
+          window.location.href = `/login`;
           break;
         default:
           window.location.href = '/login';
