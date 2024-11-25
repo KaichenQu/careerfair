@@ -303,6 +303,7 @@ interface StudentProfile {
 interface UpdateStudentProfile {
   gpa?: number;
   profile_content?: string;
+  major?: string;
 }
 
 export interface AppliedPosition {

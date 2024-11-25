@@ -109,6 +109,7 @@ const InfoField = ({ label, value, icon, onEdit, isEditable = true }: InfoFieldP
 interface UpdateStudentProfile {
   gpa?: number;
   profile_content?: string;
+  major?: string;
 }
 
 export default function EditProfile({ studentId }: { studentId: number }) {
@@ -209,10 +210,10 @@ export default function EditProfile({ studentId }: { studentId: number }) {
           <Grid item xs={12} md={6}>
             <InfoField
               label="Major"
-              value={profile.major?? 'null'}
+              value={profile.major ?? 'null'}
               icon={<Book />}
-              onEdit={() => Promise.resolve()}
-              isEditable={false}
+              onEdit={(value) => handleUpdateField('major', value)}
+              isEditable={true}
             />
           </Grid>
           <Grid item xs={12} md={6}>
