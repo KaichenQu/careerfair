@@ -168,7 +168,7 @@ export default function EditProfile({ studentId }: { studentId: number }) {
           <Grid item xs={12} md={6}>
             <InfoField
               label="GPA"
-              value={profile.gpa.toString()}
+              value={profile.gpa?.toString() ?? 'null'}
               icon={<Grade />}
               onEdit={(value) => handleUpdateField('gpa', parseFloat(value))}
             />
@@ -176,7 +176,7 @@ export default function EditProfile({ studentId }: { studentId: number }) {
           <Grid item xs={12} md={6}>
             <InfoField
               label="Profile Content"
-              value={profile.profile_content}
+              value={profile.profile_content ?? 'null'}
               icon={<Book />}
               onEdit={(value) => handleUpdateField('profile_content', value)}
             />
