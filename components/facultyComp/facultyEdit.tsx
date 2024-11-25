@@ -6,6 +6,7 @@ import { facultyAPI } from "@/services/api";
 import Loading from "@/components/common/Loading";
 
 interface FacultyEditForm {
+  faculty_id: number;
   email: string;
   name: string;
   department: string;
@@ -30,6 +31,7 @@ const FacultyEdit = () => {
           name: data.name,
           email: data.email,
           department: data.department,
+          faculty_id: data.faculty_id?.toString() ?? 'null',
         });
       } catch (err) {
         setError(
@@ -55,6 +57,7 @@ const FacultyEdit = () => {
       email: formData.get("email") as string,
       name: formData.get("name") as string,
       department: formData.get("department") as string,
+      faculty_id: parseInt(formData.get("faculty_id") as string)
     };
 
     try {
@@ -109,9 +112,23 @@ const FacultyEdit = () => {
           />
         </div>
 
+        <div className="mb-4">
+          <label htmlFor="faculty_id" className="block mb-2">
+            Faculty ID
+          </label>
+          <input
+            type="text"
+            id="faculty_id"
+            name="faculty_id"
+            defaultValue={facultyData.faculty_id}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
         <div className="mb-6">
-          <label htmlFor="email" className="block mb-2">
-            Email
+          <label htmlFor="department" className="block mb-2">
+            Department
           </label>
           <input
             type="text"

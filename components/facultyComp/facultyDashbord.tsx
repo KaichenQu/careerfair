@@ -140,7 +140,7 @@ const FacultyProfilePage = () => {
               <Box className="space-y-6 pr-4">
                 <ProfileField
                   label="Faculty ID"
-                  value={profile?.faculty_id.toString() ?? 'null'}
+                  value={profile?.faculty_id?.toString() ?? 'null'}
                 />
                 <ProfileField label="Name" value={profile?.name ?? 'null'} />
                 <ProfileField label="Email" value={profile?.email ?? 'null'} />

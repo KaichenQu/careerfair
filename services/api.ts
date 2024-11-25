@@ -452,6 +452,7 @@ const facultyAPI = {
   getProfile: async (): Promise<FacultyProfile> => {
     try {
       const storedUserId = localStorage.getItem('user_id');
+      
       console.log("Getting profile for logged-in faculty:", storedUserId);
       
       if (!storedUserId) {
