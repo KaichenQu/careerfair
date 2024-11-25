@@ -66,7 +66,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Company Name"
-          value={formData.name}
+          value={formData.name ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, name: e.target.value }))
           }
@@ -74,7 +74,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Email"
-          value={formData.email}
+          value={formData.email ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, email: e.target.value }))
           }
@@ -82,7 +82,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Industry"
-          value={formData.industry}
+          value={formData.industry ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, industry: e.target.value }))
           }
@@ -90,7 +90,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Contact Name"
-          value={formData.contact_name}
+          value={formData.contact_name ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, contact_name: e.target.value }))
           }
@@ -98,7 +98,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Contact Phone"
-          value={formData.contact_phone}
+          value={formData.contact_phone ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, contact_phone: e.target.value }))
           }
@@ -106,7 +106,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Contact Email"
-          value={formData.contact_email}
+          value={formData.contact_email ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, contact_email: e.target.value }))
           }
@@ -114,7 +114,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Location"
-          value={formData.location}
+          value={formData.location ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, location: e.target.value }))
           }
@@ -122,7 +122,7 @@ const CompanyEdit = () => {
         <TextField
           fullWidth
           label="Company Profile"
-          value={formData.profile}
+          value={formData.profile ?? 'null'}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, profile: e.target.value }))
           }

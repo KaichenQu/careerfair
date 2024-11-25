@@ -69,44 +69,43 @@ const StudentProfile = ({ id }: { id: number }) => {
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  Student ID: {profile.student_id}
+                  Student ID: {profile.student_id ?? 'null'}
                 </Typography>
                 <Typography
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  Name: {profile.name}
+                  Name: {profile.name ?? 'null'}
                 </Typography>
                 <Typography
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  Email: {profile.email}
+                  Email: {profile.email ?? 'null'}
                 </Typography>
                 <Typography
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  Major: {profile.major}
+                  Major: {profile.major ?? 'null'}
                 </Typography>
                 <Typography
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  Academic Year: {profile.academic_year}
+                  Academic Year: {profile.academic_year ?? 'null'}
                 </Typography>
                 <Typography
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  GPA: {profile.gpa}
+                  GPA: {profile.gpa ?? 'null'}
                 </Typography>
                 <Typography
                   variant="h6"
                   className="font-semibold text-gray-800"
                 >
-                  Profile Content:{" "}
-                  {profile.profile_content}
+                  Profile Content: {profile.profile_content ?? 'null'}
                 </Typography>
               </Box>
             </Grid>

@@ -94,14 +94,14 @@ const AdminPage = ({ adminId }: { adminId: string }) => {
                 textShadow: "0 2px 10px rgba(59, 130, 246, 0.1)",
               }}
             >
-              Welcome Back, {adminData.admin_name}
+              Welcome Back, {adminData.admin_name ?? 'null'}
             </Typography>
             <Typography
               variant="h6"
               className="text-slate-600 font-light"
               sx={{ letterSpacing: 1 }}
             >
-              {adminData.email}
+              {adminData.email ?? 'null'}
             </Typography>
           </Box>
 

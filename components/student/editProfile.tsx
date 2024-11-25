@@ -191,7 +191,7 @@ export default function EditProfile({ studentId }: { studentId: number }) {
           <Grid item xs={12} md={6}>
             <InfoField
               label="Name"
-              value={profile.name}
+              value={profile.name ?? 'null'}
               icon={<Book />}
               onEdit={() => Promise.resolve()}
               isEditable={false}
@@ -200,7 +200,7 @@ export default function EditProfile({ studentId }: { studentId: number }) {
           <Grid item xs={12} md={6}>
             <InfoField
               label="Email"
-              value={profile.email}
+              value={profile.email ?? 'null'}
               icon={<Book />}
               onEdit={() => Promise.resolve()}
               isEditable={false}
@@ -209,7 +209,7 @@ export default function EditProfile({ studentId }: { studentId: number }) {
           <Grid item xs={12} md={6}>
             <InfoField
               label="Major"
-              value={profile.major}
+              value={profile.major?? 'null'}
               icon={<Book />}
               onEdit={() => Promise.resolve()}
               isEditable={false}
@@ -218,7 +218,7 @@ export default function EditProfile({ studentId }: { studentId: number }) {
           <Grid item xs={12} md={6}>
             <InfoField
               label="Academic Year"
-              value={profile.academic_year}
+              value={profile.academic_year ?? 'null'}
               icon={<Book />}
               onEdit={() => Promise.resolve()}
               isEditable={false}

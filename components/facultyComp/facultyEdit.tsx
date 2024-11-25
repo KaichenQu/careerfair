@@ -89,7 +89,7 @@ const FacultyEdit = () => {
             type="text"
             id="name"
             name="name"
-            defaultValue={facultyData.name}
+            defaultValue={facultyData.name ?? 'null'}
             className="w-full p-2 border rounded"
             required
           />
@@ -103,7 +103,7 @@ const FacultyEdit = () => {
             type="email"
             id="email"
             name="email"
-            defaultValue={facultyData.email}
+            defaultValue={facultyData.email ?? 'null'}
             className="w-full p-2 border rounded"
             required
           />
@@ -117,7 +117,7 @@ const FacultyEdit = () => {
             type="text"
             id="department"
             name="department"
-            defaultValue={facultyData.department}
+            defaultValue={facultyData.department ?? 'null'}
             className="w-full p-2 border rounded"
             required
           />

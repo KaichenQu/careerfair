@@ -127,7 +127,7 @@ const FacultyProfilePage = () => {
               Faculty Profile
             </Typography>
             <Typography variant="subtitle1" className="text-gray-600">
-              {profile?.department}
+              {profile?.department ?? 'null'}
             </Typography>
           </Box>
 
@@ -140,11 +140,11 @@ const FacultyProfilePage = () => {
               <Box className="space-y-6 pr-4">
                 <ProfileField
                   label="Faculty ID"
-                  value={profile?.faculty_id.toString()}
+                  value={profile?.faculty_id.toString() ?? 'null'}
                 />
-                <ProfileField label="Name" value={profile?.name} />
-                <ProfileField label="Email" value={profile?.email} />
-                <ProfileField label="Department" value={profile?.department} />
+                <ProfileField label="Name" value={profile?.name ?? 'null'} />
+                <ProfileField label="Email" value={profile?.email ?? 'null'} />
+                <ProfileField label="Department" value={profile?.department ?? 'null'} />
               </Box>
             </Grid>
 
