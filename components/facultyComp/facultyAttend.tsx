@@ -46,7 +46,7 @@ export default function FacultyAttendance() {
     const today = startOfDay(new Date());
     
     return {
-      upcoming: attendedFairs.filter(fair => 
+      uncoming: attendedFairs.filter(fair => 
         !isBefore(parseISO(fair.careerfair_date), today)
       ),
       history: attendedFairs.filter(fair => 
@@ -63,7 +63,7 @@ export default function FacultyAttendance() {
     return <Typography>Loading...</Typography>;
   }
 
-  const { upcoming, history } = splitAttendedFairs();
+  const { uncoming, history } = splitAttendedFairs();
 
   const AttendanceTable = ({ fairs }: { fairs: FacultyCareerFair[] }) => (
     <Table>
@@ -97,17 +97,17 @@ export default function FacultyAttendance() {
       
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
         <Tabs value={tabValue} onChange={handleTabChange}>
-          <Tab label={`Upcoming (${upcoming.length})`} />
+          <Tab label={`Uncoming (${uncoming.length})`} />
           <Tab label={`History (${history.length})`} />
         </Tabs>
       </Box>
 
       {tabValue === 0 && (
         <Box>
-          {upcoming.length === 0 ? (
-            <Typography>No upcoming attended fairs.</Typography>
+          {uncoming.length === 0 ? (
+            <Typography>No uncoming attended fairs.</Typography>
           ) : (
-            <AttendanceTable fairs={upcoming} />
+            <AttendanceTable fairs={uncoming} />
           )}
         </Box>
       )}

@@ -214,7 +214,7 @@ const AdminPage = ({ adminId }: { adminId: string }) => {
                   <Button
                     variant="contained"
                     fullWidth
-                    onClick={() => router.push("/adminPage/careerFair")}
+                    onClick={() => router.push("/admin/careerFair")}
                     sx={{
                       background:
                         "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
