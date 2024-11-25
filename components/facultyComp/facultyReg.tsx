@@ -93,6 +93,69 @@ export default function RegisteredCareerFairPage() {
     }
   };
 
+  const handleConfirmAttendance = async (fairId: number) => {
+    console.log('Attempting to confirm attendance for fair:', fairId);
+    console.log('All localStorage items:', { ...localStorage });
+    try {
+      const userId = localStorage.getItem('user_id');
+      console.log('Retrieved userId:', userId);
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
+
+      // First mark as attended
+      const attendResponse = await fetch(`http://127.0.0.1:8000/careerFair/${fairId}/attend/`, {
+        method: 'POST',  // Make sure this matches your backend expectation
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          user_id: userId 
+        }),
+      });
+
+      if (!attendResponse.ok) {
+        const errorData = await attendResponse.json();
+        throw new Error(errorData.message || 'Failed to mark attendance');
+      }
+
+      // Then cancel the registration
+      const cancelResponse = await fetch(`http://127.0.0.1:8000/careerFair/${fairId}/cancelRegister/`, {
+        method: 'DELETE',  // Changed from DELETE to POST - adjust based on your backend
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          user_id: userId 
+        }),
+      });
+
+      if (!cancelResponse.ok) {
+        const errorData = await cancelResponse.json();
+        throw new Error(errorData.message || 'Failed to cancel registration');
+      }
+
+      // Update the UI and localStorage
+      const updatedFairs = registeredFairs.filter(fair => fair.fair_id !== fairId);
+      setRegisteredFairs(updatedFairs);
+      localStorage.setItem('registeredFairs', JSON.stringify(updatedFairs));
+
+      setSnackbar({
+        open: true,
+        message: 'Successfully confirmed attendance',
+        severity: 'success'
+      });
+
+    } catch (err) {
+      console.error('Failed to confirm attendance:', err);
+      setSnackbar({
+        open: true,
+        message: err instanceof Error ? err.message : 'Failed to confirm attendance',
+        severity: 'error'
+      });
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -139,12 +202,19 @@ export default function RegisteredCareerFairPage() {
                       <Box className="flex gap-2">
                         <Button
                           variant="contained"
-                          fullWidth
                           color="error"
                           className="hover:bg-red-700"
                           onClick={() => handleWithdrawal(fair.fair_id)}
                         >
                           Withdraw
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          className="hover:bg-green-700"
+                          onClick={() => handleConfirmAttendance(fair.fair_id)}
+                        >
+                          Confirm Attendance
                         </Button>
                       </Box>
                     </Box>
