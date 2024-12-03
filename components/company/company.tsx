@@ -156,7 +156,9 @@ const CompanyDashboard = ({ id }: { id: number }) => {
                     <Typography variant="subtitle2" className="text-gray-600">
                       Contact Name
                     </Typography>
-                    <Typography variant="h6">{profile.contact_name ?? 'null'}</Typography>
+                    <Typography variant="h6">
+                      {profile.contact_name ?? "null"}
+                    </Typography>
                   </Box>
 
                   <Box className="p-4 bg-gray-50 rounded-lg">
@@ -164,7 +166,7 @@ const CompanyDashboard = ({ id }: { id: number }) => {
                       Contact Phone
                     </Typography>
                     <Typography variant="h6">
-                      {profile.contact_phone ?? 'null'}
+                      {profile.contact_phone ?? "null"}
                     </Typography>
                   </Box>
 
@@ -181,7 +183,9 @@ const CompanyDashboard = ({ id }: { id: number }) => {
                     <Typography variant="subtitle2" className="text-gray-600">
                       Company Email
                     </Typography>
-                    <Typography variant="h6">{profile.email ?? 'null'}</Typography>
+                    <Typography variant="h6">
+                      {profile.email ?? "null"}
+                    </Typography>
                   </Box>
                 </Box>
               </Card>
@@ -206,7 +210,7 @@ const CompanyDashboard = ({ id }: { id: number }) => {
                     className="w-full h-[300px] object-cover rounded-lg mb-6"
                   />
                   <Typography className="text-gray-700 leading-relaxed whitespace-pre-line">
-                    {profile.profile ?? 'null'}
+                    {profile.profile ?? "Company Profile"}
                   </Typography>
                 </Box>
               </Card>

@@ -27,10 +27,10 @@ interface Announcement {
 }
 
 const adminOptions = [
-  { id: "1", name: "Robyn Jiang" },
-  { id: "2", name: "Kelson Qu" },
-  { id: "3", name: "Gray Wu" },
-  { id: "4", name: "Yusin Hu" },
+  { id: "1", name: "ADMIN1" },
+  { id: "2", name: "ADMIN2" },
+  { id: "3", name: "ADMIN3" },
+  { id: "4", name: "ADMIN4" },
 ];
 
 const Announcement = () => {

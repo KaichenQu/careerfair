@@ -7,8 +7,6 @@ import { format } from "date-fns";
 import { toast } from "react-hot-toast";
 import { getCareerFairs, deleteCareerFair } from "@/services/careerFairService";
 
-
-
 interface CareerFair {
   fair_id: string;
   name: string;
@@ -38,7 +36,6 @@ const AdminCareerFair = () => {
     fetchCareerFairs();
   }, []);
 
-
   const filteredFairs = careerFairs.filter(
     (fair) =>
       fair.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,7 +44,6 @@ const AdminCareerFair = () => {
 
   const handleDelete = async (fairId: string) => {
     try {
-
       await deleteCareerFair(fairId);
 
       setCareerFairs((prevFairs) =>
@@ -68,7 +64,7 @@ const AdminCareerFair = () => {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Career Fairs Management</h1>
             <button
-              onClick={() => router.push("/adminPage/careerFair/addcareerFair")}
+              onClick={() => router.push("/admin/careerFair/addcareerFair")}
               className="bg-blue-500 text-white px-4 py-2 rounded-md 
                        hover:bg-blue-600 transition-colors duration-200
                        flex items-center space-x-2"
