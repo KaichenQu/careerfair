@@ -45,17 +45,17 @@ const ChatBox = () => {
       );
       const data = await response.json();
 
-      // Extract only the results from the response
+      // Extract results from the response
       const results = data.results;
       let formattedResponse = "";
 
       if (Array.isArray(results)) {
-        // Format array of results
+        // Filter out password fields and format array results
         formattedResponse = results
           .map((item, index) => {
-            const formattedFields = Object.entries(item)
+            const filteredFields = Object.entries(item)
+              .filter(([key]) => !key.toLowerCase().includes("password"))
               .map(([key, value]) => {
-                // Format key to be more readable
                 const formattedKey = key
                   .split("_")
                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -63,12 +63,13 @@ const ChatBox = () => {
                 return `  ${formattedKey}: ${value}`;
               })
               .join("\n");
-            return `Company ${index + 1}:\n${formattedFields}`;
+            return ` ${index + 1}:\n${filteredFields}`;
           })
           .join("\n\n");
       } else if (results && typeof results === "object") {
-        // Format single result object
+        // Filter out password fields and format single object
         formattedResponse = Object.entries(results)
+          .filter(([key]) => !key.toLowerCase().includes("password"))
           .map(([key, value]) => {
             const formattedKey = key
               .split("_")
