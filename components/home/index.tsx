@@ -27,11 +27,12 @@ const HomePage: React.FC = () => {
     setMounted(true);
   }, []);
 
-  const welcomeMessage = mounted && isAuthenticated && user?.email ? (
-    <Typography variant="h6" className="mb-4 text-blue-600">
-      Welcome, {user.email}!
-    </Typography>
-  ) : null;
+  const welcomeMessage =
+    mounted && isAuthenticated && user?.email ? (
+      <Typography variant="h6" className="mb-4 text-blue-600">
+        Welcome, {user.email}!
+      </Typography>
+    ) : null;
 
   const scrollToNextSection = () => {
     secondPageRef.current?.scrollIntoView({
@@ -69,37 +70,60 @@ const HomePage: React.FC = () => {
       >
         {/* First Page - Hero Section */}
         <div className="snap-start h-[calc(100vh-64px)] relative flex items-center">
-          <div className="absolute inset-0 z-0 opacity-10">
-            <div className="absolute inset-0 bg-grid-gray-900/[0.04] bg-[size:20px_20px]" />
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50/30 to-pink-50/20" />
+            <div className="absolute inset-0 bg-grid-gray-900/[0.03] bg-[size:20px_20px]" />
+            <div className="absolute top-20 left-20 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-20 w-64 h-64 bg-purple-200/20 rounded-full blur-3xl" />
           </div>
 
           <Container maxWidth="lg" className="relative z-10">
             <div className="text-center">
-              {/* Removed welcomeMessage */}
-
               <Typography
                 variant="h4"
                 component="h1"
-                className="text-4xl md:text-6xl font-bold mb-12 text-gray-900"
+                className="text-1xl md:text-7xl font-bold mb-12 text-gray-900 text-center"
               >
-                Career Fair
+                <span
+                  className="font-extrabold bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-transparent bg-clip-text animate-gradient block text-6xl md:text-8xl drop-shadow-[0_4px_4px_rgba(0,0,0,0.1)] filter drop-shadow-lg"
+                  style={{
+                    textShadow: "4px 4px 8px rgba(59, 130, 246, 0.3)",
+                    WebkitTextStroke: "1px rgba(59, 130, 246, 0.1)",
+                  }}
+                >
+                  Career Fair
+                </span>
                 <br />
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text font-extrabold text-3xl md:text-4xl">
                   Registration System
                 </span>
               </Typography>
 
-              <p className="text-2xl font-medium text-gray-800 mb-8 max-w-3xl mx-auto leading-relaxed">
-                "Connecting talented students with leading companies through{" "}
-                <span className="text-blue-600 font-semibold">
-                  seamless career fair experiences
+              <p className="text-2xl font-medium text-gray-800 mb-8 max-w-3xl mx-auto leading-relaxed text-center">
+                <span className="italic text-gray-700">"</span>
+                <span className="text-gray-700">
+                  Connecting talented students with leading companies through{" "}
                 </span>
-                . Your future starts here."
+                <span className="text-blue-600 font-semibold relative inline-block">
+                  seamless career fair experiences
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600/30"></span>
+                </span>
+                <span className="text-gray-700">
+                  . Your future starts here.
+                </span>
+                <span className="italic text-gray-700">"</span>
               </p>
 
-              <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-                Join thousands of students and hundreds of companies who have
-                already found their perfect match through our platform.
+              <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in text-center">
+                Join{" "}
+                <span className="font-semibold text-blue-600">
+                  thousands of students
+                </span>{" "}
+                and{" "}
+                <span className="font-semibold text-purple-600">
+                  hundreds of companies
+                </span>{" "}
+                who have already found their perfect match through our platform.
               </p>
 
               <div className="flex justify-center gap-4 mt-8">
@@ -150,100 +174,42 @@ const HomePage: React.FC = () => {
             <Container maxWidth="lg">
               <Typography
                 variant="h3"
-                className="text-center text-2xl md:text-5xl font-bold mb-16 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text pb-1"
+                className="font-bold text-center text-3xl md:text-6xl font-bold mb-16 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-transparent bg-clip-text animate-gradient"
                 style={{
                   paddingBottom: "0.15em",
                   lineHeight: "1.3",
                 }}
               >
-                Our Growing Community
+                What we offer
               </Typography>
 
-              <div className="grid grid-cols-1 md:grid-cols-3">
-                {[
-                  { number: "30+", label: "Colleges", icon: "🎓" },
-                  { number: "1000+", label: "Students Registered", icon: "👥" },
-                  { number: "200+", label: "Partner Companies", icon: "🏢" },
-                ].map((stat, index) => (
-                  <div
-                    key={index}
-                    className="text-center group cursor-pointer transform transition-all duration-300 hover:-translate-y-2"
-                  >
-                    <div className="mb-4 text-4xl">{stat.icon}</div>
-                    <Typography
-                      variant="h3"
-                      className="font-bold text-5xl md:text-6xl text-transparent bg-clip-text mb-3 group-hover:scale-105 transition-transform duration-300"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
-                        WebkitBackgroundClip: "text",
-                        textShadow: "4px 4px 8px rgba(59, 130, 246, 0.2)",
-                      }}
-                    >
-                      {stat.number}
-                    </Typography>
-                    <Typography
-                      className="text-gray-600 text-lg md:text-xl font-medium tracking-wide"
-                      style={{
-                        textShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                      }}
-                    >
-                      {stat.label}
-                    </Typography>
-                  </div>
+              <Grid container spacing={6}>
+                {features.map((feature, index) => (
+                  <Grid item xs={12} md={4} key={index}>
+                    <div className="h-full group relative p-8 bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border border-gray-100">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="relative z-10 flex flex-col h-full">
+                        <div className="w-16 h-16 mb-6 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl transform group-hover:rotate-12 transition-transform duration-300">
+                          {feature.icon}
+                        </div>
+                        <Typography
+                          variant="h5"
+                          className="font-bold text-3xl mb-4 text-gray-800 group-hover:text-blue-600 transition-colors duration-300 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
+                        >
+                          {feature.title}
+                        </Typography>
+                        <Typography className="text-gray-600 text-lg flex-grow leading-relaxed tracking-wide">
+                          {feature.description}
+                        </Typography>
+                      </div>
+                    </div>
+                  </Grid>
                 ))}
-              </div>
+              </Grid>
               <BusinessCategories />
             </Container>
           </div>
         </div>
-
-        {/* Features section */}
-        <section
-          id="features-section"
-          className="snap-start h-[calc(100vh-64px)] py-20 bg-gradient-to-b from-white to-gray-50"
-        >
-          <Container maxWidth="lg">
-            <div className="text-center mb-16">
-              <Typography
-                variant="h3"
-                className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text"
-              >
-                Why Choose Our Platform?
-              </Typography>
-              <Typography
-                variant="h6"
-                className="text-gray-600 max-w-2xl mx-auto"
-              >
-                Discover the advantages of our career fair registration system
-              </Typography>
-            </div>
-
-            <Grid container spacing={4}>
-              {features.map((feature, index) => (
-                <Grid item xs={12} md={4} key={index}>
-                  <div className="h-full group relative p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative z-10 flex flex-col h-full">
-                      <div className="w-12 h-12 mb-6 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl">
-                        {feature.icon}
-                      </div>
-                      <Typography
-                        variant="h5"
-                        className="font-bold mb-4 text-gray-800"
-                      >
-                        {feature.title}
-                      </Typography>
-                      <Typography className="text-gray-600 flex-grow">
-                        {feature.description}
-                      </Typography>
-                    </div>
-                  </div>
-                </Grid>
-              ))}
-            </Grid>
-          </Container>
-        </section>
       </div>
     </Layout>
   );
